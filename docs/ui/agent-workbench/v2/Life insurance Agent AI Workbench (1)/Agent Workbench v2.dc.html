@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/styles.css">
+<script src="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/_ds_bundle.js"></script>
+<script src="wb-strings.js"></script>
+<script src="wb-data.js"></script>
+<script src="wb-agentic.js"></script>
+<style>body{margin:0;background:var(--color-bg)} a{color:var(--color-accent-700)} a:hover{color:var(--color-accent-600)} @keyframes wbpulse{0%,100%{opacity:.25}50%{opacity:1}} @keyframes wbup{from{transform:translateY(100%)}to{transform:none}} @keyframes wbdown{from{transform:translateY(-120%)}to{transform:none}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-wrap:wrap;gap:48px;padding:40px 32px;align-items:flex-start;justify-content:center;font-family:var(--font-body);color:var(--color-text)">
+
+<aside style="flex:1 1 280px;max-width:340px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:8px;border-top:2px solid var(--color-text);padding-top:16px">
+    <h2 style="margin:0;font-size:30px">{{ t.side_title }}</h2>
+    <p style="margin:0;font-size:14px;color:var(--color-neutral-700);text-wrap:pretty">{{ t.side_sub }}</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.language }}</span>
+    <div style="display:flex;border:1px solid var(--color-divider);width:max-content">
+      <sc-for list="{{ langSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.on }}" style="border:0;cursor:pointer;font:inherit;font-size:13px;font-weight:600;padding:8px 16px;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column">
+    <div style="padding-bottom:8px;border-bottom:2px solid var(--color-divider)"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.flows_h }}</span></div>
+    <sc-for list="{{ flows }}" as="j" hint-placeholder-count="5">
+      <button onClick="{{ j.on }}" style="display:grid;grid-template-columns:28px 1fr;gap:8px;text-align:left;border:0;border-bottom:1px solid var(--color-divider);background:none;cursor:pointer;font:inherit;padding:10px 4px;color:var(--color-text)" style-hover="background:var(--color-neutral-200)">
+        <span style="font-size:18px;font-weight:800;color:var(--color-accent-700);line-height:1.1">{{ j.id }}</span>
+        <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">{{ j.label }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ j.d }}</span></span>
+      </button>
+    </sc-for>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="padding-bottom:8px;border-bottom:2px solid var(--color-divider)"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.classic }}</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <sc-for list="{{ screenLinks }}" as="l" hint-placeholder-count="16"><button onClick="{{ l.on }}" class="btn btn-secondary" style="font-size:12px;padding:6px 10px">{{ l.label }}</button></sc-for>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="padding-bottom:8px;border-bottom:2px solid var(--color-divider)"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.status_h }}</span></div>
+    <sc-for list="{{ statusLegend }}" as="h" hint-placeholder-count="5">
+      <div style="display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center"><span class="{{ h.cls }}" style="width:max-content">{{ h.label }}</span><span style="font-size:13px;color:var(--color-neutral-700)">{{ h.d }}</span></div>
+    </sc-for>
+  </div>
+</aside>
+
+<div data-screen-label="Phone" style="width:390px;height:844px;flex:none;position:relative;background:var(--color-bg);border:2px solid var(--color-text);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
+  <div style="height:44px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:600">
+    <span>9:41</span>
+    <span style="display:flex;gap:6px;align-items:center"><span style="width:16px;height:9px;border:1.5px solid var(--color-text)"></span><span style="width:22px;height:11px;border:1.5px solid var(--color-text);padding:1px"><span style="display:block;width:70%;height:100%;background:var(--color-text)"></span></span></span>
+  </div>
+
+  <div ref="{{ scrollRef }}" style="flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none">
+
+<sc-if value="{{ s.home }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="01 Home" style="display:flex;flex-direction:column;padding-bottom:100px">
+  <div style="padding:8px 20px 0;display:flex;flex-direction:column;gap:2px">
+    <div style="font-size:12px;color:var(--color-neutral-700);letter-spacing:.04em">{{ t.date }} · {{ t.brief_k }}</div>
+    <h3 style="margin:0;font-size:26px">{{ t.greet }}</h3>
+  </div>
+  <div style="margin:14px 20px 0;display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:15px;font-weight:800">{{ t.goal_q }}</span>
+    <div style="display:flex;align-items:center;border:2px solid var(--color-text);background:var(--color-surface)">
+      <span style="width:40px;flex:none;display:grid;place-items:center;color:var(--color-accent);font-size:17px">✦</span>
+      <input value="{{ goalInput }}" onChange="{{ onGoal }}" onKeyDown="{{ onGoalKey }}" placeholder="{{ t.goal_ph }}" style="flex:1;min-width:0;border:0;background:none;font:inherit;font-size:14px;padding:13px 0;color:var(--color-text);outline:none">
+      <button onClick="{{ micGoal }}" aria-label="Voice" style="width:44px;height:44px;flex:none;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" x2="12" y1="19" y2="22"></line></svg></button>
+      <button onClick="{{ sendGoal }}" aria-label="Send" style="width:46px;height:46px;flex:none;border:0;background:var(--color-accent);cursor:pointer;display:grid;place-items:center;color:var(--color-bg)" style-hover="background:var(--color-accent-600)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button>
+    </div>
+    <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px">
+      <sc-for list="{{ goalChips }}" as="g" hint-placeholder-count="4"><button onClick="{{ g.on }}" style="flex:none;border:1px solid var(--color-divider);background:none;font:inherit;font-size:12px;padding:7px 10px;cursor:pointer;color:var(--color-text);white-space:nowrap" style-hover="border-color:var(--color-accent);color:var(--color-accent-700)">{{ g.label }}</button></sc-for>
+    </div>
+  </div>
+  <button onClick="{{ goTasksAi }}" style="margin:14px 20px 0;border:0;background:var(--color-text);color:var(--color-bg);font:inherit;cursor:pointer;text-align:left;padding:10px 12px;display:flex;align-items:center;gap:10px;font-size:13px"><span style="width:8px;height:8px;flex:none;background:var(--color-accent);animation:wbpulse 1.2s infinite"></span><span style="flex:1"><strong>{{ t.ai_working }}</strong> · {{ aiBusyN }} {{ t.ai_working_n }}</span><span>→</span></button>
+  <div style="margin:14px 20px 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid var(--color-text);border-bottom:2px solid var(--color-divider)">
+    <sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
+      <div style="padding:10px 6px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--color-divider)"><span style="font-size:24px;font-weight:800;line-height:1">{{ st.n }}</span><span style="font-size:11px;line-height:1.25;color:var(--color-neutral-800)">{{ st.l }}</span></div>
+    </sc-for>
+  </div>
+  <div style="margin:12px 20px 0;display:flex;flex-direction:column;gap:6px">
+    <div style="display:flex;justify-content:space-between;font-size:12px"><span style="font-weight:600">{{ t.progress }}</span><span style="color:var(--color-neutral-700)">{{ progLabel }}</span></div>
+    <div style="height:6px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ progPct }};background:var(--color-accent);transition:width .4s"></div></div>
+  </div>
+
+  <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.sec_att }}</h5><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">A</span></div>
+  <div style="margin:0 20px;padding:16px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="width:36px;height:36px;flex:none;display:grid;place-items:center;background:var(--color-neutral-300);font-weight:800;font-size:13px">AW</span><span style="display:flex;flex-direction:column;flex:1;min-width:0"><span style="font-size:16px;font-weight:800">Alice Wong</span><span style="font-size:12px;color:var(--color-accent-700);font-weight:600">{{ attTitle }}</span></span><span class="tag tag-accent">{{ t.high }}</span></div>
+    <span style="font-size:14px">{{ attReason }}</span>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px"><span><span style="color:var(--color-neutral-700)">{{ t.recommended }}: </span><strong>{{ t.follow_today }}</strong></span><span class="tag tag-outline">{{ t.st_sug }}</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onClick="{{ attHandle }}" style="min-height:44px">✦ {{ t.handle }}</button>
+      <button class="btn btn-secondary" onClick="{{ goC360 }}" style="min-height:44px">{{ t.view_cust }}</button>
+      <button class="btn btn-ghost" onClick="{{ openWhy }}" style="min-height:44px">{{ t.why_q }}</button>
+    </div>
+  </div>
+  <sc-if value="{{ hasWait }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ goTasksWait }}" style="margin:0 20px;padding:14px 0;border:0;border-bottom:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font:inherit;color:var(--color-text);display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center">
+      <span style="width:36px;height:36px;display:grid;place-items:center;background:var(--color-accent);color:var(--color-bg);font-weight:800;font-size:16px">{{ waitN }}</span>
+      <span style="display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">{{ waitN }} {{ t.att2_t }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.att2_d }}</span></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg>
+    </button>
+  </sc-if>
+
+  <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.sec_ai }}</h5><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">B</span></div>
+  <div style="margin:0 20px;padding:16px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="width:36px;height:36px;flex:none;display:grid;place-items:center;background:var(--color-neutral-300);font-weight:800;font-size:13px">DC</span><span style="display:flex;flex-direction:column"><span style="font-size:16px;font-weight:800">David Chen</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.aih1_m }}</span></span></div>
+    <span style="font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.aih_can }}: </span>{{ t.aih1_i }}</span>
+    <sc-if value="{{ davIdle }}" hint-placeholder-val="{{ true }}"><div><button class="btn btn-primary" onClick="{{ letDavid }}" style="min-height:44px">✦ {{ t.let_ai }}</button></div></sc-if>
+    <sc-if value="{{ davRun }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;align-items:center;font-size:12px"><span class="tag tag-neutral">● {{ t.st_exec }}</span><span style="font-weight:700">{{ davPct }}</span></div><div style="height:6px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ davPct }};background:var(--color-accent);transition:width .6s"></div></div></div></sc-if>
+    <sc-if value="{{ davDone }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px"><span class="tag tag-neutral">{{ t.st_prep }} · {{ t.ready_view }}</span><button class="btn btn-secondary" onClick="{{ openDavid }}" style="min-height:40px">{{ t.open_l }}</button></div></sc-if>
+  </div>
+  <div style="margin:0 20px;padding:16px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="width:36px;height:36px;flex:none;display:grid;place-items:center;background:var(--color-neutral-300);font-weight:800;font-size:13px">AW</span><span style="display:flex;flex-direction:column"><span style="font-size:16px;font-weight:800">{{ t.aih2_t }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.aih2_i }}</span></span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" onClick="{{ planMeet }}" style="min-height:44px">✦ {{ t.let_ai }}</button><button class="btn btn-secondary" onClick="{{ goBrief }}" style="min-height:44px">{{ t.view_brief }}</button></div>
+  </div>
+
+  <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.sec_alert }}</h5><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">C</span></div>
+  <button onClick="{{ goAppDavid }}" style="margin:0 20px;padding:12px 0;border:0;border-bottom:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font:inherit;color:var(--color-text);display:grid;grid-template-columns:10px 1fr auto;gap:12px;align-items:center"><span style="width:10px;height:10px;background:var(--color-accent)"></span><span style="display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">{{ t.alert1 }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.alert1_d }}</span></span><span class="btn btn-secondary" style="min-height:36px;font-size:13px">{{ t.resolve }}</span></button>
+  <button onClick="{{ draftMichael }}" style="margin:0 20px;padding:12px 0;border:0;border-bottom:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font:inherit;color:var(--color-text);display:grid;grid-template-columns:10px 1fr auto;gap:12px;align-items:center"><span style="width:10px;height:10px;border:2px solid var(--color-text)"></span><span style="display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">Michael Lau</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.alert2 }}</span></span><span class="btn btn-secondary" style="min-height:36px;font-size:13px">{{ t.draft_fu }}</span></button>
+  <button onClick="{{ goPerf }}" style="margin:0 20px;padding:12px 0;border:0;border-bottom:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font:inherit;color:var(--color-text);display:grid;grid-template-columns:10px 1fr auto;gap:12px;align-items:center"><span style="width:10px;height:10px;border:2px solid var(--color-text)"></span><span style="font-size:14px">{{ t.nudge2_t }}</span><span class="btn btn-ghost" style="min-height:36px;font-size:13px">{{ t.see_why }}</span></button>
+
+  <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.meet_h }}</h5></div>
+  <button onClick="{{ toastDavid }}" style="margin:0 20px;padding:12px 0;border:0;border-bottom:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font:inherit;color:var(--color-text);display:grid;grid-template-columns:72px 1fr;gap:8px"><span style="font-weight:800;font-size:15px">3:00 PM</span><span style="display:flex;flex-direction:column"><span style="font-weight:600">David Chen</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.m1_d }}</span></span></button>
+  <button onClick="{{ goBrief }}" style="margin:0 20px;padding:12px 0;border:0;border-bottom:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font:inherit;color:var(--color-text);display:grid;grid-template-columns:72px 1fr;gap:8px"><span style="font-weight:800;font-size:15px">4:30 PM</span><span style="display:flex;flex-direction:column"><span style="font-weight:600">Alice Wong</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.m2_d }} · {{ t.auto_gen }}</span></span></button>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.plan }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="AI Plan" style="display:flex;flex-direction:column;min-height:100%">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px"><button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button><span style="font-weight:800;font-size:16px;flex:1">{{ t.plan_t }}</span><span class="tag tag-outline">{{ t.st_sug }}</span></div>
+  <div style="padding:16px 20px 0;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.goal }}</span><h4 style="margin:0;font-size:22px;line-height:1.2">{{ planGoal }}</h4></div>
+  <div style="margin:16px 20px 0;border-top:2px solid var(--color-text)">
+    <div style="padding:8px 0;display:flex;justify-content:space-between"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.ai_will }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ planCount }}</span></div>
+    <sc-for list="{{ planSteps }}" as="p" hint-placeholder-count="6">
+      <button onClick="{{ p.on }}" style="width:100%;border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:{{ p.col }};cursor:{{ p.cur }};display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:11px 0;text-align:left;font-size:14px;min-height:44px"><span style="width:18px;height:18px;border:2px solid {{ p.bd }};background:{{ p.bg }};color:var(--color-bg);display:grid;place-items:center;font-size:11px;font-weight:800">{{ p.mark }}</span><span style="text-decoration:{{ p.dec }}">{{ p.label }}</span><span style="font-size:11px;color:var(--color-neutral-700)">{{ p.note }}</span></button>
+    </sc-for>
+    <sc-if value="{{ planAdj }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:var(--color-accent-700);padding:8px 0">{{ t.adjust_hint }}</div></sc-if>
+  </div>
+  <div style="margin:16px 20px 24px;padding:12px 14px;background:var(--color-surface);display:flex;flex-direction:column;gap:6px">
+    <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)">{{ t.ask_before }}</span>
+    <sc-for list="{{ planAsk }}" as="a" hint-placeholder-count="1"><span style="font-size:14px">— {{ a.x }}</span></sc-for>
+    <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.plan_safe }}</span>
+  </div>
+  <div style="flex:1"></div>
+  <div style="position:sticky;bottom:0;z-index:4;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:grid;grid-template-columns:1.4fr 1fr;gap:8px"><button class="btn btn-primary" onClick="{{ startPlan }}" style="min-height:44px;justify-content:flex-start">{{ t.start_l }}</button><button class="btn btn-secondary" onClick="{{ toggleAdj }}" style="min-height:44px;justify-content:flex-start">{{ adjLabel }}</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.progress }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="AI Progress" style="display:flex;flex-direction:column;min-height:100%">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px"><button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button><span style="font-weight:800;font-size:16px;flex:1">{{ t.ai_working }}</span><span class="tag tag-neutral">{{ progChip }}</span></div>
+  <div style="padding:20px 20px 0;display:flex;flex-direction:column;gap:6px">
+    <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.goal }}</span>
+    <h4 style="margin:0;font-size:22px">{{ progGoal }}</h4>
+    <div style="display:flex;align-items:baseline;gap:8px;margin-top:10px"><span style="font-size:48px;font-weight:800;line-height:1">{{ progN }}</span><span style="font-size:14px;color:var(--color-neutral-700)">/ {{ progTotal }} {{ t.prog_done }}</span></div>
+    <div style="height:8px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ progPctW }};background:var(--color-accent);transition:width .5s"></div></div>
+  </div>
+  <div style="margin:16px 20px 24px;border-top:2px solid var(--color-text)">
+    <sc-for list="{{ progSteps }}" as="p" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:22px 1fr;gap:10px;padding:11px 0;border-bottom:1px solid var(--color-divider);font-size:14px;color:{{ p.col }};font-weight:{{ p.w }}"><span style="font-weight:800;animation:{{ p.anim }}">{{ p.mark }}</span><span>{{ p.label }}</span></div></sc-for>
+  </div>
+  <div style="flex:1"></div>
+  <div style="position:sticky;bottom:0;z-index:4;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-primary" onClick="{{ viewWs }}" disabled="{{ progNotDone }}" style="min-height:44px;justify-content:flex-start">{{ t.view_ws }}</button><button class="btn btn-secondary" onClick="{{ bgPlan }}" style="min-height:44px;justify-content:flex-start">{{ t.bg }}</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.ws }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="AI Workspace" style="display:flex;flex-direction:column">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px"><button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button><span style="font-weight:800;font-size:16px;flex:1">{{ t.ws_head }}</span><span class="tag tag-neutral">{{ t.st_prep }}</span></div>
+  <div style="padding:16px 20px 0;display:flex;flex-direction:column;gap:4px"><h4 style="margin:0;font-size:22px">{{ wsTitle }}</h4><span style="font-size:13px;color:var(--color-neutral-700)">{{ wsMeta }}</span></div>
+  <sc-if value="{{ wsMeet }}" hint-placeholder-val="{{ true }}">
+    <div class="elev-sm" style="margin:14px 20px 0;padding:14px 16px;background:var(--color-neutral-100);border-top:2px solid var(--color-accent);display:flex;flex-direction:column;gap:6px"><span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.ai_summary }}</span><span style="font-size:15px;font-weight:600;line-height:1.4">{{ t.ws_sum }}</span></div>
+    <div style="margin:16px 20px 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:2px solid var(--color-text)">
+      <div style="padding:10px 10px 12px 0;border-right:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.snapshot }}</span><sc-for list="{{ wsSnap }}" as="x" hint-placeholder-count="4"><span style="font-size:13px">{{ x.x }}</span></sc-for></div>
+      <div style="padding:10px 0 12px 10px;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.b_pol }}</span><sc-for list="{{ wsPol }}" as="x" hint-placeholder-count="3"><span style="font-size:13px">{{ x.x }}</span></sc-for></div>
+      <div style="padding:10px 10px 12px 0;border-right:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)">{{ t.ws_gap_h }}</span><sc-for list="{{ wsGap }}" as="x" hint-placeholder-count="2"><span style="font-size:13px;font-weight:700;color:var(--color-accent-700)">{{ x.x }}</span></sc-for></div>
+      <div style="padding:10px 0 12px 10px;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.b_eng }}</span><sc-for list="{{ wsEng }}" as="x" hint-placeholder-count="2"><span style="font-size:13px">{{ x.x }}</span></sc-for></div>
+    </div>
+    <div style="margin:0 20px;padding:12px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.b_topics }}</span><sc-for list="{{ wsTopics }}" as="x" hint-placeholder-count="3"><span style="font-size:14px"><strong style="color:var(--color-accent-700)">{{ x.n }}</strong>  {{ x.x }}</span></sc-for></div>
+    <div style="margin:0 20px;padding:12px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.b_q }}</span><span style="font-size:15px;font-weight:600">{{ t.ws_q }}</span></div>
+    <div style="margin:0 20px;padding:12px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.b_obj }}</span><span style="font-size:15px;font-weight:600">{{ t.ws_obj }}</span><span style="font-size:13px;color:var(--color-neutral-800)">→ {{ t.ws_obj_r }}</span></div>
+    <button onClick="{{ toggleWsData }}" style="margin:0 20px;border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;font-size:13px;font-weight:600;padding:12px 0;cursor:pointer;color:var(--color-text);display:flex;justify-content:space-between"><span>{{ t.data_used }}</span><span>{{ wsDataChev }}</span></button>
+    <sc-if value="{{ wsDataOpen }}" hint-placeholder-val="{{ false }}"><div style="margin:8px 20px 0;font-size:13px;color:var(--color-neutral-700)">{{ t.ws_data }}</div></sc-if>
+    <div style="margin:12px 20px 24px"><button class="btn btn-ghost" onClick="{{ goBrief }}" style="min-height:40px">{{ t.open_full_brief }} →</button></div>
+    <div style="position:sticky;bottom:0;z-index:4;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-primary" onClick="{{ goNeeds }}" style="min-height:44px;justify-content:flex-start">{{ t.analyze_needs }}</button><button class="btn btn-secondary" onClick="{{ goProp }}" style="min-height:44px;justify-content:flex-start">{{ t.prep_prop }}</button><button class="btn btn-secondary" onClick="{{ goRole }}" style="min-height:44px;justify-content:flex-start">{{ t.practice_rp }}</button><button class="btn btn-secondary" onClick="{{ createFu }}" style="min-height:44px;justify-content:flex-start">{{ t.aa5 }}</button></div>
+  </sc-if>
+  <sc-if value="{{ wsImp }}" hint-placeholder-val="{{ false }}">
+    <div style="margin:16px 20px 0;display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-top:2px solid var(--color-text);border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.imp_target }}</span><span style="font-weight:700">{{ t.imp_target_d }}</span></div>
+    <sc-for list="{{ impItems }}" as="m" hint-placeholder-count="4">
+      <div style="margin:0 20px;padding:14px 0;border-bottom:1px solid var(--color-divider);display:grid;grid-template-columns:28px 1fr;gap:4px 8px">
+        <span style="font-size:20px;font-weight:800;color:var(--color-accent);line-height:1.1">{{ m.n }}</span>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><span style="font-size:15px;font-weight:800">{{ m.title }}</span><span class="{{ m.stCls }}" style="flex:none">{{ m.stLabel }}</span></div>
+          <span style="font-size:13px">{{ m.d }}</span>
+          <sc-if value="{{ m.hasAct }}" hint-placeholder-val="{{ false }}"><div><button class="btn btn-secondary" onClick="{{ m.on }}" style="min-height:40px">{{ m.act }}</button></div></sc-if>
+        </div>
+      </div>
+    </sc-for>
+    <div style="height:24px"></div>
+    <div style="position:sticky;bottom:0;z-index:4;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:grid;grid-template-columns:1.4fr 1fr;gap:8px"><button class="btn btn-primary" onClick="{{ addImp }}" style="min-height:44px;justify-content:flex-start">{{ t.add_tasks }}</button><button class="btn btn-secondary" onClick="{{ goRole }}" style="min-height:44px;justify-content:flex-start">{{ t.start_rp }}</button></div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.content }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Content Preview" style="display:flex;flex-direction:column;min-height:100%">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px"><button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button><span style="font-weight:800;font-size:16px;flex:1">{{ t.cp_t }}</span></div>
+  <div style="margin:16px 20px 0;background:var(--color-accent);color:var(--color-bg);padding:20px 18px;min-height:200px;display:flex;flex-direction:column;justify-content:space-between;gap:24px">
+    <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600">{{ cCat }}</span>
+    <span style="font-size:28px;font-weight:800;line-height:1.1;text-wrap:pretty">{{ cTitle }}</span>
+    <span style="font-size:12px;border-top:2px solid var(--color-bg);padding-top:8px">{{ t.article }}</span>
+  </div>
+  <div style="margin:12px 20px 0;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600"><span style="width:18px;height:18px;display:grid;place-items:center;background:var(--color-text);color:var(--color-bg);font-size:11px">✓</span>{{ t.approved_content }}</div>
+  <div style="margin:12px 20px 24px;border-top:2px solid var(--color-text)">
+    <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.category }}</span><span style="font-weight:600">{{ cCat }}</span></div><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.segment }}</span><span style="font-weight:600">{{ t.seg_d }}</span></div><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.key_msg }}</span><span style="font-weight:600">{{ t.key_msg_d }}</span></div><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.eff_date }}</span><span style="font-weight:600">{{ t.eff_d }}</span></div><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.cid }}</span><span style="font-weight:600">{{ cId }}</span></div>
+  </div>
+  <div style="flex:1"></div>
+  <div style="position:sticky;bottom:0;z-index:4;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:grid;grid-template-columns:1.4fr 1fr;gap:8px"><button class="btn btn-primary" onClick="{{ useContent }}" style="min-height:44px;justify-content:flex-start">{{ t.use_content }}</button><button class="btn btn-secondary" onClick="{{ openAlt }}" style="min-height:44px;justify-content:flex-start">{{ t.choose_another }}</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.engage }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Engagement Plan" style="display:flex;flex-direction:column">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px"><button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button><span style="font-weight:800;font-size:16px;flex:1">{{ t.ep_t }}</span></div>
+  <div style="padding:12px 20px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--color-divider)"><span class="tag tag-neutral">{{ t.st_prep }}</span><span class="tag tag-accent">{{ t.review_req }}</span></div>
+  <div style="margin:0 20px">
+    <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.customer }}</span><span style="font-weight:600">Alice Wong</span></div><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.goal }}</span><span style="font-weight:600">{{ t.ep_goal_d }}</span></div>
+    <button onClick="{{ goContent }}" style="width:100%;display:grid;grid-template-columns:110px 1fr auto;gap:8px;padding:10px 0;border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;font-size:14px;color:var(--color-text);text-align:left;cursor:pointer"><span style="color:var(--color-neutral-700)">{{ t.ep_content }}</span><span style="font-weight:600">{{ cTitle }}</span><span style="color:var(--color-accent)">→</span></button>
+  </div>
+  <div style="margin:16px 20px 0;display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.ep_channel }}</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ engChs }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.on }}" style="border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font:inherit;font-size:13px;font-weight:600;padding:9px 12px;cursor:pointer;min-height:40px">{{ c.label }}</button></sc-for></div>
+    <sc-if value="{{ engOk }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.consent }}:</span><strong>✓ {{ t.eligible }}</strong></div></sc-if>
+    <sc-if value="{{ engBlocked }}" hint-placeholder-val="{{ false }}"><div style="padding:10px 12px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:13px;font-weight:600;display:flex;gap:8px"><span>✕</span><span>{{ t.restricted_msg }}</span></div></sc-if>
+  </div>
+  <div style="margin:16px 20px 0;display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.ep_timing }}</span>
+    <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)"><sc-for list="{{ timeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.on }}" style="border:0;cursor:pointer;font:inherit;font-size:13px;font-weight:600;padding:10px 4px;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for></div>
+  </div>
+  <div style="margin:16px 20px 0;display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.ep_msg }}</span>
+    <textarea ref="{{ epRef }}" key="{{ epKey }}" class="input" defaultValue="{{ t.ep_msg_d }}" style="min-height:140px;font-size:14px;line-height:1.5"></textarea>
+  </div>
+  <button onClick="{{ toggleEpWhy }}" style="margin:12px 20px 0;border:0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);background:none;font:inherit;font-size:13px;font-weight:600;padding:12px 0;cursor:pointer;color:var(--color-text);display:flex;justify-content:space-between"><span>{{ t.ep_why }}</span><span>{{ epWhyChev }}</span></button>
+  <sc-if value="{{ epWhyOpen }}" hint-placeholder-val="{{ false }}"><div style="margin:8px 20px 0;display:flex;flex-direction:column;gap:3px"><sc-for list="{{ epWhyItems }}" as="w" hint-placeholder-count="4"><span style="font-size:13px">• {{ w.x }}</span></sc-for><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.sources }}: {{ t.w_src2 }}</span></div></sc-if>
+  <div style="margin:12px 20px 24px;font-size:11px;color:var(--color-neutral-700)">{{ t.demo_note }}</div>
+  <div style="position:sticky;bottom:0;z-index:4;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:grid;grid-template-columns:1fr 1.4fr auto;gap:8px"><button class="btn btn-secondary" onClick="{{ editPlan }}" style="min-height:44px;justify-content:flex-start">{{ t.edit_plan }}</button><button class="btn btn-primary" onClick="{{ sendEng }}" disabled="{{ engBlocked }}" style="min-height:44px;justify-content:flex-start">{{ t.send }}</button><button class="btn btn-ghost" onClick="{{ laterEng }}" style="min-height:44px;justify-content:flex-start">{{ t.later }}</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.assistant }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="02 Ask AI" style="min-height:100%;display:flex;flex-direction:column">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);padding:8px 20px 10px;border-bottom:2px solid var(--color-text)">
+    <h3 style="margin:0;font-size:24px">{{ t.ai_title }}</h3>
+    <span style="font-size:12px;color:var(--color-neutral-700);letter-spacing:.04em">{{ t.ai_sub }}</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:16px 20px">
+    <sc-if value="{{ chatEmpty }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:6px;padding:8px 0 4px">
+        <span style="width:28px;height:28px;background:var(--color-accent)"></span>
+        <h4 style="margin:8px 0 0;font-size:22px">{{ t.ai_hello }}</h4>
+        <p style="margin:0;font-size:14px;color:var(--color-neutral-700)">{{ t.ai_hello_d }}</p>
+      </div>
+      <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);border-bottom:2px solid var(--color-divider);padding-bottom:6px">{{ t.ai_try }}</div>
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ chips }}" as="c" hint-placeholder-count="8">
+          <button onClick="{{ c.on }}" style="border:0;border-bottom:1px solid var(--color-divider);background:none;text-align:left;font:inherit;font-size:14px;padding:11px 0;cursor:pointer;color:var(--color-text);display:flex;justify-content:space-between;gap:8px" style-hover="color:var(--color-accent-700)"><span>{{ c.label }}</span><span style="color:var(--color-accent)">→</span></button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="0">
+      <sc-if value="{{ m.isU }}" hint-placeholder-val="{{ false }}">
+        <div style="align-self:flex-end;max-width:80%;background:var(--color-text);color:var(--color-bg);padding:10px 14px;font-size:14px">{{ m.text }}</div>
+      </sc-if>
+      <sc-if value="{{ m.isA }}" hint-placeholder-val="{{ false }}">
+        <div class="card elev-sm" style="background:var(--color-neutral-100);padding:14px 16px;gap:10px;border-top:2px solid var(--color-accent)">
+          <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>AI · {{ m.k }}</span>
+          <div style="font-size:16px;font-weight:800;line-height:1.3">{{ m.title }}</div>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <sc-for list="{{ m.b }}" as="b" hint-placeholder-count="3"><span style="font-size:14px">— {{ b.x }}</span></sc-for>
+          </div>
+          <sc-if value="{{ m.hasRec }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:13px;border-top:1px solid var(--color-divider);padding-top:8px"><span style="color:var(--color-neutral-700)">{{ t.recommended }}: </span><strong>{{ m.rec }}</strong></div>
+          </sc-if>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ m.acts }}" as="a" hint-placeholder-count="2"><button class="{{ a.cls }}" onClick="{{ a.on }}" style="min-height:40px">{{ a.label }}</button></sc-for>
+          </div>
+          <button onClick="{{ m.toggle }}" style="border:0;border-top:1px solid var(--color-divider);background:none;font:inherit;font-size:13px;font-weight:600;padding:8px 0 0;cursor:pointer;color:var(--color-text);display:flex;justify-content:space-between"><span>{{ t.why_rec }}</span><span>{{ m.chev }}</span></button>
+          <sc-if value="{{ m.open }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+              <span>{{ m.why }}</span>
+              <span style="color:var(--color-neutral-700)">{{ t.sources }}: {{ m.src }}</span>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+    </sc-for>
+    <sc-if value="{{ typing }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--color-neutral-700)"><span style="display:flex;gap:4px"><span style="width:7px;height:7px;background:var(--color-accent);animation:wbpulse 1s infinite"></span><span style="width:7px;height:7px;background:var(--color-accent);animation:wbpulse 1s .2s infinite"></span><span style="width:7px;height:7px;background:var(--color-accent);animation:wbpulse 1s .4s infinite"></span></span>{{ t.ai_thinking }}</div>
+    </sc-if>
+  </div>
+  <sc-if value="{{ rpPaused }}" hint-placeholder-val="{{ false }}">
+    <div style="margin:0 20px 16px;padding:12px 14px;border:2px solid var(--color-text);display:flex;flex-direction:column;gap:8px;background:var(--color-surface)">
+      <span style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px"><span style="width:10px;height:10px;border:2px solid var(--color-text)"></span>{{ t.rp_paused }}</span>
+      <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.rp_saved }} · {{ rpTurnLabel }}</span>
+      <button class="btn btn-primary" onClick="{{ resumeRp }}" style="min-height:40px;width:max-content">{{ t.resume_rp }} →</button>
+    </div>
+  </sc-if>
+  <div style="position:sticky;bottom:0;background:var(--color-bg);border-top:2px solid var(--color-divider);padding:10px 12px;display:flex;gap:8px;align-items:center">
+    <input class="input" value="{{ input }}" onChange="{{ onInput }}" onKeyDown="{{ onKey }}" placeholder="{{ t.ai_ph }}" style="min-height:44px;flex:1">
+    <button onClick="{{ micAsk }}" aria-label="Voice" class="btn btn-secondary" style="width:44px;height:44px;padding:0;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" x2="12" y1="19" y2="22"></line></svg></button>
+    <button onClick="{{ sendAsk }}" aria-label="Send" class="btn btn-primary" style="width:44px;height:44px;padding:0;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg></button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.customers }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="03 Customers" style="display:flex;flex-direction:column;padding-bottom:24px">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);padding:8px 20px 12px;display:flex;flex-direction:column;gap:10px;border-bottom:2px solid var(--color-text)">
+    <h3 style="margin:0;font-size:24px">{{ t.cust_title }}</h3>
+    <input class="input" value="{{ q }}" onChange="{{ onQ }}" placeholder="{{ t.search_ph }}" style="min-height:44px">
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--color-divider)">
+      <sc-for list="{{ custTabs }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.on }}" style="border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:600;padding:9px 2px;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for>
+    </div>
+  </div>
+  <sc-if value="{{ noCust }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:40px 20px;display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+      <span style="width:28px;height:28px;border:2px solid var(--color-text)"></span>
+      <h5 style="margin:8px 0 0">{{ t.empty_t }} “{{ q }}”</h5>
+      <p style="margin:0;font-size:14px;color:var(--color-neutral-700)">{{ t.empty_d }}</p>
+      <button class="btn btn-secondary" onClick="{{ clearQ }}" style="min-height:44px">{{ t.clear }}</button>
+    </div>
+  </sc-if>
+  <sc-for list="{{ custs }}" as="c" hint-placeholder-count="3">
+    <div style="margin:0 20px;padding:16px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="width:40px;height:40px;flex:none;display:grid;place-items:center;background:var(--color-neutral-300);font-weight:800;font-size:14px">{{ c.ini }}</span>
+        <span style="font-size:17px;font-weight:800;flex:1">{{ c.name }}</span>
+        <span class="{{ c.priCls }}">{{ c.priL }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 12px;font-size:13px">
+        <div style="grid-column:1 / -1;display:flex;flex-direction:column"><span style="font-size:11px;color:var(--color-neutral-700)">{{ t.reason_call }}</span><span style="font-weight:600">{{ c.reason }}</span></div>
+        <div style="display:flex;flex-direction:column"><span style="font-size:11px;color:var(--color-neutral-700)">{{ t.signal }}</span><span>{{ c.signal }}</span></div>
+        <div style="display:flex;flex-direction:column"><span style="font-size:11px;color:var(--color-neutral-700)">{{ t.last_contact }}</span><span>{{ c.last }}</span></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <span style="font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.rec_action }}: </span><strong style="color:var(--color-accent-700)">{{ c.action }}</strong></span>
+        <button class="btn btn-secondary" onClick="{{ c.on }}" style="min-height:40px">{{ t.view_cust }}</button>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.c360 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="04 Customer 360" style="display:flex;flex-direction:column">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px"><button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button><span style="font-weight:800;font-size:16px;flex:1">{{ t.c360 }}</span></div>
+  <div style="padding:16px 20px 0;display:flex;align-items:center;gap:14px">
+    <span style="width:56px;height:56px;flex:none;display:grid;place-items:center;background:var(--color-text);color:var(--color-bg);font-weight:800;font-size:18px">AW</span>
+    <div style="display:flex;flex-direction:column;gap:4px"><h4 style="margin:0;font-size:22px">Alice Wong</h4><span style="display:flex;gap:6px"><span class="tag tag-accent">{{ t.high }}</span><span class="tag tag-neutral">L-208311</span></span></div>
+  </div>
+  <button onClick="{{ askAlice }}" style="margin:12px 20px 0;border:1px solid var(--color-divider);background:var(--color-surface);font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:10px 12px;display:flex;gap:10px;align-items:center;min-height:44px" style-hover="border-color:var(--color-accent)"><span style="color:var(--color-accent);font-size:15px;line-height:1">✦</span><span style="flex:1;font-size:13px">{{ t.ask_about }}</span><span style="color:var(--color-accent)">→</span></button>
+  <div style="margin:12px 20px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--color-divider)"><sc-for list="{{ cTabs }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.on }}" style="border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:600;padding:10px 2px;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for></div>
+
+  <sc-if value="{{ cOver }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ engInterest }}" hint-placeholder-val="{{ false }}">
+      <div class="elev-md" style="margin:16px 20px 0;padding:14px 16px;background:var(--color-bg);border:2px solid var(--color-accent);display:flex;flex-direction:column;gap:8px">
+        <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.interest_t }}</span>
+        <span style="font-size:15px;font-weight:700;line-height:1.35">{{ t.interest_d }}</span>
+        <span style="font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.recommended }}: </span><strong>{{ t.interest_rec }}</strong></span>
+        <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.ai_can_prep }}</span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn btn-primary" onClick="{{ prepCallI }}" style="min-height:40px">{{ t.prep_call }}</button><button class="btn btn-secondary" onClick="{{ callNowI }}" style="min-height:40px">{{ t.call_now }}</button><button class="btn btn-secondary" onClick="{{ msgI }}" style="min-height:40px">{{ t.message }}</button><button class="btn btn-ghost" onClick="{{ laterI }}" style="min-height:40px">{{ t.later }}</button></div>
+      </div>
+    </sc-if>
+    <div style="margin:16px 20px 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:2px solid var(--color-text)">
+      <div style="padding:8px 8px 8px 0;border-bottom:1px solid var(--color-divider);border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.age }}</div><div style="font-size:14px;font-weight:600">38</div></div>
+      <div style="padding:8px 0 8px 10px;border-bottom:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.occupation }}</div><div style="font-size:14px;font-weight:600">{{ t.a_occ }}</div></div>
+      <div style="padding:8px 8px 8px 0;border-bottom:1px solid var(--color-divider);border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.family }}</div><div style="font-size:14px;font-weight:600">{{ t.a_family }}</div></div>
+      <div style="padding:8px 0 8px 10px;border-bottom:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.stage }}</div><div style="font-size:14px;font-weight:600">{{ t.a_stage }}</div></div>
+      <div style="grid-column:1 / -1;padding:8px 0;border-bottom:2px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.relationship }}</div><div style="font-size:14px;font-weight:600">{{ t.a_rel }}</div></div>
+    </div>
+    <div class="card elev-sm" style="margin:16px 20px 0;padding:14px 16px;gap:8px;background:var(--color-neutral-100);border-top:2px solid var(--color-accent)">
+      <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.ai_insight }}</span>
+      <div style="font-size:16px;font-weight:800;line-height:1.3">{{ t.ins_t }}</div>
+      <div style="font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.next_step }}: </span><strong>{{ t.ins_rec }}</strong></div>
+      <div><button class="btn btn-ghost" onClick="{{ openWhy }}" style="min-height:36px">{{ t.why_this }}</button></div>
+    </div>
+    <div class="card elev-sm" style="margin:16px 20px 0;padding:14px 16px;gap:10px;background:var(--color-neutral-100);border-top:2px solid var(--color-accent)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.rec_for }}</span><span class="tag tag-outline">{{ t.st_sug }}</span></div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:1px solid var(--color-divider)">
+        <div style="padding:8px 8px 8px 0;border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.rec_topic }}</div><div style="font-size:14px;font-weight:700">{{ t.topic_edu }}</div></div>
+        <div style="padding:8px 0 8px 10px"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.timing }}</div><div style="font-size:14px;font-weight:700">{{ t.today }}</div></div>
+      </div>
+      <button onClick="{{ goContent }}" style="border:0;border-top:1px solid var(--color-divider);background:none;padding:10px 0 0;font:inherit;color:var(--color-text);text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:var(--color-neutral-700)">{{ t.rec_content }}</span><span style="font-size:16px;font-weight:800;line-height:1.3">“{{ cTitle }}”</span></button>
+      <button onClick="{{ toggleRecWhy }}" style="border:0;border-top:1px solid var(--color-divider);background:none;font:inherit;font-size:13px;font-weight:600;padding:8px 0 0;cursor:pointer;color:var(--color-text);display:flex;justify-content:space-between"><span>{{ t.why_recd }}</span><span>{{ recWhyChev }}</span></button>
+      <sc-if value="{{ recWhyOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:3px"><sc-for list="{{ recWhy }}" as="w" hint-placeholder-count="4"><span style="font-size:13px">• {{ w.x }}</span></sc-for><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.sources }}: {{ t.w_src3 }}</span></div></sc-if>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" onClick="{{ goEngage }}" style="min-height:44px">✦ {{ t.prep_eng }}</button><button class="btn btn-secondary" onClick="{{ goContent }}" style="min-height:44px">{{ t.preview_c }}</button></div>
+    </div>
+    <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.ai_actions_h }}</h5></div>
+    <div style="margin:0 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+      <sc-for list="{{ aiActs }}" as="a" hint-placeholder-count="6"><button onClick="{{ a.on }}" style="border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:12px 8px 12px 0;display:flex;gap:8px;align-items:center;font-size:14px;font-weight:600;min-height:48px" style-hover="color:var(--color-accent-700)"><span style="color:var(--color-accent)">✦</span>{{ a.label }}</button></sc-for>
+    </div>
+    <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.protection }}</h5></div>
+    <div style="margin:0 20px;display:flex;flex-direction:column">
+      <sc-for list="{{ prot }}" as="p" hint-placeholder-count="4"><div style="padding:10px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;font-size:13px"><span style="font-weight:600">{{ p.n }}</span><span style="color:var(--color-neutral-700)">{{ p.lab }}</span></div><div style="height:6px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ p.pct }};background:{{ p.col }}"></div></div></div></sc-for>
+    </div>
+    <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.policies }}</h5></div>
+    <div style="margin:0 20px"><sc-for list="{{ policies }}" as="p" hint-placeholder-count="3"><div style="padding:12px 0;border-bottom:1px solid var(--color-divider);display:grid;grid-template-columns:1fr auto;gap:2px 8px"><span style="font-weight:600;font-size:14px">{{ p.n }}</span><span style="font-weight:800;font-size:14px">{{ p.cov }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ p.no }} · {{ t.renews }} {{ p.ren }}</span><span style="font-size:12px;color:var(--color-neutral-700);text-align:right">{{ p.prem }}</span></div></sc-for></div>
+    <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.opps }}</h5></div>
+    <div style="margin:0 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)"><sc-for list="{{ opps }}" as="o" hint-placeholder-count="2"><div style="padding:12px 10px 12px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:4px"><span style="font-weight:600;font-size:14px">{{ o.t }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ o.v }}</span><span class="{{ o.cls }}" style="width:max-content">{{ o.pl }}</span></div></sc-for></div>
+  </sc-if>
+
+  <sc-if value="{{ cEng }}" hint-placeholder-val="{{ false }}">
+    <div style="margin:16px 20px 0;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.eng_h }}</span><span style="font-size:15px;font-weight:800">{{ cTitle }}</span></div>
+    <sc-if value="{{ engNone }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 20px 0;padding:16px;background:var(--color-surface);display:flex;flex-direction:column;gap:10px;align-items:flex-start"><span style="font-size:14px">{{ t.eng_none }}</span><button class="btn btn-primary" onClick="{{ goEngage }}" style="min-height:44px">✦ {{ t.prep_eng }}</button></div></sc-if>
+    <div style="margin:12px 20px 0;border-top:2px solid var(--color-text)">
+      <sc-for list="{{ events }}" as="e" hint-placeholder-count="0">
+        <div style="display:grid;grid-template-columns:48px 24px 1fr;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--color-divider)">
+          <span style="font-size:13px;font-weight:700">{{ e.tm }}</span>
+          <span style="width:22px;height:22px;display:grid;place-items:center;font-size:11px;font-weight:800;background:{{ e.bg }};color:{{ e.fg }};border:2px solid {{ e.bd }}">{{ e.g }}</span>
+          <span style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">{{ e.label }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ e.d }}</span></span>
+        </div>
+      </sc-for>
+      <sc-if value="{{ engWaiting }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px;padding:10px 0;font-size:13px;color:var(--color-neutral-700)"><span style="width:8px;height:8px;background:var(--color-accent);animation:wbpulse 1s infinite"></span>{{ t.eng_wait }}</div></sc-if>
+    </div>
+    <sc-if value="{{ engInterest }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 20px 0;padding:12px 14px;border:2px solid var(--color-accent);display:flex;flex-direction:column;gap:8px"><span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.interest_t }}</span><span style="font-size:13px;font-weight:600">{{ t.interest_rec }}</span><div style="display:flex;gap:6px"><button class="btn btn-primary" onClick="{{ prepCallI }}" style="min-height:40px">{{ t.prep_call }}</button><button class="btn btn-secondary" onClick="{{ msgI }}" style="min-height:40px">{{ t.message }}</button></div></div></sc-if>
+    <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.earlier }}</h5></div>
+    <div style="margin:0 20px"><sc-for list="{{ acts }}" as="a" hint-placeholder-count="4"><div style="padding:10px 0;border-bottom:1px solid var(--color-divider);display:grid;grid-template-columns:84px 1fr;gap:8px;font-size:13px"><span style="color:var(--color-neutral-700)">{{ a.w }}</span><span><span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-neutral-700)">{{ a.k }} · </span>{{ a.t }}</span></div></sc-for></div>
+    <div style="margin:12px 20px 0;font-size:11px;color:var(--color-neutral-700)">{{ t.demo_note }}</div>
+  </sc-if>
+
+  <sc-if value="{{ cAct }}" hint-placeholder-val="{{ false }}">
+    <div style="margin:16px 20px 0;font-size:12px;color:var(--color-neutral-700)">{{ t.act_legend }}</div>
+    <div style="margin:8px 20px 0;border-top:2px solid var(--color-text)">
+      <sc-for list="{{ logItems }}" as="l" hint-placeholder-count="2"><div style="display:grid;grid-template-columns:48px 64px 1fr;gap:8px;align-items:start;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span style="font-weight:700">{{ l.tm }}</span><span style="font-size:11px;font-weight:700;padding:2px 6px;width:max-content;background:{{ l.bg }};color:{{ l.fg }};border:1px solid {{ l.bd }}">{{ l.who }}</span><span>{{ l.text }}</span></div></sc-for>
+    </div>
+  </sc-if>
+  <div style="height:24px"></div>
+  <div style="position:sticky;bottom:0;z-index:4;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px"><button class="btn btn-primary" onClick="{{ goBrief }}" style="min-height:44px;justify-content:flex-start">{{ t.prep_meeting }}</button><button class="btn btn-secondary" onClick="{{ goAskAi }}" style="min-height:44px;justify-content:flex-start">{{ t.ask_ai }}</button><button class="btn btn-secondary" onClick="{{ createFu }}" style="min-height:44px;justify-content:flex-start;font-size:13px">{{ t.create_fu }}</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.brief }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="05 Meeting Brief" style="display:flex;flex-direction:column">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px">
+    <button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <span style="font-weight:800;font-size:16px;flex:1">{{ t.view_brief }}</span>
+    <span class="tag tag-neutral">{{ t.auto_gen }}</span>
+  </div>
+  <div style="padding:16px 20px 4px;display:flex;flex-direction:column;gap:4px">
+    <h4 style="margin:0;font-size:22px">{{ t.brief_t }}</h4>
+    <span style="font-size:13px;color:var(--color-neutral-700)">{{ t.brief_m }} · {{ t.read_time }}</span>
+  </div>
+  <button onClick="{{ planMeet }}" style="margin:12px 20px 0;border:1px solid var(--color-divider);background:var(--color-surface);font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:10px 12px;display:flex;gap:10px;align-items:center;min-height:44px" style-hover="border-color:var(--color-accent)"><span style="color:var(--color-accent);font-size:15px;line-height:1">✦</span><span style="flex:1;font-size:13px">{{ t.ask_meet }}</span><span style="color:var(--color-accent)">→</span></button>
+  <div style="margin:12px 20px 0;padding:14px 16px;background:var(--color-neutral-100);border-top:2px solid var(--color-accent);display:flex;flex-direction:column;gap:6px" class="elev-sm">
+    <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.b_life }}</span>
+    <span style="font-size:15px;font-weight:600;line-height:1.4">{{ t.b_life_d }}</span>
+  </div>
+  <div style="margin:16px 20px 24px;border-top:2px solid var(--color-text)">
+    <div style="display:grid;grid-template-columns:30px 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">01</span><div><div style="font-weight:800;font-size:14px">{{ t.b_snap }}</div><div style="font-size:13px">{{ t.b_snap_d }}</div></div></div>
+    <div style="display:grid;grid-template-columns:30px 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">02</span><div><div style="font-weight:800;font-size:14px">{{ t.b_pol }}</div><div style="font-size:13px">{{ t.b_pol_d }}</div></div></div>
+    <div style="display:grid;grid-template-columns:30px 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">03</span><div style="display:flex;flex-direction:column;gap:6px"><div style="font-weight:800;font-size:14px">{{ t.b_needs }}</div><div style="font-size:13px">{{ t.b_needs_d }}</div><button class="btn btn-secondary" onClick="{{ goNeeds }}" style="min-height:40px;width:max-content">{{ t.run_needs }} →</button></div></div>
+    <div style="display:grid;grid-template-columns:30px 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">04</span><div><div style="font-weight:800;font-size:14px">{{ t.b_eng }}</div><div style="font-size:13px">{{ t.b_eng_d }}</div></div></div>
+    <div style="display:grid;grid-template-columns:30px 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">05</span><div><div style="font-weight:800;font-size:14px">{{ t.b_topics }}</div><div style="font-size:13px">{{ t.b_topics_d }}</div></div></div>
+    <div style="display:grid;grid-template-columns:30px 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">06</span><div><div style="font-weight:800;font-size:14px">{{ t.b_q }}</div><div style="font-size:13px">{{ t.b_q_d }}</div></div></div>
+    <div style="display:grid;grid-template-columns:30px 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">07</span><div style="display:flex;flex-direction:column;gap:6px"><div style="font-weight:800;font-size:14px">{{ t.b_obj }}</div><div style="font-size:13px">{{ t.b_obj_d }}</div><button class="btn btn-ghost" onClick="{{ goRole }}" style="min-height:36px;width:max-content">{{ t.practice_obj }} →</button></div></div>
+    <div style="display:grid;grid-template-columns:30px 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="font-size:12px;font-weight:800;color:var(--color-accent-700)">08</span><div style="display:flex;flex-direction:column;gap:6px"><div style="font-weight:800;font-size:14px">{{ t.b_talk }}</div><div style="font-size:13px">{{ t.b_talk_d }}</div><span class="tag tag-neutral" style="width:max-content">{{ t.approved_src }}</span></div></div>
+  </div>
+  <div style="position:sticky;bottom:0;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px">
+    <button class="btn btn-primary" onClick="{{ goNotes }}" style="min-height:44px;justify-content:flex-start">{{ t.start_meeting }}</button>
+    <button class="btn btn-secondary" onClick="{{ goAskAi }}" style="min-height:44px;justify-content:flex-start">{{ t.ask_ai }}</button>
+    <button class="btn btn-secondary" onClick="{{ saveBrief }}" style="min-height:44px;justify-content:flex-start;font-size:13px">{{ t.share_save }}</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.needs }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="06 Needs Analysis" style="display:flex;flex-direction:column">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px">
+    <button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <span style="font-weight:800;font-size:16px;flex:1">{{ t.needs_t }}</span><span style="font-size:13px;color:var(--color-neutral-700)">Alice Wong</span>
+  </div>
+  <div style="padding:12px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--color-divider)">
+    <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag tag-neutral" style="font-weight:600">{{ t.fact }}</span><span class="tag tag-outline" style="font-weight:600;border-color:var(--color-text);color:var(--color-text)">{{ t.calc }}</span><span class="tag tag-accent" style="font-weight:600">{{ t.rec }}</span></div>
+    <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.legend_d }}</span>
+  </div>
+  <div style="margin:0 20px">
+    <sc-for list="{{ needs }}" as="n" hint-placeholder-count="6">
+      <div style="border-bottom:1px solid var(--color-divider)">
+        <button onClick="{{ n.toggle }}" style="width:100%;border:0;background:none;font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:12px 0;display:flex;flex-direction:column;gap:6px">
+          <span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="font-weight:800;font-size:15px">{{ n.n }}</span><span style="font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.gap_l }} </span><strong style="color:{{ n.gapCol }}">{{ n.gap }}</strong> <span style="margin-left:6px">{{ n.chev }}</span></span></span>
+          <span style="height:6px;background:var(--color-neutral-300);display:block"><span style="display:block;height:100%;width:{{ n.pct }};background:{{ n.barCol }}"></span></span>
+        </button>
+        <sc-if value="{{ n.open }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px;padding:0 0 14px">
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--color-text)">
+              <div style="padding:8px 6px 8px 0;border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.cur_cov }}</div><div style="font-weight:800">{{ n.cur }}</div></div>
+              <div style="padding:8px 6px;border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.est_need }}</div><div style="font-weight:800">{{ n.need }}</div></div>
+              <div style="padding:8px 6px"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.gap_l }}</div><div style="font-weight:800;color:{{ n.gapCol }}">{{ n.gap }}</div></div>
+            </div>
+            <div style="font-size:12px;font-weight:600;letter-spacing:.04em">{{ t.how_calc }}</div>
+            <div style="display:grid;grid-template-columns:96px 1fr;gap:6px 8px;font-size:13px;align-items:start">
+              <span class="tag tag-neutral" style="width:max-content;font-weight:600">{{ t.fact }}</span>
+              <div style="display:flex;flex-direction:column;gap:2px"><sc-for list="{{ n.facts }}" as="f" hint-placeholder-count="2"><span>{{ f.x }}</span></sc-for></div>
+              <span class="tag tag-outline" style="width:max-content;font-weight:600;border-color:var(--color-text);color:var(--color-text)">{{ t.calc }}</span>
+              <span>{{ n.calc }}</span>
+              <span class="tag tag-accent" style="width:max-content;font-weight:600">{{ t.rec }}</span>
+              <span style="font-weight:600">{{ n.rec }}</span>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+  <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px"><h5 style="margin:0;font-size:16px">{{ t.sol_h }}</h5></div>
+  <div style="margin:12px 20px 24px;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ opts }}" as="o" hint-placeholder-count="3">
+      <button onClick="{{ o.on }}" style="text-align:left;font:inherit;color:var(--color-text);cursor:pointer;background:var(--color-surface);border:2px solid {{ o.bd }};padding:12px 14px;display:grid;grid-template-columns:18px 1fr auto;gap:4px 10px;align-items:start">
+        <span style="width:16px;height:16px;margin-top:2px;border:2px solid var(--color-text);background:{{ o.mark }}"></span>
+        <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.08em;color:var(--color-neutral-700)">OPTION {{ o.k }}</span><span style="font-weight:800;font-size:15px">{{ o.n }}</span><span style="font-size:13px">{{ o.d }}</span></span>
+        <span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="font-weight:800;font-size:16px">{{ o.prem }}</span><sc-if value="{{ o.best }}" hint-placeholder-val="{{ false }}"><span class="tag tag-accent">{{ t.best_fit }}</span></sc-if></span>
+        <span></span><span style="grid-column:2 / -1;font-size:12px;color:var(--color-neutral-800);border-top:1px solid var(--color-divider);padding-top:6px"><strong>{{ t.tradeoff }}:</strong> {{ o.tr }}</span>
+      </button>
+    </sc-for>
+  </div>
+  <div style="position:sticky;bottom:0;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <button class="btn btn-secondary" onClick="{{ openCompare }}" style="min-height:44px;justify-content:flex-start">{{ t.compare }}</button>
+    <button class="btn btn-primary" onClick="{{ goProp }}" style="min-height:44px;justify-content:flex-start">{{ t.create_prop }} →</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.proposal }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="07 Proposal" style="display:flex;flex-direction:column">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px">
+    <button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <span style="font-weight:800;font-size:16px;flex:1">{{ t.prop_t }}</span><span style="font-size:13px;color:var(--color-neutral-700)">Option A</span>
+  </div>
+  <div style="padding:12px 20px;display:flex;flex-direction:column;gap:6px;background:var(--color-accent-100);border-bottom:1px solid var(--color-accent-300)">
+    <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--color-accent-800)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.ai_review }}</span>
+    <span style="font-size:12px;color:var(--color-neutral-800)">{{ t.approved_src }}</span>
+  </div>
+  <div style="margin:12px 20px 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);border-top:2px solid var(--color-text);border-bottom:1px solid var(--color-divider)">
+    <div style="padding:8px 8px 8px 0;border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.customer }}</div><div style="font-weight:600;font-size:14px">Alice Wong, 38</div></div>
+    <div style="padding:8px 0 8px 10px"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.needs }}</div><div style="font-weight:600;font-size:14px">{{ t.prop_needs }}</div></div>
+  </div>
+  <div style="margin:20px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px"><h5 style="margin:0;font-size:16px">{{ t.rec_products }}</h5></div>
+  <div style="margin:0 20px">
+    <div style="padding:12px 0;border-bottom:1px solid var(--color-divider);display:grid;grid-template-columns:1fr auto;gap:2px 8px"><span style="font-weight:800">{{ t.pr1 }}</span><span style="font-weight:800">$168{{ t.per_mo }}</span><span style="font-size:13px;color:var(--color-neutral-700)">{{ t.pr1_d }}</span></div>
+    <div style="padding:12px 0;border-bottom:1px solid var(--color-divider);display:grid;grid-template-columns:1fr auto;gap:2px 8px"><span style="font-weight:800">{{ t.pr2 }}</span><span style="font-weight:800">$142{{ t.per_mo }}</span><span style="font-size:13px;color:var(--color-neutral-700)">{{ t.pr2_d }}</span></div>
+    <div style="padding:10px 0;border-bottom:2px solid var(--color-divider);display:flex;justify-content:space-between"><span style="font-weight:600">{{ t.total }}</span><span style="font-weight:800;font-size:18px">$310{{ t.per_mo }}</span></div>
+  </div>
+  <div style="margin:20px 20px 0;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.benefits }}</span><span style="font-size:14px">— {{ t.ben1 }}</span><span style="font-size:14px">— {{ t.ben2 }}</span><span style="font-size:14px">— {{ t.ben3 }}</span></div>
+  <div style="margin:16px 20px 0;padding:14px 16px;background:var(--color-surface);display:flex;flex-direction:column;gap:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)">{{ t.prop_sum }}</span><span class="tag tag-neutral">{{ t.ai_prepared }}</span></div>
+    <p style="margin:0;font-size:14px;text-wrap:pretty">{{ t.prop_sum_d }}</p>
+  </div>
+  <div style="margin:16px 20px 0;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.talk_pts }}</span><span style="font-size:14px">1. {{ t.tp1 }}</span><span style="font-size:14px">2. {{ t.tp2 }}</span><span style="font-size:14px">3. {{ t.tp3 }}</span></div>
+  <div style="margin:20px 20px 24px;border-top:2px solid var(--color-text);display:flex;flex-direction:column">
+    <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:8px 0">{{ t.checklist }}</span>
+    <sc-for list="{{ ckItems }}" as="c" hint-placeholder-count="3">
+      <button onClick="{{ c.on }}" style="border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 0;text-align:left;font-size:14px;min-height:44px"><span style="width:20px;height:20px;flex:none;border:2px solid var(--color-text);background:{{ c.bg }};color:{{ c.fg }};display:grid;place-items:center;font-size:12px;font-weight:800">✓</span>{{ c.label }}</button>
+    </sc-for>
+    <sc-if value="{{ pdfGen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px;font-size:13px;padding-top:12px"><span style="display:flex;gap:4px"><span style="width:7px;height:7px;background:var(--color-accent);animation:wbpulse 1s infinite"></span><span style="width:7px;height:7px;background:var(--color-accent);animation:wbpulse 1s .2s infinite"></span><span style="width:7px;height:7px;background:var(--color-accent);animation:wbpulse 1s .4s infinite"></span></span>{{ t.generating }}</div></sc-if>
+    <sc-if value="{{ pdfReady }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;font-weight:600;padding-top:12px">✓ {{ t.pdf_ready }}</div></sc-if>
+  </div>
+  <div style="position:sticky;bottom:0;background:var(--color-bg);border-top:2px solid var(--color-text);padding:10px 16px;display:flex;flex-direction:column;gap:6px">
+    <sc-if value="{{ ckHint }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;color:var(--color-neutral-700)">{{ t.ck_hint }}</span></sc-if>
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+      <button class="btn btn-secondary" onClick="{{ editProp }}" style="min-height:44px;justify-content:flex-start;font-size:13px;padding:0 8px">{{ t.edit }}</button>
+      <button class="btn btn-secondary" onClick="{{ previewProp }}" style="min-height:44px;justify-content:flex-start;font-size:13px;padding:0 8px">{{ t.preview }}</button>
+      <button class="btn btn-secondary" onClick="{{ genPdf }}" style="min-height:44px;justify-content:flex-start;font-size:13px;padding:0 8px">{{ t.gen_pdf }}</button>
+      <button class="btn btn-primary" onClick="{{ shareProp }}" style="min-height:44px;justify-content:flex-start;font-size:13px;padding:0 8px">{{ t.share }}</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.notes }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="08 Meeting Notes" style="display:flex;flex-direction:column;min-height:100%">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px">
+    <button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <span style="display:flex;flex-direction:column"><span style="font-weight:800;font-size:16px">{{ t.notes_t }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.notes_m }}</span></span>
+  </div>
+  <sc-if value="{{ nIn }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+      <h4 style="margin:0;font-size:20px">{{ t.notes_how }}</h4>
+      <button onClick="{{ startRec }}" style="border:0;background:var(--color-accent);color:var(--color-bg);font:inherit;cursor:pointer;text-align:left;padding:18px 16px;display:flex;align-items:center;gap:14px;min-height:72px" style-hover="background:var(--color-accent-600)">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" x2="12" y1="19" y2="22"></line></svg>
+        <span style="display:flex;flex-direction:column"><span style="font-weight:800;font-size:16px">{{ t.rec_meeting }}</span><span style="font-size:12px">{{ t.rec_meeting_d }}</span></span>
+      </button>
+      <button onClick="{{ process }}" style="border:2px solid var(--color-divider);background:none;color:var(--color-text);font:inherit;cursor:pointer;text-align:left;padding:14px 16px;display:flex;flex-direction:column;min-height:64px" style-hover="background:var(--color-neutral-200)"><span style="font-weight:800;font-size:15px">{{ t.upload }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.upload_d }}</span></button>
+      <button onClick="{{ process }}" style="border:2px solid var(--color-divider);background:none;color:var(--color-text);font:inherit;cursor:pointer;text-align:left;padding:14px 16px;display:flex;flex-direction:column;min-height:64px" style-hover="background:var(--color-neutral-200)"><span style="font-weight:800;font-size:15px">{{ t.type_notes }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.type_notes_d }}</span></button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ nRec }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:32px 20px;display:flex;flex-direction:column;gap:20px">
+      <span style="display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:10px;height:10px;background:var(--color-accent);animation:wbpulse 1.2s infinite"></span>{{ t.recording }}</span>
+      <span style="font-size:64px;font-weight:800;line-height:1;letter-spacing:-.02em">{{ recTime }}</span>
+      <div style="display:flex;gap:3px;align-items:flex-end;height:48px"><span style="flex:1;height:30%;background:var(--color-text)"></span><span style="flex:1;height:70%;background:var(--color-text)"></span><span style="flex:1;height:45%;background:var(--color-text)"></span><span style="flex:1;height:90%;background:var(--color-text)"></span><span style="flex:1;height:55%;background:var(--color-text)"></span><span style="flex:1;height:35%;background:var(--color-text)"></span><span style="flex:1;height:80%;background:var(--color-text)"></span><span style="flex:1;height:60%;background:var(--color-text)"></span><span style="flex:1;height:25%;background:var(--color-text)"></span><span style="flex:1;height:65%;background:var(--color-accent)"></span><span style="flex:1;height:40%;background:var(--color-neutral-400)"></span><span style="flex:1;height:20%;background:var(--color-neutral-400)"></span></div>
+      <button class="btn btn-primary" onClick="{{ process }}" style="min-height:52px;justify-content:flex-start;font-size:15px">{{ t.stop_sum }}</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ nProc }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 20px;display:flex;flex-direction:column;gap:14px">
+      <span style="display:flex;gap:4px"><span style="width:10px;height:10px;background:var(--color-accent);animation:wbpulse 1s infinite"></span><span style="width:10px;height:10px;background:var(--color-accent);animation:wbpulse 1s .2s infinite"></span><span style="width:10px;height:10px;background:var(--color-accent);animation:wbpulse 1s .4s infinite"></span></span>
+      <h4 style="margin:0;font-size:20px">{{ t.processing }}</h4>
+      <div style="border-top:2px solid var(--color-text)">
+        <sc-for list="{{ procSteps }}" as="p" hint-placeholder-count="4"><div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px;color:{{ p.col }}"><span style="width:16px;font-weight:800">{{ p.mark }}</span>{{ p.label }}</div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ nDone }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:16px 20px 24px;display:flex;flex-direction:column;gap:0">
+      <div style="padding:14px 16px;background:var(--color-surface);display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)">{{ t.summary }}</span><span class="tag tag-neutral">{{ t.auto_gen }}</span></div>
+        <p style="margin:0;font-size:14px">{{ t.sum_d }}</p>
+      </div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;padding:10px 0;border-top:2px solid var(--color-text);border-bottom:1px solid var(--color-divider);font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.cust_needs }}</span><span>{{ t.cn_d }}</span></div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.concerns }}</span><span>{{ t.cc_d }}</span></div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.objections }}</span><span>{{ t.ob_d }}</span></div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.commitments }}</span><span style="font-weight:600">• {{ t.cm1 }}<br>• {{ t.cm2 }}</span></div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;padding:10px 0;border-bottom:2px solid var(--color-divider);font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.docs_req }}</span><span>{{ t.dr_d }}</span></div>
+
+      <div style="margin-top:24px;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;flex-direction:column"><h5 style="margin:0;font-size:16px">{{ t.ai_actions }}</h5><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.ai_actions_d }}</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+        <sc-for list="{{ naItems }}" as="a" hint-placeholder-count="3">
+          <div class="card elev-sm" style="background:var(--color-neutral-100);padding:14px 16px;gap:8px">
+            <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span style="font-weight:800;font-size:15px">{{ a.title }}</span><span class="{{ a.modeCls }}">{{ a.mode }}</span></div>
+            <sc-if value="{{ a.isMsg }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;background:var(--color-bg);padding:10px 12px;border-left:0;border-top:1px solid var(--color-divider)">{{ a.msg }}</div></sc-if>
+            <span style="font-size:13px;color:var(--color-neutral-800)">{{ a.desc }}</span>
+            <sc-if value="{{ a.pending }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;gap:8px"><button class="btn btn-primary" onClick="{{ a.approve }}" style="min-height:40px">{{ t.approve }}</button><button class="btn btn-secondary" onClick="{{ a.edit }}" style="min-height:40px">{{ t.edit }}</button><button class="btn btn-ghost" onClick="{{ a.dismiss }}" style="min-height:40px;margin-left:auto">{{ t.dismiss }}</button></div>
+            </sc-if>
+            <sc-if value="{{ a.ok }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600"><span style="width:18px;height:18px;display:grid;place-items:center;background:var(--color-text);color:var(--color-bg);font-size:11px">✓</span>{{ a.okText }}</div></sc-if>
+            <sc-if value="{{ a.dis }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--color-neutral-700)"><span>{{ t.dismissed }}</span><button class="btn btn-ghost" onClick="{{ a.undo }}" style="min-height:32px">↺</button></div></sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <button class="btn btn-secondary btn-block" onClick="{{ goTasks }}" style="min-height:48px;margin-top:16px">{{ t.go_tasks }} →</button>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.tasks }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="09 Tasks" style="display:flex;flex-direction:column;padding-bottom:100px">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);padding:8px 20px 0;display:flex;flex-direction:column;gap:10px;border-bottom:2px solid var(--color-text)">
+    <h3 style="margin:0;font-size:24px">{{ t.tasks_t }}</h3>
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0 -20px;border-top:1px solid var(--color-divider)">
+      <sc-for list="{{ taskTabs }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.on }}" style="border:0;border-right:1px solid var(--color-divider);cursor:pointer;font:inherit;text-align:left;padding:10px 6px 10px 12px;background:{{ o.bg }};color:{{ o.fg }};display:flex;flex-direction:column;gap:3px;min-height:62px"><span style="font-size:22px;font-weight:800;line-height:1;color:{{ o.nc }}">{{ o.n }}</span><span style="font-size:11px;font-weight:600;line-height:1.2">{{ o.label }}</span></button></sc-for>
+    </div>
+  </div>
+  <sc-if value="{{ noTasks }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:40px 20px;display:flex;flex-direction:column;gap:8px"><span style="width:28px;height:28px;background:var(--color-text);color:var(--color-bg);display:grid;place-items:center;font-weight:800">✓</span><h5 style="margin:8px 0 0">{{ t.all_clear }}</h5><p style="margin:0;font-size:14px;color:var(--color-neutral-700)">{{ t.all_clear_d }}</p></div>
+  </sc-if>
+  <sc-for list="{{ tasks }}" as="k" hint-placeholder-count="3">
+    <div style="margin:0 20px;padding:14px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="font-size:11px;font-weight:700;padding:2px 6px;background:{{ k.oBg }};color:{{ k.oFg }};border:1px solid {{ k.oBd }}">{{ t.now_with }}: {{ k.oLabel }}</span>
+        <sc-if value="{{ k.hasSt }}" hint-placeholder-val="{{ false }}"><span class="{{ k.stCls }}">{{ k.stLabel }}</span></sc-if>
+        <sc-if value="{{ k.hi }}" hint-placeholder-val="{{ false }}"><span class="tag tag-accent">{{ t.high }}</span></sc-if>
+      </div>
+      <span style="font-size:16px;font-weight:800">{{ k.title }}</span>
+      <span style="font-size:13px;color:var(--color-neutral-800)">{{ k.reason }}</span>
+      <sc-if value="{{ k.hasPct }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:6px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ k.pctW }};background:var(--color-accent);transition:width .5s"></div></div><span style="font-size:12px;font-weight:700">{{ k.pctW }}</span></div></sc-if>
+      <sc-if value="{{ k.hasDue }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.due }}: </span><strong style="color:{{ k.dueCol }}">{{ k.due }}</strong></span></sc-if>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ k.acts }}" as="a" hint-placeholder-count="1"><button class="{{ a.cls }}" onClick="{{ a.on }}" style="min-height:40px">{{ a.label }}</button></sc-for></div>
+    </div>
+  </sc-for>
+  <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h5 style="margin:0;font-size:16px">{{ t.completed_h }}</h5><span style="font-size:12px;color:var(--color-neutral-700)">{{ doneCount }}</span></div>
+  <sc-for list="{{ doneItems }}" as="d" hint-placeholder-count="2"><div style="margin:0 20px;padding:10px 0;border-bottom:1px solid var(--color-divider);display:grid;grid-template-columns:20px 1fr auto;gap:8px;font-size:13px;color:var(--color-neutral-700)"><span style="font-weight:800;color:var(--color-text)">✓</span><span>{{ d.title }}</span><span>{{ d.who }}</span></div></sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.app }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="10 Application" style="display:flex;flex-direction:column;padding-bottom:24px">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px">
+    <button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <span style="font-weight:800;font-size:16px">{{ t.app_t }}</span>
+  </div>
+  <button onClick="{{ askResolve }}" style="margin:12px 20px 0;border:1px solid var(--color-divider);background:var(--color-surface);font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:10px 12px;display:flex;gap:10px;align-items:center;min-height:44px" style-hover="border-color:var(--color-accent)"><span style="color:var(--color-accent);font-size:15px;line-height:1">✦</span><span style="flex:1;font-size:13px">{{ t.ask_resolve }}</span><span style="color:var(--color-accent)">→</span></button>
+  <div style="margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)">
+    <sc-for list="{{ appTabs }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.on }}" style="border:0;cursor:pointer;font:inherit;font-size:13px;font-weight:600;padding:10px 4px;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for>
+  </div>
+  <div style="margin:16px 20px 0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))">
+    <sc-for list="{{ steps }}" as="p" hint-placeholder-count="5">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center"><span style="width:26px;height:26px;flex:none;display:grid;place-items:center;font-size:12px;font-weight:800;background:{{ p.bg }};color:{{ p.fg }};border:2px solid {{ p.bd }}">{{ p.mark }}</span><span style="flex:1;height:2px;background:{{ p.line }}"></span></div>
+        <span style="font-size:11px;line-height:1.25;font-weight:{{ p.w }};padding-right:4px">{{ p.label }}</span>
+      </div>
+    </sc-for>
+  </div>
+  <sc-if value="{{ isDavid }}" hint-placeholder-val="{{ false }}">
+    <div style="margin:20px 20px 0;border-top:2px solid var(--color-text);padding-top:12px;display:flex;justify-content:space-between;align-items:flex-end">
+      <div style="display:flex;flex-direction:column"><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.readiness }}</span><span style="font-size:13px">LifeGuard Term · L-APP-30188</span></div>
+      <span style="font-size:44px;font-weight:800;line-height:1">85%</span>
+    </div>
+    <div style="margin:10px 20px 0;height:8px;background:var(--color-neutral-300)"><div style="width:85%;height:100%;background:var(--color-text)"></div></div>
+    <div style="margin:12px 20px 0"><sc-for list="{{ docs }}" as="d" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="width:20px;font-weight:800;color:{{ d.col }}">{{ d.mark }}</span><span style="flex:1;color:{{ d.col }}">{{ d.label }}</span><sc-if value="{{ d.miss }}" hint-placeholder-val="{{ false }}"><span class="tag tag-accent">{{ t.required }}</span></sc-if></div></sc-for></div>
+    <div class="card elev-sm" style="margin:16px 20px 0;background:var(--color-neutral-100);padding:14px 16px;gap:8px;border-top:2px solid var(--color-accent)">
+      <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.app_blocked }}</span>
+      <span style="font-size:15px;font-weight:600">{{ t.app_block_d }}</span>
+      <sc-if value="{{ acShow }}" hint-placeholder-val="{{ false }}">
+        <div style="border-top:1px solid var(--color-divider);display:flex;flex-direction:column">
+          <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700);padding:8px 0 2px">{{ t.ai_can }}</span>
+          <sc-for list="{{ acItems }}" as="a" hint-placeholder-count="3"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span>{{ a.label }}</span><span style="display:flex;gap:6px;align-items:center;flex:none"><span class="{{ a.stCls }}">{{ a.stLabel }}</span><sc-if value="{{ a.isWait }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary" onClick="{{ a.review }}" style="min-height:32px;font-size:12px">{{ t.review }}</button></sc-if></span></div></sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ acIdle }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" onClick="{{ handleApp }}" style="min-height:44px">✦ {{ t.handle }}</button><button class="btn btn-secondary" onClick="{{ toggleAc }}" style="min-height:44px">{{ t.review_actions }}</button></div></sc-if>
+      <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.no_submit }}</span>
+    </div>
+    <sc-if value="{{ davidReq }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 20px 0;padding:12px 14px;background:var(--color-surface);font-size:13px;font-weight:600;display:flex;gap:8px;align-items:center"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.requested }}</div></sc-if>
+  </sc-if>
+  <sc-if value="{{ isAlice }}" hint-placeholder-val="{{ false }}">
+    <div style="margin:20px 20px 0;border-top:2px solid var(--color-text);padding-top:12px;display:flex;flex-direction:column;gap:2px">
+      <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.uw_status }} · CritiCare Plus · L-APP-55120</span>
+      <span style="font-size:20px;font-weight:800">{{ t.uw_pending }}</span>
+    </div>
+    <div style="margin:12px 20px 0;display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.requirement }}</span><span style="font-weight:600">{{ t.uw_req }}</span></div>
+    <div style="margin:0 20px;display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.readiness }}</span><span style="font-weight:600">100%</span></div>
+    <div class="card elev-sm" style="margin:16px 20px 0;background:var(--color-neutral-100);padding:14px 16px;gap:8px;border-top:2px solid var(--color-accent)">
+      <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.ai_expl }}</span>
+      <span style="font-size:15px;font-weight:600">{{ t.uw_expl }}</span>
+      <span style="font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.recommended }}: </span><strong>{{ t.uw_rec }}</strong></span>
+      <div style="display:flex;gap:8px"><button class="btn btn-primary" onClick="{{ draftUw }}" style="min-height:44px">{{ t.draft_msg }}</button><button class="btn btn-secondary" onClick="{{ remUw }}" style="min-height:44px">{{ t.create_rem }}</button></div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.claims }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="11 Service & Claims" style="display:flex;flex-direction:column;padding-bottom:24px">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px">
+    <button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <span style="font-weight:800;font-size:16px">{{ t.claims_t }}</span>
+  </div>
+  <button onClick="{{ askClaim }}" style="margin:12px 20px 0;border:1px solid var(--color-divider);background:var(--color-surface);font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:12px 14px;display:flex;gap:10px;align-items:center;min-height:48px"><span style="width:8px;height:8px;flex:none;background:var(--color-accent)"></span><span style="flex:1;font-size:14px">{{ t.ask_claim }}</span><span style="color:var(--color-accent)">→</span></button>
+  <div style="margin:20px 20px 0;border-top:2px solid var(--color-text);padding-top:12px;display:flex;justify-content:space-between;align-items:flex-start">
+    <div style="display:flex;flex-direction:column"><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.claim }} · Alice Wong · Medical</span><span style="font-size:22px;font-weight:800">CL-10392</span></div>
+    <span class="tag tag-accent">{{ t.cl_status }}</span>
+  </div>
+  <div style="margin:14px 20px 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px">
+    <div style="display:flex;flex-direction:column;gap:4px"><span style="height:4px;background:var(--color-text)"></span><span style="font-size:11px">{{ t.cl_s1 }}</span></div>
+    <div style="display:flex;flex-direction:column;gap:4px"><span style="height:4px;background:var(--color-accent)"></span><span style="font-size:11px;font-weight:800">{{ t.cl_s2 }}</span></div>
+    <div style="display:flex;flex-direction:column;gap:4px"><span style="height:4px;background:var(--color-neutral-300)"></span><span style="font-size:11px;color:var(--color-neutral-700)">{{ t.cl_s3 }}</span></div>
+    <div style="display:flex;flex-direction:column;gap:4px"><span style="height:4px;background:var(--color-neutral-300)"></span><span style="font-size:11px;color:var(--color-neutral-700)">{{ t.cl_s4 }}</span></div>
+  </div>
+  <div style="margin:14px 20px 0;display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.required }}</span><span style="font-weight:600">{{ t.cl_req }}</span></div>
+  <div style="margin:0 20px;display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.updated }}</span><span>{{ t.yesterday }}</span></div>
+  <div class="card elev-sm" style="margin:16px 20px 0;background:var(--color-neutral-100);padding:14px 16px;gap:8px;border-top:2px solid var(--color-accent)">
+    <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.ai_expl }}</span>
+    <span style="font-size:15px;font-weight:600">{{ t.cl_expl }}</span>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn btn-primary" onClick="{{ draftClaim }}" style="min-height:44px;justify-content:flex-start">{{ t.draft_cust }}</button>
+      <button class="btn btn-secondary" onClick="{{ explainClaim }}" style="min-height:44px;justify-content:flex-start">{{ t.explain_cust }}</button>
+      <button class="btn btn-secondary" onClick="{{ detailClaim }}" style="min-height:44px;justify-content:flex-start">{{ t.view_details }}</button>
+      <button class="btn btn-secondary" onClick="{{ createFu }}" style="min-height:44px;justify-content:flex-start">{{ t.create_fu }}</button>
+    </div>
+  </div>
+  <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px"><h5 style="margin:0;font-size:16px">{{ t.svc_h }}</h5></div>
+  <div style="margin:0 20px;padding:12px 0;border-bottom:1px solid var(--color-divider);display:flex;justify-content:space-between;font-size:14px"><span>{{ t.svc1 }}</span><span style="color:var(--color-neutral-700)">✓ {{ t.svc1_d }}</span></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.perf }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="12 Performance" style="display:flex;flex-direction:column;padding-bottom:24px">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px">
+    <button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <span style="font-weight:800;font-size:16px">{{ t.perf_t }}</span>
+  </div>
+  <div style="margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)">
+    <sc-for list="{{ perfTabs }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.on }}" style="border:0;cursor:pointer;font:inherit;font-size:13px;font-weight:600;padding:10px 4px;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for>
+  </div>
+  <button onClick="{{ askPerf }}" style="margin:12px 20px 0;border:1px solid var(--color-divider);background:var(--color-surface);font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:10px 12px;display:flex;gap:10px;align-items:center;min-height:44px" style-hover="border-color:var(--color-accent)"><span style="color:var(--color-accent);font-size:15px;line-height:1">✦</span><span style="flex:1;font-size:13px">{{ t.ask_perf }}</span><span style="color:var(--color-accent)">→</span></button>
+  <sc-if value="{{ isMonth }}" hint-placeholder-val="{{ true }}">
+    <div style="margin:16px 20px 0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.fyp }}</div>
+    <div style="margin:6px 20px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--color-text);border-bottom:1px solid var(--color-divider)">
+      <div style="padding:10px 6px 10px 0;border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.target }}</div><div style="font-size:20px;font-weight:800">$40,000</div></div>
+      <div style="padding:10px 6px;border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.actual }}</div><div style="font-size:20px;font-weight:800">$26,400</div></div>
+      <div style="padding:10px 6px"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.gap }}</div><div style="font-size:20px;font-weight:800;color:var(--color-accent-700)">$13,600</div></div>
+    </div>
+    <div style="margin:10px 20px 0;height:8px;background:var(--color-neutral-300)"><div style="width:66%;height:100%;background:var(--color-text)"></div></div>
+    <div class="card elev-sm" style="margin:20px 20px 0;background:var(--color-neutral-100);padding:14px 16px;gap:10px;border-top:2px solid var(--color-accent)">
+      <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.diag }}</span>
+      <span style="font-size:16px;font-weight:800;line-height:1.3">{{ t.diag_t }}</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--color-divider)">
+        <div style="padding:8px 0;border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.bench }}</div><div style="font-size:24px;font-weight:800">24%</div></div>
+        <div style="padding:8px 0 8px 12px"><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.you }}</div><div style="font-size:24px;font-weight:800;color:var(--color-accent-700)">13%</div></div>
+      </div>
+      <span style="font-size:13px">{{ t.diag_why }}</span>
+      <span style="font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.improve }}: </span><strong>{{ t.obj_handling }}</strong></span>
+      <div><button class="btn btn-ghost" onClick="{{ openLearn }}" style="min-height:40px">{{ t.learn_rec }}</button></div>
+    </div>
+    <div class="card elev-sm" style="margin:16px 20px 0;background:var(--color-bg);border:2px solid var(--color-text);padding:14px 16px;gap:10px">
+      <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.coach_ins }}</span>
+      <span style="font-size:15px;font-weight:700;line-height:1.35">{{ t.coach_d }}</span>
+      <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.ai_recs }}</span>
+      <div style="display:flex;flex-direction:column;border-top:1px solid var(--color-divider)"><div style="display:grid;grid-template-columns:22px 1fr;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="font-weight:800;color:var(--color-accent-700)">1</span><span>{{ t.cr1 }}</span></div><div style="display:grid;grid-template-columns:22px 1fr;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="font-weight:800;color:var(--color-accent-700)">2</span><span>{{ t.cr2 }}</span></div><div style="display:grid;grid-template-columns:22px 1fr;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="font-weight:800;color:var(--color-accent-700)">3</span><span>{{ t.cr3 }}</span></div><div style="display:grid;grid-template-columns:22px 1fr;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="font-weight:800;color:var(--color-accent-700)">4</span><span>{{ t.cr4 }}</span></div></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn btn-primary" onClick="{{ createImp }}" style="min-height:44px">✦ {{ t.create_imp }}</button><button class="btn btn-secondary" onClick="{{ goRole }}" style="min-height:44px">{{ t.start_rp }}</button><button class="btn btn-ghost" onClick="{{ openLost }}" style="min-height:44px">{{ t.lost_cases }}</button></div>
+    </div>
+    <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px"><h5 style="margin:0;font-size:16px">{{ t.funnel }}</h5></div>
+    <div style="margin:0 20px">
+      <sc-for list="{{ funnel }}" as="f" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:100px 1fr 32px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span>{{ f.l }}</span><span style="height:14px;background:var(--color-neutral-200)"><span style="display:block;height:100%;width:{{ f.w }};background:{{ f.col }}"></span></span><span style="font-weight:800;text-align:right">{{ f.v }}</span></div>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isWeek }}" hint-placeholder-val="{{ false }}">
+    <div style="margin:20px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px"><h5 style="margin:0;font-size:16px">{{ t.wk_h }}</h5></div>
+    <div style="margin:0 20px">
+      <sc-for list="{{ week }}" as="w" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:1fr auto 72px;gap:10px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="font-size:14px">{{ w.l }}</span><span style="font-size:22px;font-weight:800">{{ w.v }}</span><span style="font-size:13px;font-weight:600;color:var(--color-accent-700);text-align:right">▲ {{ w.d }}</span></div>
+      </sc-for>
+    </div>
+    <div class="card elev-sm" style="margin:20px 20px 0;background:var(--color-neutral-100);padding:14px 16px;gap:8px;border-top:2px solid var(--color-accent)">
+      <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.diag }}</span>
+      <span style="font-size:15px;font-weight:600">{{ t.wk_note }}</span>
+      <div style="display:flex;gap:8px"><button class="btn btn-primary" onClick="{{ goTasks }}" style="min-height:44px">{{ t.go_tasks }}</button><button class="btn btn-secondary" onClick="{{ goRole }}" style="min-height:44px">{{ t.start_rp }}</button></div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.role }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="13 Role Play" style="display:flex;flex-direction:column;min-height:100%">
+  <div style="position:sticky;top:0;z-index:5;background:var(--color-bg);display:flex;align-items:center;gap:4px;padding:4px 12px;border-bottom:2px solid var(--color-text);min-height:52px"><button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg></button><span style="font-weight:800;font-size:16px;flex:1">{{ t.rp_t }}</span><span class="tag tag-neutral">{{ t.rp_agent }}</span></div>
+  <sc-if value="{{ rpSetup }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
+      <div style="background:var(--color-accent);color:var(--color-bg);padding:20px 18px;display:flex;flex-direction:column;gap:8px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600">{{ t.objection }}</span><span style="font-size:24px;font-weight:800;line-height:1.15">{{ t.rp_obj }}</span></div>
+      <div style="border-top:2px solid var(--color-text)"><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.customer_l }}</span><span style="font-weight:600">{{ t.rp_cust }}</span></div><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.product }}</span><span style="font-weight:600">{{ t.rp_topic }}</span></div><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.rp_persona }}</span><span style="font-weight:600">{{ t.rp_persona_d }}</span></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)"><sc-for list="{{ modeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.on }}" style="border:0;cursor:pointer;font:inherit;font-size:14px;font-weight:600;padding:12px 4px;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for></div>
+      <span style="font-size:13px;color:var(--color-neutral-700)">{{ t.rp_hint }}</span>
+      <button class="btn btn-primary btn-block" onClick="{{ rpStart }}" style="min-height:52px;font-size:15px">{{ t.start_practice }} →</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ rpChat }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+      <span style="font-size:12px;color:var(--color-neutral-700)">{{ rpTurnLabel }}</span>
+      <sc-for list="{{ rpMsgs }}" as="m" hint-placeholder-count="1">
+        <sc-if value="{{ m.isC }}" hint-placeholder-val="{{ true }}"><div style="max-width:85%;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;color:var(--color-neutral-700)">AI · {{ t.customer_l }} · 45</span><div style="background:var(--color-surface);padding:10px 14px;font-size:14px">{{ m.text }}</div></div></sc-if>
+        <sc-if value="{{ m.isA }}" hint-placeholder-val="{{ false }}"><div style="align-self:flex-end;max-width:85%;background:var(--color-text);color:var(--color-bg);padding:10px 14px;font-size:14px">{{ m.text }}</div></sc-if>
+      </sc-for>
+    </div>
+    <div style="position:sticky;bottom:0;background:var(--color-bg);border-top:2px solid var(--color-text);padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+      <sc-if value="{{ rpText }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:8px"><input class="input" value="{{ rpInput }}" onChange="{{ onRpInput }}" onKeyDown="{{ onRpKey }}" placeholder="{{ t.type_reply }}" style="min-height:44px;flex:1;min-width:0"><button class="btn btn-primary" onClick="{{ rpSendText }}" aria-label="Send" style="width:44px;height:44px;padding:0;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></div>
+        <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">{{ t.or_choose }}</span>
+        <sc-for list="{{ rpOpts }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.on }}" style="border:1px solid var(--color-divider);background:none;font:inherit;font-size:13px;color:var(--color-text);text-align:left;padding:10px 12px;cursor:pointer" style-hover="background:var(--color-neutral-200)">{{ o.text }}</button></sc-for>
+      </sc-if>
+      <sc-if value="{{ rpVoice }}" hint-placeholder-val="{{ false }}"><button onClick="{{ rpSpeak }}" class="btn btn-primary" style="min-height:56px;justify-content:flex-start;gap:10px;font-size:15px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" x2="12" y1="19" y2="22"></line></svg>{{ t.hold_speak }}</button></sc-if>
+      <sc-if value="{{ rpCanEnd }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary btn-block" onClick="{{ rpEnd }}" style="min-height:48px">{{ t.end_fb }} →</button></sc-if>
+      <button onClick="{{ openGlobal }}" style="border:0;border-top:1px solid var(--color-divider);background:none;font:inherit;font-size:12px;color:var(--color-neutral-800);cursor:pointer;text-align:left;padding:8px 0 0;display:flex;gap:6px;align-items:center"><span style="color:var(--color-accent)">✦</span><strong>{{ t.rp_ask }}</strong><span style="color:var(--color-neutral-700)">· {{ t.rp_ask_hint }}</span></button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ rpScore }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:20px;display:flex;flex-direction:column">
+      <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.rp_score_t }}</span>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--color-text);padding:8px 0 10px"><span style="font-size:13px;font-weight:600">{{ t.overall }}</span><span style="font-size:56px;font-weight:800;line-height:1">{{ overall }}</span></div>
+      <sc-for list="{{ skills }}" as="k" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:110px 1fr 30px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span>{{ k.l }}</span><span style="height:8px;background:var(--color-neutral-300)"><span style="display:block;height:100%;width:{{ k.w }};background:{{ k.col }}"></span></span><span style="font-weight:800;text-align:right">{{ k.v }}</span></div></sc-for>
+      <div style="padding:14px 0 0;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.went_well }}</span><span style="font-size:14px">{{ t.rp_well }}</span></div>
+      <div style="padding:14px 0 0;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.rp_improve_h }}</span><span style="font-size:14px">{{ t.rp_imp }}</span></div>
+      <div style="margin-top:14px;padding:14px 16px;background:var(--color-neutral-100);border-top:2px solid var(--color-accent);display:flex;flex-direction:column;gap:6px"><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)">{{ t.better }}</span><span style="font-size:15px;font-weight:600">{{ t.rp_better }}</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px"><button class="btn btn-primary" onClick="{{ rpAgain }}" style="min-height:44px;justify-content:flex-start">{{ t.again }}</button><button class="btn btn-secondary" onClick="{{ openCoach }}" style="min-height:44px;justify-content:flex-start">{{ t.view_coach }}</button></div>
+      <button class="btn btn-ghost" onClick="{{ rpNew }}" style="min-height:44px;margin-top:8px;justify-content:flex-start">{{ t.new_sc }}</button>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.me }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="14 Me & Settings" style="display:flex;flex-direction:column;padding-bottom:24px">
+  <div style="padding:8px 20px 16px;display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--color-text)">
+    <span style="width:56px;height:56px;flex:none;display:grid;place-items:center;background:var(--color-accent);color:var(--color-bg);font-weight:800;font-size:18px">JL</span>
+    <div style="display:flex;flex-direction:column"><h4 style="margin:0;font-size:22px">James Lee</h4><span style="font-size:13px">{{ t.me_role }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.code }}</span></div>
+  </div>
+  <div style="margin:16px 20px 0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.workbench }}</div>
+  <div style="margin:6px 20px 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:2px solid var(--color-text)">
+    <button onClick="{{ goPerf }}" style="border:0;border-bottom:1px solid var(--color-divider);border-right:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:14px 10px 14px 0;display:flex;flex-direction:column;gap:2px;min-height:72px" style-hover="background:var(--color-neutral-200)"><span style="font-weight:800;font-size:15px">{{ t.lnk_perf }}</span><span style="font-size:12px;color:var(--color-accent-700)">13% · 24%</span></button>
+    <button onClick="{{ goRole }}" style="border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:14px 0 14px 12px;display:flex;flex-direction:column;gap:2px;min-height:72px" style-hover="background:var(--color-neutral-200)"><span style="font-weight:800;font-size:15px">{{ t.lnk_role }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.obj_handling }}</span></button>
+    <button onClick="{{ goClaims }}" style="border:0;border-bottom:1px solid var(--color-divider);border-right:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:14px 10px 14px 0;display:flex;flex-direction:column;gap:2px;min-height:72px" style-hover="background:var(--color-neutral-200)"><span style="font-weight:800;font-size:15px">{{ t.lnk_claims }}</span><span style="font-size:12px;color:var(--color-neutral-700)">CL-10392</span></button>
+    <button onClick="{{ goAppAlice }}" style="border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;text-align:left;padding:14px 0 14px 12px;display:flex;flex-direction:column;gap:2px;min-height:72px" style-hover="background:var(--color-neutral-200)"><span style="font-weight:800;font-size:15px">{{ t.lnk_app }}</span><span style="font-size:12px;color:var(--color-neutral-700)">2</span></button>
+  </div>
+  <div style="margin:24px 20px 0;border-bottom:2px solid var(--color-text);padding-bottom:6px"><h5 style="margin:0;font-size:16px">{{ t.settings }}</h5></div>
+  <div style="margin:0 20px;padding:12px 0;border-bottom:1px solid var(--color-divider);display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div style="display:flex;flex-direction:column"><span style="font-weight:600;font-size:14px">{{ t.language }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.lang_d }}</span></div>
+    <div style="display:flex;border:1px solid var(--color-divider)"><sc-for list="{{ langSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.on }}" style="border:0;cursor:pointer;font:inherit;font-size:13px;font-weight:600;padding:10px 12px;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for></div>
+  </div>
+  <div style="margin:16px 20px 0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.notif }}</div>
+  <div style="margin:0 20px">
+    <sc-for list="{{ notifT }}" as="n" hint-placeholder-count="4">
+      <button onClick="{{ n.on }}" style="width:100%;border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:12px 0;font-size:14px;min-height:48px"><span>{{ n.label }}</span><span style="width:42px;height:24px;position:relative;background:{{ n.bg }};transition:background .2s"><span style="position:absolute;top:2px;left:{{ n.x }};width:20px;height:20px;background:var(--color-bg);transition:left .2s"></span></span></button>
+    </sc-for>
+    <div style="font-size:12px;color:var(--color-neutral-700);padding:8px 0">{{ t.n_cap }}</div>
+  </div>
+  <div style="margin:12px 20px 0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.ai_set }}</div>
+  <div style="margin:0 20px">
+    <div style="border-bottom:1px solid var(--color-divider);display:flex;justify-content:space-between;align-items:center;padding:12px 0;gap:10px"><span style="display:flex;flex-direction:column"><span style="font-size:14px">{{ t.ai1 }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.ai1_d }}</span></span><span style="width:42px;height:24px;flex:none;position:relative;background:var(--color-accent);opacity:.5"><span style="position:absolute;top:2px;left:20px;width:20px;height:20px;background:var(--color-bg)"></span></span></div>
+    <sc-for list="{{ aiT }}" as="n" hint-placeholder-count="2">
+      <button onClick="{{ n.on }}" style="width:100%;border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:12px 0;font-size:14px;min-height:48px"><span>{{ n.label }}</span><span style="width:42px;height:24px;position:relative;background:{{ n.bg }};transition:background .2s"><span style="position:absolute;top:2px;left:{{ n.x }};width:20px;height:20px;background:var(--color-bg);transition:left .2s"></span></span></button>
+    </sc-for>
+  </div>
+  <div style="margin:12px 20px 0">
+    <div style="border-bottom:1px solid var(--color-divider);padding:12px 0;display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">{{ t.privacy }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.privacy_d }}</span></div>
+    <div style="border-bottom:1px solid var(--color-divider);padding:12px 0;font-size:14px;font-weight:600">{{ t.help }}</div>
+  </div>
+</div>
+</sc-if>
+
+  </div>
+
+  <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;left:16px;right:16px;top:52px;z-index:30;background:var(--color-text);color:var(--color-bg);padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow-lg)"><span style="width:8px;height:8px;flex:none;background:var(--color-accent)"></span>{{ toastText }}</div>
+  </sc-if>
+
+  <nav style="height:76px;flex:none;display:grid;grid-template-columns:repeat(5,1fr);border-top:2px solid var(--color-text);background:var(--color-bg);padding-bottom:14px">
+    <button onClick="{{ tabHome }}" style="border:0;background:none;cursor:pointer;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:{{ nc.home }};border-top:3px solid {{ nb.home }};margin-top:-2px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg><span style="font-size:11px;font-weight:600">{{ t.nav_home }}</span></button>
+    <button onClick="{{ tabCust }}" style="border:0;background:none;cursor:pointer;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:{{ nc.customers }};border-top:3px solid {{ nb.customers }};margin-top:-2px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span style="font-size:11px;font-weight:600">{{ t.nav_cust }}</span></button>
+    <button onClick="{{ tabAi }}" style="border:0;background:none;cursor:pointer;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:{{ nc.assistant }};border-top:3px solid {{ nb.assistant }};margin-top:-2px"><span style="width:40px;height:30px;display:grid;place-items:center;background:var(--color-accent);color:var(--color-bg)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path></svg></span><span style="font-size:11px;font-weight:600">{{ t.nav_ai }}</span></button>
+    <button onClick="{{ tabTasks }}" style="border:0;background:none;cursor:pointer;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:{{ nc.tasks }};border-top:3px solid {{ nb.tasks }};margin-top:-2px;position:relative"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3"></rect><path d="m9 12 2 2 4-4"></path></svg><span style="font-size:11px;font-weight:600">{{ t.nav_tasks }}</span></button>
+    <button onClick="{{ tabMe }}" style="border:0;background:none;cursor:pointer;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:{{ nc.me }};border-top:3px solid {{ nb.me }};margin-top:-2px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font-size:11px;font-weight:600">{{ t.nav_me }}</span></button>
+  </nav>
+
+<sc-if value="{{ fabOn }}" hint-placeholder-val="{{ false }}">
+  <button onClick="{{ openGlobal }}" aria-label="Ask Agent AI" style="position:absolute;right:16px;bottom:{{ fabBottom }};z-index:25;width:52px;height:52px;border:0;background:var(--color-accent);color:var(--color-bg);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-md);font-size:22px" style-hover="background:var(--color-accent-600)">✦</button>
+</sc-if>
+<sc-if value="{{ banner }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;top:48px;left:10px;right:10px;z-index:36;background:var(--color-bg);border:2px solid var(--color-text);box-shadow:var(--shadow-lg);padding:12px 14px;display:flex;flex-direction:column;gap:8px;animation:wbdown .25s ease-out">
+    <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.interest_t }}</span>
+    <span style="font-size:14px;font-weight:700;line-height:1.35">{{ t.interest_d }}</span>
+    <span style="font-size:12px;color:var(--color-neutral-800)">{{ t.interest_rec }}</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn btn-primary" onClick="{{ prepCallI }}" style="min-height:36px">{{ t.prep_call }}</button><button class="btn btn-secondary" onClick="{{ callNowI }}" style="min-height:36px">{{ t.call_now }}</button><button class="btn btn-secondary" onClick="{{ msgI }}" style="min-height:36px">{{ t.message }}</button><button class="btn btn-ghost" onClick="{{ laterI }}" style="min-height:36px">{{ t.later }}</button></div>
+  </div>
+</sc-if>
+<sc-if value="{{ sheetOn }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;justify-content:flex-end">
+    <div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:color-mix(in srgb, var(--color-neutral-900) 50%, transparent)"></div>
+    <div style="position:relative;background:var(--color-bg);border-top:2px solid var(--color-text);box-shadow:var(--shadow-lg);padding:12px 20px 28px;display:flex;flex-direction:column;gap:12px;max-height:84%;overflow-y:auto;animation:wbup .22s ease-out">
+      <div style="display:flex;justify-content:flex-end"><button onClick="{{ closeSheet }}" aria-label="Close" style="width:36px;height:36px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+
+      <sc-if value="{{ shGlobal }}" hint-placeholder-val="{{ false }}">
+        <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.g_title }}</span>
+        <h4 style="margin:0;font-size:22px">{{ t.g_q }}</h4>
+        <div style="display:flex;align-items:center;border:2px solid var(--color-text);background:var(--color-surface)"><input value="{{ goalInput }}" onChange="{{ onGoal }}" onKeyDown="{{ onGoalKey }}" placeholder="{{ t.goal_ph }}" style="flex:1;min-width:0;border:0;background:none;font:inherit;font-size:14px;padding:12px;color:var(--color-text);outline:none"><button onClick="{{ micGoal }}" aria-label="Voice" style="width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--color-text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" x2="12" y1="19" y2="22"></line></svg></button><button onClick="{{ sendGoal }}" aria-label="Send" style="width:46px;height:46px;border:0;background:var(--color-accent);cursor:pointer;display:grid;place-items:center;color:var(--color-bg)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></div>
+        <sc-if value="{{ hasCtx }}" hint-placeholder-val="{{ false }}">
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:6px;margin-top:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.g_ctx }}</span></div>
+          <div><sc-for list="{{ ctxItems }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.on }}" style="width:100%;border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;display:flex;justify-content:space-between;gap:8px;padding:12px 0;font-size:14px;text-align:left;min-height:44px"><span>{{ c.label }}</span><span style="color:var(--color-accent)">→</span></button></sc-for></div>
+        </sc-if>
+        <div style="border-bottom:2px solid var(--color-text);padding-bottom:6px;margin-top:4px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.g_sug }}</span></div>
+        <div><sc-for list="{{ gItems }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.on }}" style="width:100%;border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;display:flex;justify-content:space-between;gap:8px;padding:12px 0;font-size:14px;text-align:left;min-height:44px"><span>{{ c.label }}</span><span style="color:var(--color-accent)">→</span></button></sc-for></div>
+      </sc-if>
+
+      <sc-if value="{{ shWhy }}" hint-placeholder-val="{{ false }}">
+        <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.st_sug }}</span>
+        <h4 style="margin:0;font-size:22px">{{ whyTitle }}</h4>
+        <div style="border-top:2px solid var(--color-text)"><sc-for list="{{ whyItems }}" as="w" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:28px 1fr;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="font-weight:800;color:var(--color-accent-700)">{{ w.n }}</span><span>{{ w.x }}</span></div></sc-for></div>
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.data_used }}</span><span style="font-size:13px">{{ whySrc }}</span></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-secondary" onClick="{{ feedback }}" style="min-height:44px">{{ t.helpful }}</button><button class="btn btn-ghost" onClick="{{ feedback }}" style="min-height:44px">{{ t.not_rel }}</button></div>
+      </sc-if>
+
+      <sc-if value="{{ shAppr }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h4 style="margin:0;font-size:20px">{{ apprTitle }}</h4><span class="{{ apprStCls }}">{{ apprStLabel }}</span></div>
+        <sc-if value="{{ apprIsMsg }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:10px 12px;background:var(--color-surface);display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.ai_will_do }}</span><span style="font-size:13px">{{ apprDo }}</span></div>
+          <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.ep_channel }}</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ apprChs }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.on }}" style="border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font:inherit;font-size:13px;font-weight:600;padding:8px 10px;cursor:pointer;min-height:38px">{{ c.label }}</button></sc-for></div>
+          <sc-if value="{{ apprOk }}" hint-placeholder-val="{{ true }}"><div style="font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.consent }}: </span><strong>✓ {{ t.eligible }}</strong></div></sc-if>
+          <sc-if value="{{ apprBlocked }}" hint-placeholder-val="{{ false }}"><div style="padding:10px 12px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:13px;font-weight:600;display:flex;gap:8px"><span>✕</span><span>{{ t.restricted_msg }}</span></div></sc-if>
+          <textarea ref="{{ taRef }}" class="input" key="{{ apprKey }}" defaultValue="{{ apprText }}" style="min-height:130px;font-size:14px;line-height:1.5"></textarea>
+          <div style="display:grid;grid-template-columns:auto 1.4fr 1fr;gap:8px"><button class="btn btn-ghost" onClick="{{ focusTa }}" style="min-height:48px">{{ t.edit }}</button><button class="btn btn-primary" onClick="{{ sendAppr }}" disabled="{{ apprDis }}" style="min-height:48px;justify-content:flex-start">{{ t.send }}</button><button class="btn btn-secondary" onClick="{{ closeSheet }}" style="min-height:48px;justify-content:flex-start">{{ t.cancel }}</button></div>
+        </sc-if>
+        <sc-if value="{{ apprIsCrm }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:10px 12px;background:var(--color-surface);display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">{{ t.ai_will_do }}</span><span style="font-size:13px">{{ t.crm_do }}</span></div>
+          <div style="border-top:2px solid var(--color-text)"><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.crm_from }}</span><span style="font-weight:600">{{ t.crm_f }}</span></div><div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ t.crm_to }}</span><span style="font-weight:600">{{ t.crm_tv }}</span></div></div>
+          <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:8px"><button class="btn btn-primary" onClick="{{ sendAppr }}" disabled="{{ apprExecB }}" style="min-height:48px;justify-content:flex-start">{{ t.approve_upd }}</button><button class="btn btn-secondary" onClick="{{ closeSheet }}" style="min-height:48px;justify-content:flex-start">{{ t.cancel }}</button></div>
+        </sc-if>
+      </sc-if>
+
+      <sc-if value="{{ shAlt }}" hint-placeholder-val="{{ false }}">
+        <h4 style="margin:0;font-size:20px">{{ t.alt_h }}</h4>
+        <div style="border-top:2px solid var(--color-text)"><sc-for list="{{ altItems }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.on }}" style="width:100%;border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;display:flex;justify-content:space-between;gap:8px;padding:12px 0;font-size:14px;text-align:left;min-height:44px"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:var(--color-neutral-700)">{{ a.cat }}</span><span style="font-weight:600">{{ a.title }}</span></span><span style="color:var(--color-accent);font-weight:800">{{ a.mark }}</span></button></sc-for></div>
+        <span style="font-size:12px;color:var(--color-neutral-700)">✓ {{ t.approved_content }}</span>
+      </sc-if>
+
+      <sc-if value="{{ shCompare }}" hint-placeholder-val="{{ false }}">
+        <h4 style="margin:0;font-size:20px">{{ t.compare }}</h4>
+        <table class="table" style="font-size:13px"><thead><tr><th></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody><sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="5"><tr><td style="color:var(--color-neutral-700)">{{ r.l }}</td><td style="font-weight:600">{{ r.a }}</td><td>{{ r.b }}</td><td>{{ r.c }}</td></tr></sc-for></tbody></table>
+        <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.approved_src }}</span>
+      </sc-if>
+
+      <sc-if value="{{ shLost }}" hint-placeholder-val="{{ false }}">
+        <h4 style="margin:0;font-size:20px">{{ t.lost_t }}</h4>
+        <div style="border-top:2px solid var(--color-text)"><sc-for list="{{ lost }}" as="l" hint-placeholder-count="5"><div style="display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="font-weight:600">{{ l.n }}</span><span style="color:var(--color-neutral-700)">{{ l.p }}</span></div></sc-for></div>
+        <span style="font-size:13px">{{ t.diag_why }}</span>
+      </sc-if>
+
+      <sc-if value="{{ shLearn }}" hint-placeholder-val="{{ false }}">
+        <h4 style="margin:0;font-size:20px">{{ t.learn_t }}</h4>
+        <div style="border-top:2px solid var(--color-text)"><sc-for list="{{ learn }}" as="l" hint-placeholder-count="3"><button onClick="{{ l.on }}" style="width:100%;border:0;border-bottom:1px solid var(--color-divider);background:none;font:inherit;color:var(--color-text);cursor:pointer;display:flex;justify-content:space-between;gap:8px;padding:12px 0;font-size:14px;text-align:left;min-height:44px"><span style="font-weight:600">{{ l.x }}</span><span style="color:var(--color-neutral-700);flex:none">{{ l.m }}</span></button></sc-for></div>
+      </sc-if>
+
+      <sc-if value="{{ shCoach }}" hint-placeholder-val="{{ false }}">
+        <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.diag }}</span>
+        <h4 style="margin:0;font-size:20px">{{ t.coach_t }}</h4>
+        <div style="border-top:2px solid var(--color-text)"><sc-for list="{{ coachItems }}" as="c" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:28px 1fr;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="font-weight:800;color:var(--color-accent-700)">{{ c.n }}</span><span>{{ c.x }}</span></div></sc-for></div>
+        <button class="btn btn-primary" onClick="{{ rpAgain }}" style="min-height:48px;justify-content:flex-start">{{ t.again }}</button>
+      </sc-if>
+
+      <sc-if value="{{ shPol }}" hint-placeholder-val="{{ false }}">
+        <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.st_prep }}</span>
+        <h4 style="margin:0;font-size:20px">{{ t.pol_t }}</h4>
+        <div style="border-top:2px solid var(--color-text)"><sc-for list="{{ polItems }}" as="c" hint-placeholder-count="3"><div style="padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px">{{ c.x }}</div></sc-for></div>
+        <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.sources }}: {{ t.policies }} · {{ t.approved_src }}</span>
+      </sc-if>
+
+      <sc-if value="{{ shExplain }}" hint-placeholder-val="{{ false }}">
+        <span style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--color-accent-700)"><span style="width:8px;height:8px;background:var(--color-accent)"></span>{{ t.ai_prepared }}</span>
+        <h4 style="margin:0;font-size:20px">{{ t.explain_t }}</h4>
+        <p style="margin:0;font-size:15px;line-height:1.5">{{ t.explain_d }}</p>
+        <button class="btn btn-primary" onClick="{{ draftClaim }}" style="min-height:48px;justify-content:flex-start">{{ t.draft_cust }}</button>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {lang:'en', stack:['home'], sheet:null, toast:null, ready:false,
+    done:{}, custTab:'prio', q:'', chat:[], typing:false, input:'', whyOpen:{},
+    needOpen:'ci', opt:'A', ck:{}, pdf:'idle', notes:'input', recSec:0, procStep:0, na:{rem:'p',msg:'p',stage:'p'},
+    taskTab:'me', tdone:{}, appSel:'david', davidReq:false, perfTab:'month', role:'setup', roleMode:'text', rpi:0, rpPicks:[], rpMsgs:[], rpInput:'', rpPaused:false,
+    notif:{n1:true,n2:true,n3:true,n4:false}, aiset:{ai2:true,ai3:true},
+    goalInput:'', plan:null, prog:null, ws:'meet', wsData:false, david:{st:'idle',pct:0},
+    eng:{stage:0,resp:false,meet:false,T:{}}, engCh:'LINE', engTime:'now', epWhy:false, recWhy:false, contentIdx:0,
+    cTab:'over', wq:{w1:'wait',w2:'wait',w3:'wait',w4:'wait'}, apprCh:'LINE', apprExec:false, banner:false,
+    acSt:null, acOpen:false, impAdded:false,
+    log:[{tm:'08:00',who:'ai',k:'lg_brief'},{tm:'08:01',who:'ai',k:'lg_mbrief'}]};
+  scrollRef=React.createRef(); taRef=React.createRef(); epRef=React.createRef();
+  componentDidMount(){ this._p=setInterval(()=>{ if(window.WB_S&&window.WB_D&&window.WB_A){clearInterval(this._p); this.setState({ready:true});}},50); }
+  componentWillUnmount(){ [this._p,this._rec,this._pg,this._dv].forEach(x=>clearInterval(x)); clearTimeout(this._tt); (this._e||[]).forEach(x=>clearTimeout(x)); }
+  componentDidUpdate(){ const el=this.scrollRef.current; if(!el) return; const c=this.cur(), st=this.state; const k=st.stack.join(), sig=st.chat.length+'|'+st.typing+'|'+st.rpMsgs.length;
+    if(this._lastStack!==k){ this._lastStack=k; this._lastSig=sig; el.scrollTop=0; }
+    else if(this._lastSig!==sig){ this._lastSig=sig; if(c==='assistant'||c==='role') el.scrollTop=el.scrollHeight; } }
+  data(){ if(!this._d){ const A=window.WB_A; this._d={S:Object.assign({},window.WB_S,A.S),D:Object.assign({},window.WB_D,A.D,{chat:Object.assign({},window.WB_D.chat,A.D.chat),drafts:Object.assign({},window.WB_D.drafts,A.D.drafts)})}; } return this._d; }
+  now(){ const d=new Date(); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+  cur(){ const s=this.state.stack; return s[s.length-1]; }
+  go=(x)=>this.setState(s=>({stack:[...s.stack,x],sheet:null}));
+  tab=(x)=>this.setState({stack:[x],sheet:null});
+  back=()=>this.setState(s=>({stack:s.stack.length>1?s.stack.slice(0,-1):s.stack}));
+  jump=(stack,extra)=>this.setState(Object.assign({stack,sheet:null,banner:false},extra||{}));
+  toast=(k)=>{clearTimeout(this._tt); this.setState({toast:k}); this._tt=setTimeout(()=>this.setState({toast:null}),2800);};
+  sheet=(type,key,src)=>this.setState({sheet:{type,key,src}});
+  addLog=(e)=>this.setState(s=>({log:s.log.concat(e)}));
+  pauseObj(){ return (this.cur()==='role'&&this.state.role==='chat')?{rpPaused:true}:{}; }
+  openAppr=(key,src)=>{ const m=this.data().D.apprMeta[key]||{ch:'LINE'}; this.setState({sheet:{type:'appr',key,src},apprCh:m.ch||'LINE',apprExec:false}); };
+  act=(code)=>{ const p=code.split(':'), k=p[0], v=p[1];
+    if(k==='go'){ if(v==='c360eng'){ this.setState({cTab:'eng'}); this.go('c360'); } else { if(v==='app') this.setState({appSel:'david'}); this.go(v);} }
+    else if(k==='tab'){ this.tab(v); if(p[2]) this.setState({taskTab:p[2]}); }
+    else if(k==='toast') this.toast(v); else if(k==='appr'||k==='draft') this.openAppr(v); else if(k==='plan') this.openPlan(v); else if(k==='sheet') this.sheet(v); };
+  mark=(id)=>this.setState(s=>({done:Object.assign({},s.done,{[id]:true})}));
+  ask=(key,text)=>{ if(this.state.typing) return; this.setState(s=>({chat:[...s.chat,{u:1,key,text}],typing:true,input:''})); setTimeout(()=>this.setState(s=>({chat:[...s.chat,{ai:1,key}],typing:false})),1100); };
+  classify(v){ const l=v.toLowerCase(); const h=(...w)=>w.some(x=>l.includes(x));
+    if(h('summar','总结')) return {chat:'summ'};
+    if(h('practi','练习')) return {chat:'prac'};
+    if(h('resolve','blocked','受阻')) return {plan:'resolve'};
+    if(h('improvement','improve','提升')) return {plan:'improve'};
+    if(h('clicked','了解更多','follow up customers','跟进客户')) return {chat:'fuclicked'};
+    if(h('prepare','准备')&&h('meeting','会面','拜访')) return {plan:'meet'};
+    if(h('receive','哪些客户')) return {chat:'receive'};
+    if(h('interest','兴趣')) return {chat:'interest'};
+    if(h('draft','起草')) return {chat:'draft'};
+    if(h('send','content','发什么','内容')) return {chat:'content'};
+    if(h('opportunit','机会','engage','触达')) return {chat:'opps'};
+    if(h('claim','理赔')) return {chat:'claim'};
+    if(h('conversion','performance','转化','业绩')) return {chat:'conv'};
+    if(h('application','投保')) return {chat:'app'};
+    if(h('product','产品')) return {chat:'prod'};
+    if(h('contact','call','联系')) return {chat:'call'};
+    return {chat:'focus'}; }
+  runGoal=(text)=>{ const v=(text||'').trim(); if(!v) return; const r=this.classify(v); if(r.plan) return this.openPlan(r.plan);
+    this.setState(Object.assign(this.pauseObj(),{stack:['assistant'],sheet:null,goalInput:'',input:'',banner:false})); setTimeout(()=>this.ask(r.chat,v),60); };
+  openPlan=(type)=>{ const D=this.data().D; const pz=this.pauseObj(); this.setState(s=>Object.assign(pz,{plan:{type,on:D.plans[type].steps.map(()=>true),adj:false},stack:[...s.stack.filter(x=>x!=='plan'&&x!=='progress'),'plan'],sheet:null,goalInput:'',banner:false})); };
+  startPlan=()=>{ const D=this.data().D; const p=this.state.plan; if(!p) return; const def=D.plans[p.type];
+    const list=def.steps.map((x,i)=>i).filter(i=>p.on[i]); if(!list.length) return;
+    clearInterval(this._pg);
+    this.setState(s=>({prog:{type:p.type,list,i:0,bg:false,done:false},stack:[...s.stack.filter(x=>x!=='plan'&&x!=='progress'),'progress']}));
+    this._pg=setInterval(()=>{ const pr=this.state.prog; if(!pr){clearInterval(this._pg);return;} const i=pr.i+1;
+      if(i>=pr.list.length){ clearInterval(this._pg); this.setState({prog:Object.assign({},pr,{i:pr.list.length,done:true})}); this.addLog({tm:this.now(),who:'ai',k:def.log}); if(this.cur()!=='progress') this.toast(def.ready); }
+      else this.setState({prog:Object.assign({},pr,{i})}); },800); };
+  viewWs=()=>{ const pr=this.state.prog; if(!pr||!pr.done) return; const base=this.state.stack.filter(x=>x!=='plan'&&x!=='progress'&&x!=='ws');
+    if(pr.type==='resolve') this.setState({stack:[...base.filter(x=>x!=='app'),'app'],appSel:'david',acSt:this.state.acSt&&this.state.acSt.a1==='done'?this.state.acSt:{a1:'wait',a2:'done',a3:'done'},acOpen:true,sheet:null});
+    else this.setState({stack:[...base,'ws'],ws:pr.type,sheet:null}); };
+  bgPlan=()=>{ const pr=this.state.prog; if(!pr) return; if(pr.done) return this.viewWs(); this.setState(s=>({prog:Object.assign({},s.prog,{bg:true}),stack:s.stack.filter(x=>x!=='plan'&&x!=='progress')})); this.toast('bg_toast'); };
+  letDavid=()=>{ if(this.state.david.st!=='idle') return; this.setState({david:{st:'run',pct:10}}); this.toast('david_start'); clearInterval(this._dv);
+    this._dv=setInterval(()=>{ const d=this.state.david; const pct=Math.min(100,d.pct+9); if(pct>=100){ clearInterval(this._dv); this.setState({david:{st:'done',pct:100}}); this.toast('david_ready'); } else this.setState({david:{st:'run',pct}}); },1000); };
+  handleApp=()=>{ this.setState({acSt:{a1:'exec',a2:'exec',a3:'exec'},acOpen:true}); setTimeout(()=>{ this.setState({acSt:{a1:'wait',a2:'done',a3:'done'}}); this.addLog({tm:this.now(),who:'ai',k:'lg_res'}); },1200); };
+  sendEng=()=>{ const D=this.data().D; const ch=this.state.engCh; if(D.consent.alice[ch]===false) return;
+    const late=this.state.engTime==='late';
+    const T=late?{rec:'17:58',appr:'18:00',sent:'18:00',deliv:'18:01',open:'19:15',click:'19:17',fu:'19:18',resp:'19:40',meet:'19:42'}:{rec:'10:32',appr:'10:35',sent:'10:35',deliv:'10:36',open:'12:08',click:'12:10',fu:'12:11',resp:'12:30',meet:'12:32'};
+    const base=this.state.stack.filter(x=>x!=='content'&&x!=='engage'); const ci=base.indexOf('c360'); const stack=ci>=0?base.slice(0,ci+1):[...base,'c360'];
+    (this._e||[]).forEach(x=>clearTimeout(x));
+    this.setState({stack,cTab:'eng',eng:{stage:1,resp:false,meet:false,T,ch},banner:false,sheet:null});
+    this.addLog([{tm:T.rec,who:'ai',k:'lg_rec'},{tm:T.appr,who:'you',k:'lg_appr'},{tm:T.sent,who:'sys',k:'lg_sent',x:' '+ch}]);
+    this.toast('sent_toast');
+    this._e=[setTimeout(()=>this.setState(s=>({eng:Object.assign({},s.eng,{stage:2})})),1500),
+      setTimeout(()=>{ this.setState(s=>({eng:Object.assign({},s.eng,{stage:3})})); this.addLog({tm:T.open,who:'cust',k:'lg_open'}); },3300),
+      setTimeout(()=>{ this.setState(s=>({eng:Object.assign({},s.eng,{stage:4}),banner:true})); this.addLog([{tm:T.click,who:'cust',k:'lg_click'},{tm:T.fu,who:'ai',k:'lg_fu'}]); },5400)]; };
+  prepCallI=()=>{ this.setState({banner:false}); this.openPlan('call'); };
+  callNowI=()=>{ this.setState({banner:false}); this.toast('toast_calling'); setTimeout(()=>{ this.setState(s=>({eng:Object.assign({},s.eng,{meet:true})})); this.addLog({tm:(this.state.eng.T||{}).meet||this.now(),who:'you',k:'lg_meet'}); },1500); };
+  msgI=()=>{ this.setState({banner:false}); this.openAppr('alice_fu','w4'); };
+  laterI=()=>{ this.setState({banner:false}); this.toast('toast_later'); };
+  sendAppr=()=>{ const sh=this.state.sheet; if(!sh||this.state.apprExec) return; const D=this.data().D; const m=D.apprMeta[sh.key]||{c:'alice',n:'Alice Wong'}; const ch=this.state.apprCh;
+    if(!m.crm&&D.consent[m.c||'other'][ch]===false) return;
+    this.setState({apprExec:true});
+    setTimeout(()=>{ const k=sh.key, s=this.state; const ex={sheet:null,apprExec:false};
+      if(k==='david'){ ex.davidReq=true; if(s.acSt) ex.acSt=Object.assign({},s.acSt,{a1:'done'}); }
+      if(k==='michael') ex.done=Object.assign({},s.done,{michael:true});
+      if(k==='alice'){ ex.na=Object.assign({},s.na,{msg:'ok'}); ex.wq=Object.assign({},s.wq,{w1:'done'}); }
+      if(k==='crm'){ ex.na=Object.assign({},s.na,{stage:'ok'}); ex.wq=Object.assign({},s.wq,{w2:'done'}); }
+      if(sh.src&&sh.src[0]==='w') ex.wq=Object.assign({},ex.wq||s.wq,{[sh.src]:'done'});
+      this.setState(ex);
+      this.toast(k==='crm'?'na3_ok':k==='david'?'toast_req':'toast_sent');
+      if(!m.crm) this.addLog({tm:this.now(),who:'you',k:'lg_msg',x:' '+ch+' · '+(m.n||'')});
+      if(k==='alice_fu'){ const T=s.eng.T||{}; setTimeout(()=>{ this.setState(z=>({eng:Object.assign({},z.eng,{resp:true})})); this.addLog({tm:T.resp||this.now(),who:'cust',k:'lg_resp'}); },2500); }
+    },900); };
+  naSet=(k,v)=>{ this.setState(s=>{ const ex={na:Object.assign({},s.na,{[k]:v})}; if(v==='ok'&&k==='msg') ex.wq=Object.assign({},s.wq,{w1:'done'}); if(v==='ok'&&k==='stage') ex.wq=Object.assign({},s.wq,{w2:'done'}); return ex; }); if(v==='ok') this.toast(k==='rem'?'toast_rem':k==='msg'?'toast_sent':'na3_ok'); };
+  startRec=()=>{ this.setState({notes:'rec',recSec:0}); clearInterval(this._rec); this._rec=setInterval(()=>this.setState(s=>({recSec:s.recSec+1})),1000); };
+  process=()=>{ clearInterval(this._rec); this.setState({notes:'proc',procStep:0}); [1,2,3,4].forEach(i=>setTimeout(()=>this.setState({procStep:i}),i*550)); setTimeout(()=>this.setState({notes:'done'}),2600); };
+  rpStart=()=>this.setState({role:'chat',rpi:0,rpPicks:[],rpMsgs:[{c:1,i:0}],rpPaused:false,rpInput:'',sheet:null});
+  rpPick=(oi,txt)=>{ const i=this.state.rpi; const last=this.state.rpMsgs[this.state.rpMsgs.length-1]; if(i>2||!last||!last.c) return;
+    this.setState(s=>({rpPicks:[...s.rpPicks,oi],rpMsgs:[...s.rpMsgs,{a:1,i,o:oi,txt}],rpInput:''}));
+    if(i<2) setTimeout(()=>this.setState(s=>({rpi:i+1,rpMsgs:[...s.rpMsgs,{c:1,i:i+1}]})),900); else this.setState({rpi:3}); };
+  rpSendText=()=>{ const v=this.state.rpInput.trim(); if(!v) return; this.rpPick(0,v); };
+
+  renderVals(){
+    const st=this.state;
+    if(!st.ready) return {s:{},t:{},nc:{},nb:{}};
+    const {S,D}=this.data(); const li=st.lang==='zh'?1:0, L=x=>Array.isArray(x)?x[li]:x;
+    const t={}; for(const k in S) t[k]=S[k][li];
+    const cur=this.cur(), root=st.stack[0], fmt=n=>'$'+n.toLocaleString('en-US');
+    const s={}; ['home','customers','assistant','tasks','me','c360','brief','needs','proposal','notes','app','claims','perf','role','plan','progress','ws','content','engage'].forEach(x=>s[x]=cur===x);
+    const nc={}, nb={}; ['home','customers','assistant','tasks','me'].forEach(x=>{nc[x]=root===x?'var(--color-accent-700)':'var(--color-neutral-700)'; nb[x]=root===x?'var(--color-accent)':'transparent';});
+    const seg=(opts,val,set)=>opts.map(([v,label])=>({label,on:()=>set(v),bg:val===v?'var(--color-text)':'transparent',fg:val===v?'var(--color-bg)':'var(--color-text)'}));
+    const chip=k=>({sug:['tag tag-outline',t.st_sug],prep:['tag tag-neutral',t.st_prep],wait:['tag tag-accent',t.st_wait],exec:['tag tag-neutral','● '+t.st_exec],done:['tag tag-outline','✓ '+t.st_done]})[k];
+    const langSeg=seg([['en','English'],['zh','中文']],st.lang,v=>this.setState({lang:v}));
+    const eng=st.eng, interest=eng.stage>=4, pr=st.prog, prdef=pr?D.plans[pr.type]:null, sh=st.sheet;
+    // side
+    const flows=[['A',['home'],{}],['B',['customers','c360'],{cTab:'over'}],['C',['tasks'],{taskTab:'ai'}],['D',['me','perf'],{perfTab:'month'}],['E',['me','role'],{role:'setup',rpPaused:false}]].map(([id,stk,ex])=>({id,label:t['f'+id],d:t['f'+id+'_d'],on:()=>this.jump(stk,ex)}));
+    const SL=[['home','nav_home'],['assistant','ai_title'],['customers','nav_cust'],['c360','c360'],['brief','view_brief'],['needs','needs_t'],['proposal','prop_t'],['notes','notes_t'],['content','cp_t'],['engage','ep_t'],['tasks','nav_tasks'],['app','app_t'],['claims','claims_t'],['perf','perf_t'],['role','rp_t'],['me','settings']];
+    const top=['home','assistant','customers','tasks','me'], cust=['brief','needs','proposal','notes','content','engage'];
+    const screenLinks=SL.map(([x,k])=>({label:t[k],on:()=>this.jump(top.includes(x)?[x]:x==='c360'?['customers','c360']:cust.includes(x)?['customers','c360',x]:['me',x])}));
+    const statusLegend=['sug','prep','wait','exec','done'].map(k=>({cls:chip(k)[0],label:chip(k)[1],d:t['st_'+k+'_d']}));
+    // home
+    const stats=[['2',['Meetings','场会议']],['3',['Priority customers','位重点客户']],['2',['Follow-ups','个待跟进']],['1',['Application to fix','份投保待处理']]].map(([n,l])=>({n,l:L(l)}));
+    const doneN=Math.min(8,3+Object.keys(st.done).length+Object.keys(st.tdone).length);
+    const goalChips=['gp1','gp2','gp3','gp4'].map(k=>({label:t[k],on:()=>this.runGoal(t[k])}));
+    const aiBusyN=1+(pr&&!pr.done?1:0)+(st.david.st==='run'?1:0)+(eng.stage>=1&&eng.stage<4?1:0);
+    // plan
+    const P=st.plan, pdef=P?D.plans[P.type]:null;
+    const planSteps=pdef?pdef.steps.map((x,i)=>{ const on=P.on[i]; return {label:L(x[0]),mark:on?'✓':'',bg:on?'var(--color-text)':'transparent',bd:on?'var(--color-text)':'var(--color-neutral-400)',col:on?'var(--color-text)':'var(--color-neutral-600)',dec:on?'none':'line-through',note:on?'':t.skipped,cur:P.adj?'pointer':'default',
+      on:()=>{ if(!this.state.plan.adj) return; this.setState(z=>{ const o=[...z.plan.on]; o[i]=!o[i]; return {plan:Object.assign({},z.plan,{on:o})}; }); }}; }):[];
+    const planCount=P?(P.on.filter(Boolean).length+' '+t.plan_count):'';
+    // progress
+    const progSteps=pr?pr.list.map((si,j)=>{ const d=j<pr.i, r=j===pr.i&&!pr.done; return {label:L(prdef.steps[si][d?1:0]),mark:d?'✓':r?'●':'○',col:d?'var(--color-text)':r?'var(--color-accent-700)':'var(--color-neutral-600)',w:r?'700':'400',anim:r?'wbpulse 1s infinite':'none'}; }):[];
+    const progN=pr?pr.i:0, progTotal=pr?pr.list.length:1;
+    // workspace
+    const wsSnap=[['38 years old','38 岁'],['Married','已婚'],['2 children (6, 9)','两个孩子（6 岁、9 岁）'],['Family growth stage','家庭成长期']].map(x=>({x:L(x)}));
+    const wsEng=[t.ws_e0].concat(eng.stage>=3?[t.ws_e1]:[],eng.stage>=4?[t.ws_e2]:[]).map(x=>({x}));
+    const impItems=[['cr1','imp1_d','sug','review_l',()=>this.sheet('lost')],['cr2','imp2_d','prep','start_rp',()=>this.go('role')],['cr3','imp3_d','sug','view_tip',()=>this.sheet('learn')],['cr4','imp4_d','done',null,null]].map(([a,b,c,d,on],i)=>({n:i+1,title:t[a],d:t[b],stCls:chip(c)[0],stLabel:chip(c)[1],hasAct:!!d,act:d?t[d]:'',on:on||(()=>{})}));
+    // content
+    const C=D.contents[st.contentIdx];
+    const altItems=D.contents.map((c,i)=>({title:t[c.t],cat:t[c.c],mark:i===st.contentIdx?'✓':'',on:()=>this.setState({contentIdx:i,sheet:null})}));
+    const chs=['LINE','WhatsApp','AIA One','Email','SMS'], chLabel=c=>c==='Email'?(li?'邮件':'Email'):c==='SMS'?(li?'短信':'SMS'):c;
+    const mkCh=(sel,cons,set)=>chs.map(c=>{ const ok=cons[c]!==false, on=sel===c; return {label:chLabel(c)+(ok?'':' ✕'),on:()=>set(c),bg:on?'var(--color-text)':'transparent',fg:on?'var(--color-bg)':(ok?'var(--color-text)':'var(--color-neutral-600)'),bd:on?'var(--color-text)':'var(--color-divider)'}; });
+    const engOk=D.consent.alice[st.engCh]!==false;
+    // c360
+    const priCls={high:'tag tag-accent',med:'tag tag-neutral',low:'tag tag-outline'}, priL={high:t.high,med:t.med,low:t.low};
+    const T=eng.T||{};
+    const evS={sent:['↗','transparent','var(--color-text)','var(--color-text)'],deliv:['✓','var(--color-neutral-300)','var(--color-text)','var(--color-neutral-300)'],open:['◉','var(--color-neutral-700)','var(--color-bg)','var(--color-neutral-700)'],click:['●','var(--color-accent)','var(--color-bg)','var(--color-accent)'],resp:['↩','var(--color-accent-700)','var(--color-bg)','var(--color-accent-700)'],meet:['▣','var(--color-text)','var(--color-bg)','var(--color-text)']};
+    const events=[[eng.stage>=1,'ev_sent',T.sent,'sent',(li?'渠道：':'via ')+(eng.ch||'')],[eng.stage>=2,'ev_deliv',T.deliv,'deliv',''],[eng.stage>=3,'ev_open',T.open,'open',''],[eng.stage>=4,'ev_click',T.click,'click',''],[eng.resp,'ev_resp',T.resp,'resp',t.ev_resp_d],[eng.meet,'ev_meet',T.meet,'meet',t.ev_meet_d]]
+      .filter(e=>e[0]).map(e=>({label:t[e[1]],tm:e[2],g:evS[e[3]][0],bg:evS[e[3]][1],fg:evS[e[3]][2],bd:evS[e[3]][3],d:e[4]}));
+    const whoS={ai:['var(--color-accent)','var(--color-bg)','var(--color-accent)'],you:['var(--color-text)','var(--color-bg)','var(--color-text)'],cust:['transparent','var(--color-text)','var(--color-text)'],sys:['var(--color-neutral-300)','var(--color-text)','var(--color-neutral-300)']};
+    const logItems=st.log.map(e=>({tm:e.tm,who:t['act_'+e.who],text:t[e.k]+(e.x||''),bg:whoS[e.who][0],fg:whoS[e.who][1],bd:whoS[e.who][2]}));
+    const aiActs=[['aa1',()=>this.go('engage')],['aa2',()=>this.openPlan('meet')],['aa3',()=>this.go('needs')],['aa4',()=>this.go('proposal')],['aa5',()=>this.toast('toast_task')],['aa6',()=>this.sheet('pol')]].map(([k,on])=>({label:t[k],on}));
+    // assistant
+    const chipKeys=['gp1','call','content','draft','receive','interest','fuclicked','app','conv','claim','prac','summ'];
+    const chips=chipKeys.map(k=>{ const label=k==='gp1'?t.gp1:L(D.chat[k].q); return {label,on:()=>this.runGoal(label)}; });
+    const msgs=st.chat.map((m,i)=>{ const r=D.chat[m.key]; if(m.u) return {isU:true,isA:false,text:m.text||L(r.q)};
+      const open=!!st.whyOpen[i];
+      return {isU:false,isA:true,k:L(r.k),title:L(r.title),b:r.b.map(x=>({x:L(x)})),hasRec:!!r.rec,rec:r.rec?L(r.rec):'',src:L(r.src),why:L(r.why),open,chev:open?'−':'+',
+        toggle:()=>this.setState(z=>({whyOpen:Object.assign({},z.whyOpen,{[i]:!z.whyOpen[i]})})),
+        acts:r.a.map(a=>({label:a[li],on:()=>this.act(a[2]),cls:a[3]?'btn btn-primary':'btn btn-secondary'}))}; });
+    // customers
+    const q=st.q.trim().toLowerCase();
+    const custs=D.customers.filter(c=>q?(c.q.includes(q)||c.name.toLowerCase().includes(q)):c.tabs.includes(st.custTab)).map(c=>Object.assign({},c,{priCls:priCls[c.pri],priL:priL[c.pri],reason:L(c.reason),last:L(c.last),signal:L(c.signal),action:L(c.action),
+      on:()=>{ if(c.id==='alice') this.go('c360'); else if(c.id==='david'){this.setState({appSel:'david'}); this.go('app');} else this.toast('toast_demo'); }}));
+    const custTabs=seg([['prio',t.tab_prio],['all',t.tab_all],['fu',t.tab_fu],['opp',t.tab_opp]],q?'':st.custTab,v=>this.setState({custTab:v,q:''}));
+    const policies=D.policies.map(p=>({n:L(p.n),no:p.no,cov:L(p.cov),prem:p.prem+t.per_mo,ren:L(p.ren)}));
+    const acts=D.acts.map(a=>({w:L(a.w),t:L(a.t),k:L(a.k)}));
+    const opps=D.opps.map(o=>({t:L(o.t),v:L(o.v),cls:priCls[o.p],pl:priL[o.p]}));
+    const prot=D.needs.filter(n=>['life','ci','edu','med'].includes(n.k)).map(n=>({n:L(n.n),pct:Math.round(n.cur/n.need*100)+'%',lab:n.cur===0?t.no_plan:fmt(n.cur)+' / '+fmt(n.need),col:n.cur/n.need<0.5?'var(--color-accent)':'var(--color-text)'}));
+    // needs
+    const needs=D.needs.map(n=>{ const open=st.needOpen===n.k, gap=Math.max(0,n.need-n.cur);
+      return {n:L(n.n),need:fmt(n.need),cur:fmt(n.cur),gap:fmt(gap),pct:Math.round(n.cur/n.need*100)+'%',open,chev:open?'−':'+',
+        gapCol:gap/n.need>=0.5?'var(--color-accent-700)':'var(--color-text)',barCol:gap/n.need>=0.5?'var(--color-accent)':'var(--color-text)',
+        toggle:()=>this.setState(z=>({needOpen:z.needOpen===n.k?null:n.k})),facts:n.fact.map(f=>({x:L(f)})),calc:L(n.calc),rec:L(n.rec)}; });
+    const opts=D.opts.map(o=>{ const sel=st.opt===o.k; return {k:o.k,n:t[o.n],d:t[o.d],tr:t[o.t],prem:o.prem+t.per_mo,best:!!o.best,on:()=>this.setState({opt:o.k}),bd:sel?'var(--color-accent)':'var(--color-divider)',mark:sel?'var(--color-accent)':'transparent'}; });
+    const cmpRows=[['cmp_prem',o=>o.prem+t.per_mo],['cmp_ci',o=>o.ci],['cmp_edu',o=>o.edu],['cmp_life',o=>o.life],['cmp_left',o=>L(o.left)]].map(([k,fn])=>({l:t[k],a:fn(D.opts[0]),b:fn(D.opts[1]),c:fn(D.opts[2])}));
+    // proposal
+    const ckItems=['ck1','ck2','ck3'].map(k=>({label:t[k],on:()=>this.setState(z=>({ck:Object.assign({},z.ck,{[k]:!z.ck[k]})})),bg:st.ck[k]?'var(--color-accent)':'transparent',fg:st.ck[k]?'var(--color-bg)':'transparent'}));
+    const allCk=st.ck.ck1&&st.ck.ck2&&st.ck.ck3;
+    // notes
+    const recTime=String(Math.floor(st.recSec/60)).padStart(2,'0')+':'+String(st.recSec%60).padStart(2,'0');
+    const procSteps=['ps1','ps2','ps3','ps4'].map((k,i)=>({label:t[k],mark:st.procStep>i?'✓':'·',col:st.procStep>i?'var(--color-text)':'var(--color-neutral-500)'}));
+    const naItems=[['rem','na1','na1_d','ai_prepared','na1_ok'],['msg','na2',null,'approval_req','na2_ok'],['stage','na3','na3_d','ai_prepared','na3_ok']].map(([k,ti,de,mo,ok])=>{ const v=st.na[k]; return {title:t[ti],desc:de?t[de]:'',isMsg:k==='msg',msg:L(D.drafts.alice),mode:t[mo],modeCls:mo==='approval_req'?'tag tag-accent':'tag tag-neutral',
+      pending:v==='p',ok:v==='ok',dis:v==='d',okText:t[ok],approve:()=>this.naSet(k,'ok'),edit:()=>this.toast('toast_edit'),dismiss:()=>this.naSet(k,'d'),undo:()=>this.naSet(k,'p')}; });
+    // tasks
+    const OWN={me:[t.own_me,'var(--color-text)','var(--color-bg)','var(--color-text)'],ai:[t.own_ai,'var(--color-accent)','var(--color-bg)','var(--color-accent)'],cust:[t.own_cust,'transparent','var(--color-text)','var(--color-text)'],uw:[t.own_uw,'var(--color-neutral-300)','var(--color-text)','var(--color-neutral-300)'],hosp:[t.own_hosp,'var(--color-neutral-300)','var(--color-text)','var(--color-neutral-300)']};
+    const mk=o=>{ const c=o.st?chip(o.st):['','']; const w=OWN[o.own]; return Object.assign({},o,{hasSt:!!o.st,stCls:c[0],stLabel:c[1],oLabel:w[0],oBg:w[1],oFg:w[2],oBd:w[3],hasPct:o.pct!=null,pctW:(o.pct||0)+'%',hasDue:!!o.due,dueCol:o.over?'var(--color-accent-700)':'var(--color-text)',hi:!!o.hi,acts:(o.acts||[]).map(([label,on,p])=>({label,on,cls:p?'btn btn-primary':'btn btn-secondary'}))}); };
+    const comp=id=>()=>{ this.setState(z=>({tdone:Object.assign({},z.tdone,{[id]:true})})); this.toast('toast_done'); };
+    const T_={ti:t.ti_t,tn:L(['Collect income document — Alice Wong','收取收入证明——Alice Wong']),t1:L(['Call Alice Wong','致电 Alice Wong']),t3:L(['Review meeting brief — Alice Wong','查看拜访简报——Alice Wong']),t4:L(['Handling price objections','处理价格异议']),m1:t.imp_my1,m2:t.imp_my2};
+    const my=[];
+    if(interest&&!st.tdone.ti) my.push({id:'ti',own:'me',st:'sug',title:T_.ti,reason:t.ti_r,due:t.today,hi:1,acts:[[t.prep_call,()=>this.openPlan('call'),1],[t.complete,comp('ti'),0]]});
+    if(st.na.rem==='ok'&&!st.tdone.tn) my.push({id:'tn',own:'me',st:'prep',title:T_.tn,reason:L(['Created from meeting notes · approved by you','由会议纪要生成 · 你已批准']),due:L(['Fri 10 Oct','10月10日 周五']),acts:[[t.complete,comp('tn'),0]]});
+    if(!st.tdone.t1) my.push({id:'t1',own:'me',st:'sug',title:T_.t1,reason:L(['Viewed CI content yesterday','昨天查看了重疾内容']),due:L(['Today, before 11:00','今天 11:00 前']),hi:1,acts:[[t.call,()=>this.toast('toast_calling'),1],[t.complete,comp('t1'),0]]});
+    if(!st.done.michael) my.push({id:'o1',own:'me',st:'prep',title:L(['Follow up Michael Lau','跟进 Michael Lau']),reason:L(['Proposal sent 4 days ago · AI drafted a message','计划书 4 天前已发送 · AI 已起草消息']),due:L(['Overdue · yesterday','已逾期 · 昨天']),over:1,hi:1,acts:[[t.review,()=>this.openAppr('michael'),1]]});
+    if(!st.tdone.t3) my.push({id:'t3',own:'me',st:'prep',title:T_.t3,reason:L(['Auto-generated · 2-min read','已自动生成 · 2 分钟阅读']),due:L(['Today 4:30 PM','今天 下午 4:30']),acts:[[t.view_brief,()=>this.go('brief'),0],[t.complete,comp('t3'),0]]});
+    if(st.impAdded){ if(!st.tdone.m1) my.push({id:'m1',own:'me',st:'sug',title:T_.m1,reason:t.imp1_d,due:L(['This week','本周']),acts:[[t.review_l,()=>this.sheet('lost'),0],[t.complete,comp('m1'),0]]}); if(!st.tdone.m2) my.push({id:'m2',own:'me',st:'prep',title:T_.m2,reason:t.imp2_d,due:L(['This week','本周']),acts:[[t.start_rp,()=>this.go('role'),0],[t.complete,comp('m2'),0]]}); }
+    if(!st.tdone.t4) my.push({id:'t4',own:'me',st:'sug',title:T_.t4,reason:L(['Recommended by your coach · 8 min','教练推荐 · 8 分钟']),acts:[[t.start,()=>this.go('role'),0]]});
+    const ai=[];
+    if(pr) ai.push({id:'pg',own:'ai',st:pr.done?'prep':'exec',title:L(prdef.goal),reason:pr.done?t.ready_view:(pr.i+' / '+pr.list.length+' '+t.prog_done),pct:Math.round(pr.i/pr.list.length*100),acts:pr.done?[[t.view_ws,this.viewWs,1]]:[[t.view,()=>this.go('progress'),0]]});
+    if(st.david.st!=='idle') ai.push({id:'dv',own:'ai',st:st.david.st==='done'?'prep':'exec',title:t.ai_t2,reason:t.ai_t2_r,pct:st.david.pct,acts:st.david.st==='done'?[[t.open_l,()=>this.toast('toast_demo'),0]]:[]});
+    if(eng.stage>=1) ai.push({id:'en',own:'ai',st:interest?'prep':'exec',title:t.ai_t3,reason:interest?t.ai_t3_r2:t.ai_t3_r,acts:interest?[[t.prep_call,()=>this.openPlan('call'),1]]:[]});
+    ai.push({id:'gr',own:'ai',st:'exec',title:t.ai_t1,reason:t.ai_t1_r,pct:70});
+    const wait=[];
+    if(st.wq.w1==='wait') wait.push({id:'w1',own:'me',st:'wait',title:t.w1_t,reason:t.w1_r,hi:1,acts:[[t.review,()=>this.openAppr('alice','w1'),1]]});
+    if(interest&&st.wq.w4==='wait') wait.push({id:'w4',own:'me',st:'wait',title:t.w4_t,reason:t.w4_r,hi:1,acts:[[t.review,()=>this.openAppr('alice_fu','w4'),1]]});
+    if(st.acSt&&st.acSt.a1==='wait') wait.push({id:'w5',own:'me',st:'wait',title:t.w5_t,reason:t.w5_r,acts:[[t.review,()=>this.openAppr('david','w5'),1]]});
+    if(st.wq.w2==='wait') wait.push({id:'w2',own:'me',st:'wait',title:t.w2_t,reason:t.w2_r,acts:[[t.review,()=>this.openAppr('crm','w2'),1]]});
+    if(st.wq.w3==='wait') wait.push({id:'w3',own:'me',st:'prep',title:t.w3_t,reason:t.w3_r,acts:[[t.review,()=>this.go('proposal'),0]]});
+    const oth=[{id:'x1',own:'cust',title:t.o1_t,reason:st.davidReq?t.o1_r2:t.o1_r,acts:st.davidReq?[]:[[t.req_doc,()=>this.openAppr('david'),0]]},{id:'x2',own:'uw',title:t.o2_t,reason:t.o2_r,acts:[[t.view_app,()=>{this.setState({appSel:'alice'});this.go('app');},0]]},{id:'x3',own:'hosp',title:t.o3_t,reason:t.o3_r,acts:[[t.view_details,()=>this.go('claims'),0]]}];
+    const doneItems=[];
+    Object.keys(st.tdone).forEach(k=>{ if(T_[k]) doneItems.push({title:T_[k],who:t.own_me}); });
+    if(st.done.michael) doneItems.push({title:L(['Follow-up sent — Michael Lau','已发送跟进——Michael Lau']),who:t.own_me});
+    [['w1','w1_t'],['w2','w2_t'],['w3','w3_t'],['w4','w4_t']].forEach(([k,l])=>{ if(st.wq[k]==='done') doneItems.push({title:t[l],who:t.own_me}); });
+    if(st.acSt&&st.acSt.a1==='done') doneItems.push({title:t.w5_t,who:t.own_me});
+    if(st.acSt&&st.acSt.a2==='done') doneItems.push({title:t.ac2+' · David Chen',who:t.own_ai});
+    if(st.david.st==='done') doneItems.push({title:t.ai_t2,who:t.own_ai});
+    if(pr&&pr.done) doneItems.push({title:L(prdef.goal),who:t.own_ai});
+    doneItems.push({title:t.c_d1,who:t.own_me},{title:t.c_d2,who:t.own_ai});
+    const lists={me:my,ai,wait,others:oth};
+    const taskTabs=[['me','tq_me'],['ai','tq_ai'],['wait','tq_wait'],['others','tq_others']].map(([v,k])=>{ const n=lists[v].length, sel=st.taskTab===v; return {label:t[k],n,on:()=>this.setState({taskTab:v}),bg:sel?'var(--color-text)':'transparent',fg:sel?'var(--color-bg)':'var(--color-text)',nc:(v==='wait'&&n&&!sel)?'var(--color-accent-700)':'inherit'}; });
+    const tasks=(lists[st.taskTab]||my).map(mk);
+    const waitN=wait.filter(w=>w.st==='wait').length;
+    // app
+    const isDavid=st.appSel==='david';
+    const stepState=isDavid?[2,1,0,0,0]:[2,2,2,1,0];
+    const steps=['s_app','s_ready','s_sub','s_uw','s_dec'].map((k,i)=>({label:t[k],mark:stepState[i]===2?'✓':String(i+1),bg:stepState[i]===2?'var(--color-text)':stepState[i]===1?'var(--color-accent)':'transparent',fg:stepState[i]?'var(--color-bg)':'var(--color-neutral-600)',bd:stepState[i]===0?'var(--color-neutral-400)':'transparent',line:i<4?'var(--color-divider)':'transparent',w:stepState[i]===1?'800':'400'}));
+    const docs=[['d_id',1],['d_sig',1],['d_inc',0],['d_health',1]].map(([k,ok])=>({label:t[k],mark:ok?'✓':'✕',col:ok?'var(--color-text)':'var(--color-accent-700)',miss:!ok}));
+    const appTabs=seg([['david','David Chen'],['alice','Alice Wong']],st.appSel,v=>this.setState({appSel:v}));
+    const acItems=['ac1','ac2','ac3'].map((k,i)=>{ const v=st.acSt?st.acSt['a'+(i+1)]:'sug'; const c=chip(v); return {label:t[k],stCls:c[0],stLabel:c[1],isWait:v==='wait',review:()=>this.openAppr('david','w5')}; });
+    // perf
+    const fv=[60,42,23,15,2];
+    const funnel=['f1','f2','f3','f4','f5'].map((k,i)=>({l:t[k],v:fv[i],w:Math.max(4,fv[i]/60*100)+'%',col:i===4?'var(--color-accent)':'var(--color-text)'}));
+    const week=[['f2','14','+5'],['f3','6','+2'],['f4','4','+1'],['wk_apps','2','+1'],['wk_conv','25%','+12 pts']].map(([k,v,d])=>({l:t[k],v,d}));
+    // role
+    const R=D.rp, last=st.rpMsgs[st.rpMsgs.length-1];
+    const rpMsgs=st.rpMsgs.map(m=>m.c?{isC:true,isA:false,text:L(R[m.i].c)}:{isC:false,isA:true,text:m.txt||L(R[m.i].o[m.o][0])});
+    const showOpts=st.role==='chat'&&last&&last.c&&st.rpi<3;
+    const rpOpts=showOpts?R[st.rpi].o.map((o,oi)=>({text:L(o[0]),on:()=>this.rpPick(oi)})):[];
+    const g=i=>st.rpPicks[i]!=null&&R[i].o[st.rpPicks[i]][1]===1;
+    const sc=[g(0)?86:58,g(0)?82:55,g(1)?91:64,g(1)?74:50,g(2)?68:45];
+    const skills=['sk1','sk2','sk3','sk4','sk5'].map((k,i)=>({l:t[k],v:sc[i],w:sc[i]+'%',col:sc[i]<70?'var(--color-accent)':'var(--color-text)'}));
+    const rpTurn=Math.min(3,st.rpi+1);
+    // me
+    const tog=(obj,k)=>({label:t[k],on:()=>this.setState(z=>({[obj]:Object.assign({},z[obj],{[k]:!z[obj][k]})})),bg:st[obj][k]?'var(--color-accent)':'var(--color-neutral-400)',x:st[obj][k]?'20px':'2px'});
+    // sheets
+    const ctxDefs={c360:[L(D.chat.content.q),t.gp1,L(D.chat.draft.q)],brief:[t.ask_meet],app:[t.gp3],perf:[L(D.chat.conv.q),t.create_imp],role:[t.rp_q_claim],claims:[L(D.chat.claim.q)],customers:[L(D.chat.receive.q)],tasks:[L(D.chat.fuclicked.q)],home:[t.gp2]};
+    const ctxItems=(ctxDefs[cur]||[]).map(x=>({label:x,on:()=>this.runGoal(x)}));
+    const gItems=['g_s1','g_s2','g_s3','g_s4','g_s5'].map(k=>({label:t[k],on:()=>this.runGoal(t[k])}));
+    const whyDefs={alice:[t.why_alice,['wa1','wa2','wa3','wa4'],t.w_src2],content:[t.why_recd,['rw1','rw2','rw3','rw4'],t.w_src3]};
+    const wd=whyDefs[sh&&sh.type==='why'&&whyDefs[sh.key]?sh.key:'alice'];
+    const isAppr=!!sh&&sh.type==='appr'; const am=isAppr?(D.apprMeta[sh.key]||{c:'alice',n:'Alice Wong',ch:'LINE'}):{};
+    const cons=D.consent[am.c||'other']||D.consent.other; const apprOk=cons[st.apprCh]!==false;
+    const apprIsMsg=isAppr&&!am.crm, apprBlocked=apprIsMsg&&!apprOk;
+    const ac=chip(st.apprExec?'exec':'wait');
+    return {
+      t,s,nc,nb,langSeg,flows,screenLinks,statusLegend,stats,progLabel:doneN+' / 8 '+t.progress_of,progPct:(doneN/8*100)+'%',
+      goalInput:st.goalInput,onGoal:e=>this.setState({goalInput:e.target.value}),onGoalKey:e=>{ if(e.key==='Enter') this.runGoal(this.state.goalInput); },sendGoal:()=>this.runGoal(this.state.goalInput),micGoal:()=>{ this.toast('toast_voice'); this.runGoal(t.gp1); },
+      goalChips,aiBusyN,goTasksAi:()=>this.jump(['tasks'],{taskTab:'ai'}),goTasksWait:()=>this.jump(['tasks'],{taskTab:'wait'}),
+      attTitle:interest?t.interest_t:t.att1_t,attReason:interest?t.att1_int:t.att1_r,attHandle:()=>this.openPlan('call'),
+      hasWait:waitN>0,waitN,davIdle:st.david.st==='idle',davRun:st.david.st==='run',davDone:st.david.st==='done',davPct:st.david.pct+'%',letDavid:this.letDavid,openDavid:()=>this.toast('toast_demo'),
+      planMeet:()=>this.openPlan('meet'),
+      planGoal:pdef?L(pdef.goal):'',planSteps,planCount,planAsk:pdef?pdef.ask.map(x=>({x:L(x)})):[],planAdj:!!(P&&P.adj),adjLabel:P&&P.adj?t.done_adj:t.adjust,toggleAdj:()=>this.setState(z=>({plan:Object.assign({},z.plan,{adj:!z.plan.adj})})),startPlan:this.startPlan,
+      progGoal:prdef?L(prdef.goal):'',progSteps,progN,progTotal,progPctW:(progN/progTotal*100)+'%',progNotDone:!(pr&&pr.done),progChip:pr&&pr.done?t.st_prep:'● '+t.st_exec,viewWs:this.viewWs,bgPlan:this.bgPlan,
+      wsMeet:st.ws!=='improve',wsImp:st.ws==='improve',wsTitle:st.ws==='call'?t.ws_call_t:st.ws==='improve'?t.imp_t:t.ws_t,wsMeta:st.ws==='call'?t.ws_call_m:st.ws==='improve'?t.imp_m:t.ws_m,
+      wsSnap,wsPol:['ws_pol1','ws_pol2','ws_pol3'].map(k=>({x:t[k]})),wsGap:['ws_gap1','ws_gap2'].map(k=>({x:t[k]})),wsEng,wsTopics:['ws_t1','ws_t2','ws_t3'].map((k,i)=>({n:i+1,x:t[k]})),
+      toggleWsData:()=>this.setState(z=>({wsData:!z.wsData})),wsDataOpen:st.wsData,wsDataChev:st.wsData?'−':'+',impItems,addImp:()=>{ this.setState({impAdded:true}); this.toast('plan_added'); },
+      cTitle:t[C.t],cCat:t[C.c],cId:C.id,useContent:()=>this.go('engage'),openAlt:()=>this.sheet('alt'),altItems,goContent:()=>this.go('content'),goEngage:()=>this.go('engage'),
+      engChs:mkCh(st.engCh,D.consent.alice,c=>this.setState({engCh:c})),engOk,engBlocked:!engOk,timeSeg:seg([['now',t.send_now],['late',t.schedule]],st.engTime,v=>this.setState({engTime:v})),
+      epRef:this.epRef,epKey:'ep'+st.lang,toggleEpWhy:()=>this.setState(z=>({epWhy:!z.epWhy})),epWhyOpen:st.epWhy,epWhyChev:st.epWhy?'−':'+',epWhyItems:['epw1','epw2','epw3','epw4'].map(k=>({x:t[k]})),
+      editPlan:()=>{ const el=this.epRef.current; if(el) el.focus(); },sendEng:this.sendEng,laterEng:()=>{ this.back(); this.toast('toast_later'); },
+      cTabs:seg([['over',t.c_tab_over],['eng',t.c_tab_eng],['act',t.c_tab_act]],st.cTab,v=>this.setState({cTab:v})),cOver:st.cTab==='over',cEng:st.cTab==='eng',cAct:st.cTab==='act',
+      askAlice:()=>this.sheet('global'),engInterest:interest,recWhyOpen:st.recWhy,recWhyChev:st.recWhy?'−':'+',toggleRecWhy:()=>this.setState(z=>({recWhy:!z.recWhy})),recWhy:['rw1','rw2','rw3','rw4'].map(k=>({x:t[k]})),
+      aiActs,events,engNone:eng.stage===0,engWaiting:eng.stage>=1&&eng.stage<4,logItems,
+      prepCallI:this.prepCallI,callNowI:this.callNowI,msgI:this.msgI,laterI:this.laterI,banner:st.banner,
+      callAlice:()=>{this.mark('call_alice');this.toast('toast_calling');},
+      goC360:()=>this.go('c360'),goBrief:()=>{this.mark('brief');this.go('brief');},goNeeds:()=>this.go('needs'),goProp:()=>this.go('proposal'),goNotes:()=>this.setState(z=>({stack:[...z.stack,'notes'],notes:'input'})),
+      goPerf:()=>this.go('perf'),goRole:()=>this.go('role'),goClaims:()=>this.go('claims'),goTasks:()=>this.tab('tasks'),
+      goAppDavid:()=>{this.setState({appSel:'david'});this.go('app');},goAppAlice:()=>{this.setState({appSel:'alice'});this.go('app');},
+      goAskAi:()=>this.tab('assistant'),openWhy:()=>this.sheet('why','alice'),draftMichael:()=>this.openAppr('michael'),toastDavid:()=>this.toast('toast_david_brief'),
+      tabHome:()=>this.tab('home'),tabCust:()=>this.tab('customers'),tabAi:()=>this.tab('assistant'),tabTasks:()=>this.tab('tasks'),tabMe:()=>this.tab('me'),
+      back:this.back,scrollRef:this.scrollRef,toastOn:!!st.toast,toastText:st.toast?(t[st.toast]||st.toast):'',
+      chips,msgs,chatEmpty:st.chat.length===0,typing:st.typing,input:st.input,onInput:e=>this.setState({input:e.target.value}),onKey:e=>{ if(e.key==='Enter') this.runGoal(this.state.input); },sendAsk:()=>this.runGoal(this.state.input),
+      micAsk:()=>{ this.toast('toast_voice'); this.runGoal(L(D.chat.focus.q)); },
+      rpPaused:st.rpPaused,resumeRp:()=>this.jump(['me','role'],{rpPaused:false}),rpTurnLabel:li?('第 '+rpTurn+' / 3 轮'):('Turn '+rpTurn+' of 3'),
+      custs,custTabs,noCust:custs.length===0,q:st.q,onQ:e=>this.setState({q:e.target.value}),clearQ:()=>this.setState({q:''}),
+      policies,acts,opps,prot,createFu:()=>this.toast('toast_task'),saveBrief:()=>this.toast('toast_saved'),
+      needs,opts,cmpRows,openCompare:()=>this.sheet('compare'),
+      ckItems,ckHint:!allCk,pdfGen:st.pdf==='gen',pdfReady:st.pdf==='ready',editProp:()=>this.toast('toast_edit'),previewProp:()=>this.toast('toast_edit'),
+      genPdf:()=>{ if(!allCk) return this.toast('ck_hint'); this.setState({pdf:'gen'}); setTimeout(()=>this.setState({pdf:'ready'}),1600); },
+      shareProp:()=>{ if(!allCk) return this.toast('ck_hint'); this.openAppr('prop','w3'); },
+      nIn:st.notes==='input',nRec:st.notes==='rec',nProc:st.notes==='proc',nDone:st.notes==='done',startRec:this.startRec,process:this.process,recTime,procSteps,naItems,
+      taskTabs,tasks,noTasks:tasks.length===0,doneItems,doneCount:String(doneItems.length),
+      isDavid,isAlice:!isDavid,appTabs,steps,docs,davidReq:st.davidReq,acItems,acShow:!!st.acSt||st.acOpen,acIdle:!st.acSt,handleApp:this.handleApp,toggleAc:()=>this.setState(z=>({acOpen:!z.acOpen})),
+      askResolve:()=>this.openPlan('resolve'),draftUw:()=>this.openAppr('alice_uw'),remUw:()=>this.toast('toast_rem'),
+      draftClaim:()=>this.openAppr('claim'),explainClaim:()=>this.sheet('explain'),detailClaim:()=>this.toast('toast_detail'),askClaim:()=>this.runGoal(t.ask_claim),
+      perfTabs:seg([['month',t.month],['week',t.week]],st.perfTab,v=>this.setState({perfTab:v})),isMonth:st.perfTab==='month',isWeek:st.perfTab==='week',funnel,week,
+      openLost:()=>this.sheet('lost'),openLearn:()=>this.sheet('learn'),askPerf:()=>this.runGoal(t.ask_perf),createImp:()=>this.openPlan('improve'),
+      rpSetup:st.role==='setup',rpChat:st.role==='chat',rpScore:st.role==='score',rpStart:this.rpStart,rpMsgs,rpOpts,rpVoice:st.roleMode==='voice'&&showOpts,rpText:st.roleMode==='text'&&showOpts,
+      rpInput:st.rpInput,onRpInput:e=>this.setState({rpInput:e.target.value}),onRpKey:e=>{ if(e.key==='Enter') this.rpSendText(); },rpSendText:this.rpSendText,
+      rpCanEnd:st.rpi>=3,rpEnd:()=>this.setState({role:'score'}),rpAgain:this.rpStart,rpNew:()=>this.setState({role:'setup'}),rpSpeak:()=>{ this.toast('toast_voice'); this.rpPick(0); },
+      skills,overall:Math.round(sc.reduce((a,b)=>a+b,0)/5),modeSeg:seg([['voice',t.voice],['text',t.text]],st.roleMode,v=>this.setState({roleMode:v})),openCoach:()=>this.sheet('coach'),
+      coachItems:['ca1','ca2','ca3'].map((k,i)=>({n:i+1,x:t[k]})),polItems:['pol1','pol2','pol3'].map(k=>({x:t[k]})),
+      notifT:['n1','n2','n3','n4'].map(k=>tog('notif',k)),aiT:['ai2','ai3'].map(k=>tog('aiset',k)),
+      fabOn:!sh&&cur!=='assistant'&&!(cur==='role'&&st.role==='chat')&&!st.banner,
+      fabBottom:cur==='ws'?(st.ws==='improve'?'150px':'204px'):cur==='proposal'?'172px':['c360','brief','needs','engage','content','progress','plan'].includes(cur)?'150px':'92px',
+      openGlobal:()=>this.sheet('global'),hasCtx:ctxItems.length>0,ctxItems,gItems,
+      sheetOn:!!sh,closeSheet:()=>this.setState({sheet:null,apprExec:false}),shGlobal:!!sh&&sh.type==='global',shWhy:!!sh&&sh.type==='why',shAppr:isAppr,shAlt:!!sh&&sh.type==='alt',shCompare:!!sh&&sh.type==='compare',shLost:!!sh&&sh.type==='lost',shLearn:!!sh&&sh.type==='learn',shCoach:!!sh&&sh.type==='coach',shPol:!!sh&&sh.type==='pol',shExplain:!!sh&&sh.type==='explain',
+      whyTitle:wd[0],whyItems:wd[1].map((k,i)=>({n:i+1,x:t[k]})),whySrc:wd[2],feedback:()=>{ this.setState({sheet:null}); this.toast('toast_thanks'); },
+      apprTitle:isAppr?(am.crm?t.crm_t:t.draft_t+' · '+(am.n||'')):'',apprStCls:ac[0],apprStLabel:ac[1],apprIsMsg,apprIsCrm:isAppr&&!!am.crm,
+      apprChs:mkCh(st.apprCh,cons,c=>this.setState({apprCh:c})),apprOk,apprBlocked,apprDis:st.apprExec||apprBlocked,apprExecB:st.apprExec,
+      apprDo:li?('通过 '+chLabel(st.apprCh)+' 将此消息发送给 '+(am.n||'')+'，并记录到客户360。'):('Send this message to '+(am.n||'')+' via '+chLabel(st.apprCh)+' and log it to Customer 360.'),
+      apprText:apprIsMsg?L(D.drafts[sh.key==='prop'?'alice':sh.key]||['','']):'',apprKey:isAppr?sh.key+st.lang:'x',taRef:this.taRef,focusTa:()=>{ const el=this.taRef.current; if(el) el.focus(); },sendAppr:this.sendAppr,
+      lost:D.lost.map(x=>({n:x.n,p:L(x.p)})),learn:[['l1','6'],['l2','5'],['l3','8']].map(([k,m])=>({x:t[k],m:m+' '+t.min,on:()=>this.go('role')}))
+    };
+  }
+}
+</script>
+</body>
+</html>
