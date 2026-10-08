@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/styles.css">
+<script src="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/_ds_bundle.js"></script>
+</helmet>
+<div style="max-width:1360px;display:flex;flex-direction:column;gap:28px">
+  <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+    <div><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.kicker }}</h6><h1 style="margin:0">{{ title }}</h1></div>
+    <div style="display:flex;border:2px solid var(--color-text)">
+      <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
+        <button onClick="{{ st.onClick }}" style="border:0;padding:10px 18px;cursor:pointer;display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600;background:{{ st.bg }};color:{{ st.fg }}"><span style="font-size:11px;opacity:.7">{{ st.n }}</span>{{ st.label }}<span style="font-size:12px">{{ st.mark }}</span></button>
+      </sc-for>
+    </div>
+  </section>
+
+  <sc-if value="{{ is.before }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid;grid-template-columns:240px minmax(0,1fr);gap:32px;align-items:start">
+      <aside>
+        <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px"><h6 style="margin:0">{{ t.queue }}</h6></div>
+        <sc-for list="{{ queue }}" as="q" hint-placeholder-count="4">
+          <div style="padding:12px;border-bottom:1px solid var(--color-divider);background:{{ q.bg }};display:flex;flex-direction:column;gap:2px">
+            <div style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:14px">{{ q.name }}</b><span style="font-size:12px;font-weight:600;color:{{ q.dueC }}">{{ q.due }}</span></div>
+            <span style="font-size:12px;color:var(--color-neutral-700)">{{ q.focus }}</span>
+          </div>
+        </sc-for>
+      </aside>
+      <div>
+        <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+          <div class="card" style="padding:32px;gap:16px">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.generating }}</span>
+            <sc-for list="{{ genSteps }}" as="g" hint-placeholder-count="4">
+              <div style="display:flex;gap:12px;align-items:center;font-size:14px"><span style="width:10px;height:10px;background:var(--color-text);animation:lwbPulse 1s infinite"></span>{{ g }}</div>
+            </sc-for>
+            <div style="height:12px;width:80%;background:var(--color-neutral-300);animation:lwbPulse 1.2s infinite"></div>
+            <div style="height:12px;width:60%;background:var(--color-neutral-300);animation:lwbPulse 1.2s .3s infinite"></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+          <div class="card" style="padding:28px;gap:24px;border-top:4px solid var(--color-text)">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.brief }}</span>
+              <span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border:1px solid var(--color-text);padding:2px 6px">{{ t.aiPrepared }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 28px;border-bottom:1px solid var(--color-divider);padding-bottom:20px">
+              <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.agent }}</div><b style="font-size:22px">James Lee</b></div>
+              <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.issue }}</div><b style="font-size:18px;color:var(--color-accent-700)">{{ t.issueV }}</b></div>
+              <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.when }}</div><b style="font-size:18px">{{ t.whenV }}</b></div>
+            </div>
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:32px">
+              <div>
+                <h6 style="margin:0 0 8px">{{ t.evidence }}</h6>
+                <sc-for list="{{ evidence }}" as="e" hint-placeholder-count="3"><div style="padding:8px 0;border-top:1px solid var(--color-divider);font-size:14px">{{ e }}</div></sc-for>
+                <h6 style="margin:20px 0 8px">{{ t.questions }}</h6>
+                <sc-for list="{{ questions }}" as="q" hint-placeholder-count="3"><div style="padding:10px 12px;background:var(--color-bg);margin-bottom:6px;font-size:14px">{{ q }}</div></sc-for>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h6 style="margin:0">{{ t.agenda }}</h6><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.duration }}</span></div>
+                <sc-for list="{{ agenda }}" as="a" hint-placeholder-count="5">
+                  <div style="display:grid;grid-template-columns:32px minmax(0,1fr) 56px;gap:8px;align-items:center;padding:10px 0;border-top:1px solid var(--color-divider)">
+                    <b style="color:var(--color-accent)">{{ a.n }}</b>
+                    <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}"><input class="input" value="{{ a.text }}" onInput="{{ a.onEdit }}"></sc-if>
+                    <sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}"><span style="font-size:15px">{{ a.text }}</span></sc-if>
+                    <span style="font-size:12px;color:var(--color-neutral-700);text-align:right">{{ a.min }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;border-top:2px solid var(--color-divider);padding-top:20px">
+              <button class="btn btn-primary" onClick="{{ startSession }}">{{ t.start }}</button>
+              <button class="btn btn-secondary" onClick="{{ toggleEdit }}">{{ editLabel }}</button>
+              <button class="btn btn-ghost" onClick="{{ whyJames }}">{{ t.why }}</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.during }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="display:flex;justify-content:space-between;align-items:center;background:var(--color-text);color:var(--color-bg);padding:14px 20px">
+          <div style="display:flex;gap:16px;align-items:center"><span style="width:10px;height:10px;background:var(--color-accent);animation:lwbPulse 1.4s infinite"></span><b>{{ t.live }} · James Lee</b></div>
+          <span style="font-size:22px;font-weight:800;font-variant-numeric:tabular-nums">{{ timer }}</span>
+        </div>
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:4px"><h5 style="margin:0">{{ t.agenda }}</h5></div>
+          <sc-for list="{{ agendaLive }}" as="a" hint-placeholder-count="5">
+            <button onClick="{{ a.toggle }}" style="display:flex;gap:12px;align-items:center;width:100%;border:0;border-bottom:1px solid var(--color-divider);background:transparent;padding:10px 0;text-align:left;cursor:pointer;font-size:15px;color:{{ a.fg }}">
+              <span style="width:20px;height:20px;border:2px solid var(--color-text);display:grid;place-items:center;font-size:12px;font-weight:800;background:{{ a.boxBg }};color:var(--color-bg)">{{ a.mark }}</span>{{ a.text }}
+            </button>
+          </sc-for>
+        </div>
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px;display:flex;justify-content:space-between"><h5 style="margin:0">{{ t.notes }}</h5><button class="btn btn-ghost" onClick="{{ summarize }}" style="font-size:13px">{{ t.summarize }}</button></div>
+          <textarea class="input" value="{{ notes }}" onInput="{{ onNotes }}" style="min-height:140px;font-size:14px"></textarea>
+          <sc-if value="{{ summary }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--color-surface);padding:14px;margin-top:8px;font-size:14px;display:flex;flex-direction:column;gap:6px">
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.discussionSummary }}</span>
+              {{ summary }}
+            </div>
+          </sc-if>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px">
+          <div>
+            <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:4px"><h5 style="margin:0">{{ t.agentWill }}</h5></div>
+            <sc-for list="{{ agentActs }}" as="x" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span>{{ x.text }}</span><button onClick="{{ x.remove }}" style="border:0;background:transparent;cursor:pointer;color:var(--color-neutral-600)">✕</button></div>
+            </sc-for>
+            <div style="display:flex;gap:6px;margin-top:8px"><input class="input" placeholder="{{ t.addAction }}" value="{{ draft }}" onInput="{{ onDraft }}" onKeyDown="{{ onDraftKey }}"><button class="btn btn-secondary" onClick="{{ addAct }}">+</button></div>
+          </div>
+          <div>
+            <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:4px"><h5 style="margin:0">{{ t.leaderWill }}</h5></div>
+            <sc-for list="{{ leaderActs }}" as="x" hint-placeholder-count="1">
+              <div style="padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:14px">{{ x }}</div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;border-top:2px solid var(--color-divider);padding-top:20px;align-items:center">
+          <button class="btn btn-primary" onClick="{{ save }}">{{ t.save }}</button>
+          <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.saveNote }}</span>
+        </div>
+      </div>
+      <aside style="display:flex;flex-direction:column;gap:16px;position:sticky;top:96px">
+        <div style="background:var(--color-text);color:var(--color-bg);padding:16px">
+          <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.75">{{ t.aiIdentified }}</div>
+          <div style="font-size:20px;font-weight:800">{{ t.gapV }}</div>
+        </div>
+        <div class="card" style="padding:16px;gap:12px">
+          <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.suggestions }}</span>
+          <div style="font-size:12px;color:var(--color-neutral-700)">{{ suggestFor }}</div>
+          <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="2"><div style="padding:10px 12px;background:var(--color-bg);font-size:14px">{{ s }}</div></sc-for>
+        </div>
+        <div class="card" style="padding:16px;gap:8px">
+          <h6 style="margin:0">{{ t.lostCases }}</h6>
+          <sc-for list="{{ lostCases }}" as="c" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid var(--color-divider)"><span>{{ c.n }}</span><span style="color:var(--color-accent-700)">{{ c.r }}</span></div></sc-for>
+        </div>
+      </aside>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.after }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <sc-if value="{{ noPlan }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:64px 0;border-top:2px solid var(--color-text);display:flex;flex-direction:column;gap:12px;align-items:flex-start;max-width:520px">
+          <h3 style="margin:0">{{ t.emptyTitle }}</h3>
+          <p style="margin:0;color:var(--color-neutral-700)">{{ t.emptyBody }}</p>
+          <button class="btn btn-primary" onClick="{{ goBefore }}">{{ t.openBrief }}</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasPlan }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start">
+          <div class="card" style="padding:24px;gap:16px;border-top:4px solid var(--color-text)">
+            <div style="display:flex;justify-content:space-between;gap:8px"><span class="card-kicker" style="color:var(--color-text)">{{ t.coachingPlan }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ weekLabel }}</span></div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+              <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.agent }}</div><b style="font-size:20px">James Lee</b></div>
+              <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.focus }}</div><b style="font-size:20px">{{ t.gapV }}</b></div>
+            </div>
+            <div>
+              <h6 style="margin:8px 0">{{ t.actions }}</h6>
+              <sc-for list="{{ planActs }}" as="p" hint-placeholder-count="4">
+                <div style="display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--color-divider);font-size:15px">
+                  <span style="width:20px;height:20px;border:2px solid var(--color-text);display:grid;place-items:center;font-size:12px;font-weight:800;background:{{ p.bg }};color:var(--color-bg)">{{ p.mark }}</span>
+                  <span style="flex:1">{{ p.text }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ p.who }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:24px">
+            <div>
+              <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:16px"><h5 style="margin:0">{{ t.perfChange }}</h5></div>
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+                <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.beforeC }}</div><b style="font-size:48px;line-height:1">11%</b><div style="font-size:12px">{{ t.closeRate }}</div></div>
+                <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.current }}</div><b style="font-size:48px;line-height:1;color:{{ curColor }}">{{ curRate }}</b><div style="font-size:12px">{{ t.closeRate }}</div></div>
+              </div>
+              <div style="position:relative;height:12px;background:var(--color-neutral-300);margin-top:16px">
+                <div style="position:absolute;left:0;top:0;bottom:0;width:{{ curW }};background:{{ curColor }}"></div>
+                <div style="position:absolute;left:45.8%;top:-6px;bottom:-6px;width:2px;background:var(--color-text)"></div>
+              </div>
+              <div style="font-size:11px;color:var(--color-neutral-700);margin-top:6px">{{ t.benchMark }}</div>
+            </div>
+            <div class="card" style="padding:20px;gap:10px">
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.assessment }}</span>
+              <b style="font-size:24px;color:{{ curColor }}">{{ assessV }}</b>
+              <p style="margin:0;font-size:14px">{{ assessNote }}</p>
+              <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+                <button class="btn btn-primary" onClick="{{ review }}">{{ t.reviewProgress }}</button>
+                <button class="btn btn-secondary" onClick="{{ adjust }}">{{ t.adjust }}</button>
+                <sc-if value="{{ week1 }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ advance }}">{{ t.advance }}</button></sc-if>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const T = {
+  en: { kicker: 'Coaching · James Lee', titles: { before: 'Coaching Workspace', during: 'Coaching Session', after: 'Coaching Follow-up' }, steps: ['Before', 'During', 'After'],
+    queue: 'Coaching queue', generating: 'Preparing coaching brief', gen: ['Reviewing 90 days of activity and pipeline', 'Analysing 7 lost cases', 'Checking role play results', 'Drafting agenda and questions'],
+    brief: 'AI Coaching Brief', aiPrepared: 'AI prepared · review before use', agent: 'Agent', issue: 'Current issue', issueV: 'Low closing conversion', when: 'Session', whenV: 'Today, 15:00 · 45 min',
+    evidence: 'Evidence', ev: ['Conversion down from 22% to 11% this quarter', '7 lost cases in 30 days — 4 cite premium', 'Objection-handling role play score 48 (team 70)'],
+    questions: 'Suggested questions', qs: ['"What happens most often after presenting the proposal?"', '"Which objections are hardest to handle?"', '"Which recent case would you like to review?"'],
+    agenda: 'Suggested agenda', duration: '45 min', ag: [['Review current performance', '5 min'], ['Discuss lost opportunities', '10 min'], ['Identify root cause', '10 min'], ['Practice objection handling', '15 min'], ['Agree next actions', '5 min']],
+    start: 'Start Coaching Session', edit: 'Edit Agenda', doneEdit: 'Done editing', why: 'Why?',
+    live: 'Session in progress', notes: 'Discussion notes', summarize: 'Summarize with AI', discussionSummary: 'Discussion summary',
+    notesInit: 'James feels confident until the premium is shown. Tends to discount or offer to "think about it" with the client. Reviewed Mr. Lau case — no needs recap before price.',
+    sum: 'James loses momentum at the price reveal and does not link premium back to the protection gap. Agreed to practise a needs recap before presenting premium.',
+    agentWill: 'James will', leaderWill: 'Leader will', addAction: 'Add a commitment…',
+    acts: ['Complete 2 AI role plays', 'Review 3 lost cases', 'Practice premium objection script'], lead: ['Review progress next Friday (16 Oct)'],
+    save: 'Save Coaching Session', saveNote: 'Creates tasks for you and James. Summary is shared only after you confirm.',
+    aiIdentified: 'AI identified · primary capability gap', gapV: 'Objection handling', suggestions: 'Live suggestions', suggestFor: 'For the current agenda step',
+    sug: [['Open with the win: Chan family case closed on 1 Oct.', 'Ask James to rate his month 1–10 before showing data.'], ['Pick one lost case and replay the last 5 minutes.', 'Listen for where he stops asking questions.'], ['Ask: "What did the client say right before declining?"', 'Probe whether he restated needs before price.'], ['Use the "feel–felt–found" structure for premium objection.', 'Run it twice: once as client, once as agent.'], ['Keep to 3 commitments he owns.', 'Set the follow-up date before ending.']],
+    lostCases: 'Lost cases to review', confirmSave: 'Save session and create tasks?', confirmBody: '4 tasks will be created (3 for James, 1 for you) and the AI summary will be shared with James.', confirmOk: 'Save & share', saved: 'Coaching session saved · 4 tasks created',
+    emptyTitle: 'No active coaching plan yet', emptyBody: 'Once you save a coaching session, agreed actions and progress are tracked here automatically.', openBrief: 'Open coaching brief',
+    coachingPlan: 'Coaching Plan', focus: 'Focus', actions: 'Actions', week1: 'Week 1 of 2 · tracking', week2: 'Week 2 of 2', perfChange: 'Performance change', beforeC: 'Before coaching', current: 'Current', closeRate: 'close rate', benchMark: 'Black mark = team benchmark 24%',
+    assessment: 'AI Assessment', tooEarly: 'Too early to assess', tooEarlyNote: 'Role plays are assigned. AI will notify you when James completes them or his close rate changes.',
+    improving: 'Improving', improvingNote: 'Recommended: continue the current coaching plan for another week.', reviewProgress: 'Review Progress', adjust: 'Adjust Plan', advance: 'Simulate 1 week ▸',
+    adjustT: 'Extend plan by one week?', adjustB: 'Adds Role Play #3 (closing practice) and moves the follow-up review to 23 Oct.', adjustOk: 'Extend plan', adjusted: 'Plan extended to 23 Oct',
+    pa: [['Complete Role Play #1', 'James'], ['Review lost cases', 'James'], ['Complete Role Play #2', 'James'], ['Follow-up review', 'You']], due: { today: 'Today', fri: 'Fri', mon: 'Mon', wk: 'This week' } },
+  zh: { kicker: '辅导 · James Lee', titles: { before: '辅导工作台', during: '辅导进行中', after: '辅导跟进' }, steps: ['辅导前', '辅导中', '辅导后'],
+    queue: '待辅导列表', generating: '正在准备辅导简报', gen: ['回顾近 90 天活动与管道', '分析 7 个流失案例', '查看角色演练结果', '起草议程与提问'],
+    brief: 'AI 辅导简报', aiPrepared: 'AI 已准备 · 使用前请确认', agent: '代理人', issue: '当前问题', issueV: '成交转化率偏低', when: '辅导时间', whenV: '今天 15:00 · 45 分钟',
+    evidence: '依据', ev: ['本季度转化率从 22% 降至 11%', '30 天内流失 7 个案例，其中 4 个因保费', '异议处理角色演练得分 48（团队 70）'],
+    questions: '建议提问', qs: ['"呈现建议书之后，最常出现什么情况？"', '"哪类异议最难处理？"', '"你想复盘最近哪个案例？"'],
+    agenda: '建议议程', duration: '45 分钟', ag: [['回顾当前业绩', '5 分钟'], ['讨论流失商机', '10 分钟'], ['找出根本原因', '10 分钟'], ['练习异议处理', '15 分钟'], ['约定下一步行动', '5 分钟']],
+    start: '开始辅导', edit: '编辑议程', doneEdit: '完成编辑', why: '为什么？',
+    live: '辅导进行中', notes: '讨论记录', summarize: 'AI 生成摘要', discussionSummary: '讨论摘要',
+    notesInit: 'James 在报出保费前都很有信心，之后容易主动降价或让客户"再考虑"。复盘刘先生案例——报价前没有回顾客户需求。',
+    sum: 'James 在报价环节失去主动，未能把保费与保障缺口联系起来。约定在报价前先进行需求回顾练习。',
+    agentWill: 'James 承诺', leaderWill: '主管承诺', addAction: '添加一项承诺…',
+    acts: ['完成 2 次 AI 角色演练', '复盘 3 个流失案例', '练习保费异议话术'], lead: ['下周五（10月16日）检视进展'],
+    save: '保存辅导记录', saveNote: '将为您和 James 创建任务。摘要需您确认后才会分享。',
+    aiIdentified: 'AI 识别 · 核心能力短板', gapV: '异议处理', suggestions: '实时建议', suggestFor: '针对当前议程环节',
+    sug: [['先肯定成果：10 月 1 日成交陈氏家庭案例。', '展示数据前，先请 James 为本月表现打分（1–10）。'], ['选一个流失案例，重演最后 5 分钟。', '留意他在哪里停止提问。'], ['提问："客户拒绝前最后说了什么？"', '确认他报价前是否重述了客户需求。'], ['用"感受—同感—发现"结构处理保费异议。', '演练两轮：一次扮演客户，一次扮演代理人。'], ['控制在 3 项由他负责的承诺。', '结束前确定跟进日期。']],
+    lostCases: '待复盘流失案例', confirmSave: '保存辅导记录并创建任务？', confirmBody: '将创建 4 项任务（James 3 项，您 1 项），并将 AI 摘要分享给 James。', confirmOk: '保存并分享', saved: '辅导记录已保存 · 已创建 4 项任务',
+    emptyTitle: '暂无进行中的辅导计划', emptyBody: '保存辅导记录后，约定行动与进展将在此自动跟踪。', openBrief: '打开辅导简报',
+    coachingPlan: '辅导计划', focus: '重点', actions: '行动项', week1: '第 1 周 / 共 2 周 · 跟踪中', week2: '第 2 周 / 共 2 周', perfChange: '业绩变化', beforeC: '辅导前', current: '当前', closeRate: '成交率', benchMark: '黑线 = 团队基准 24%',
+    assessment: 'AI 评估', tooEarly: '尚无法评估', tooEarlyNote: '角色演练已指派。James 完成演练或成交率变化时，AI 会通知您。',
+    improving: '正在改善', improvingNote: '建议：继续执行当前辅导计划一周。', reviewProgress: '查看进展', adjust: '调整计划', advance: '模拟 1 周 ▸',
+    adjustT: '将计划延长一周？', adjustB: '新增第 3 次角色演练（促成练习），跟进检视顺延至 10月23日。', adjustOk: '延长计划', adjusted: '计划已延长至 10月23日',
+    pa: [['完成角色演练 #1', 'James'], ['复盘流失案例', 'James'], ['完成角色演练 #2', 'James'], ['跟进检视', '您']], due: { today: '今天', fri: '周五', mon: '周一', wk: '本周' } }
+};
+class Component extends DCLogic {
+  state = { gen: false, editing: false, agenda: null, done: [], notes: null, summary: null, draft: '', acts: null, secs: 0 };
+  componentDidMount() { this.maybeGen(); this._iv = setInterval(() => { if ((this.props.app || {}).screen === 'session') this.setState(s => ({ secs: s.secs + 1 })); }, 1000); }
+  componentDidUpdate() { this.maybeGen(); }
+  componentWillUnmount() { clearInterval(this._iv); clearTimeout(this._gt); }
+  maybeGen() {
+    const app = this.props.app; if (!app || app.screen !== 'coaching' || (app.s && app.s.planCreated) || this.state.gen) return;
+    this.setState({ gen: true }); this._gt = setTimeout(() => { app.set({ planCreated: true }); this.setState({ gen: false }); }, 1800);
+  }
+  renderVals() {
+    const app = this.props.app || { lang: 'en', screen: 'coaching', s: {} };
+    const lang = app.lang || 'en', t = T[lang], s = app.s || {}, sc = app.screen;
+    const go = (x) => app.go && app.go(x);
+    const phase = sc === 'session' ? 'during' : sc === 'followup' ? 'after' : 'before';
+    const idx = { before: 0, during: 1, after: 2 }[phase];
+    const doneSteps = [s.planCreated, s.sessionSaved, s.week2 && s.sessionSaved];
+    const steps = t.steps.map((label, i) => ({ label, n: '0' + (i + 1), mark: doneSteps[i] && i !== idx ? '✓' : '', onClick: () => go(['coaching', 'session', 'followup'][i]),
+      bg: i === idx ? 'var(--color-text)' : 'transparent', fg: i === idx ? 'var(--color-bg)' : 'var(--color-text)' }));
+    const agenda = this.state.agenda || t.ag.map(a => a[0]);
+    const acts = this.state.acts || t.acts;
+    const done = this.state.done;
+    const cur = [0, 1, 2, 3, 4].find(i => !done.includes(i)) ?? 4;
+    const mm = String(Math.floor(this.state.secs / 60)).padStart(2, '0') + ':' + String(this.state.secs % 60).padStart(2, '0');
+    const w2 = s.week2 && s.sessionSaved;
+    const addAct = () => { const d = this.state.draft.trim(); if (!d) return; this.setState({ acts: [...acts, d], draft: '' }); };
+    return {
+      t, title: t.titles[phase], steps, is: { before: phase === 'before', during: phase === 'during', after: phase === 'after' },
+      queue: [['James Lee', lang === 'en' ? 'Objection handling' : '异议处理', t.due.today, true], ['Michael Tan', lang === 'en' ? 'Pipeline review' : '管道检视', t.due.fri], ['Grace Lam', lang === 'en' ? 'Product confidence' : '产品信心', t.due.mon], ['Emily Wong', lang === 'en' ? 'M1 check-in' : 'M1 沟通', t.due.wk]].map((q, i) => ({
+        name: q[0], focus: q[1], due: q[2], dueC: q[3] ? 'var(--color-accent-700)' : 'var(--color-neutral-700)', bg: i === 0 ? 'var(--color-surface)' : 'transparent' })),
+      loading: !s.planCreated, ready: !!s.planCreated, genSteps: t.gen, evidence: t.ev, questions: t.qs,
+      agenda: agenda.map((text, i) => ({ n: '0' + (i + 1), text, min: t.ag[i] ? t.ag[i][1] : '', onEdit: (e) => { const a = [...agenda]; a[i] = e.target.value; this.setState({ agenda: a }); } })),
+      editing: this.state.editing, notEditing: !this.state.editing, editLabel: this.state.editing ? t.doneEdit : t.edit,
+      toggleEdit: () => this.setState(st => ({ editing: !st.editing })), startSession: () => { this.setState({ secs: 0 }); go('session'); }, whyJames: () => app.why('james'),
+      timer: mm,
+      agendaLive: agenda.map((text, i) => { const d = done.includes(i); return { text, mark: d ? '✓' : '', boxBg: d ? 'var(--color-text)' : (i === cur ? 'var(--color-accent-200)' : 'transparent'), fg: d ? 'var(--color-neutral-600)' : 'var(--color-text)',
+        toggle: () => this.setState(st => ({ done: st.done.includes(i) ? st.done.filter(x => x !== i) : [...st.done, i] })) }; }),
+      notes: this.state.notes ?? t.notesInit, onNotes: (e) => this.setState({ notes: e.target.value }), summary: this.state.summary ? t.sum : null,
+      summarize: () => this.setState({ summary: true }),
+      suggestFor: (lang === 'en' ? 'Step ' : '环节 ') + (cur + 1) + ' · ' + agenda[cur], suggestions: t.sug[cur],
+      lostCases: [['Mr. Lau', lang === 'en' ? 'Premium' : '保费'], ['Ms. Ho', lang === 'en' ? 'Premium' : '保费'], ['Mr. Fung', lang === 'en' ? 'Timing' : '时机']].map(c => ({ n: c[0], r: c[1] })),
+      agentActs: acts.map((text, i) => ({ text, remove: () => this.setState({ acts: acts.filter((_, j) => j !== i) }) })), leaderActs: t.lead,
+      draft: this.state.draft, onDraft: (e) => this.setState({ draft: e.target.value }), onDraftKey: (e) => { if (e.key === 'Enter') addAct(); }, addAct,
+      save: () => app.confirm({ title: t.confirmSave, body: t.confirmBody, okLabel: t.confirmOk, onOk: () => {
+        app.set({ sessionSaved: true });
+        app.completeTask('t1');
+        app.addTask({ id: 'k_rp', type: 'agent', pri: 'med', due: 'upcoming', title: { en: 'James: complete 2 AI role plays', zh: 'James：完成 2 次 AI 角色演练' }, reason: { en: 'Agreed in coaching · tracked automatically', zh: '辅导约定 · 自动跟踪' }, act: null });
+        app.addTask({ id: 'k_lost', type: 'agent', pri: 'med', due: 'upcoming', title: { en: 'James: review 3 lost cases', zh: 'James：复盘 3 个流失案例' }, reason: { en: 'Agreed in coaching · tracked automatically', zh: '辅导约定 · 自动跟踪' }, act: null });
+        app.addTask({ id: 'k_rev', type: 'coaching', pri: 'high', due: 'upcoming', title: { en: 'Follow-up review with James (Fri 16 Oct)', zh: '与 James 跟进检视（10月16日 周五）' }, reason: { en: 'Your commitment from coaching session', zh: '您在辅导中的承诺' }, act: { screen: 'followup', label: { en: 'Open Follow-up', zh: '打开跟进' } } });
+        app.toast(t.saved); go('followup'); } }),
+      noPlan: !s.sessionSaved, hasPlan: !!s.sessionSaved, goBefore: () => go('coaching'),
+      weekLabel: w2 ? t.week2 : t.week1,
+      planActs: t.pa.map((p, i) => { const d = w2 && i < 2; return { text: p[0], who: p[1], mark: d ? '✓' : '', bg: d ? 'var(--color-text)' : 'transparent' }; }),
+      curRate: w2 ? '16%' : '11%', curW: w2 ? '30.5%' : '21%', curColor: w2 ? 'oklch(0.45 0.1 155)' : 'var(--color-text)',
+      assessV: w2 ? t.improving : t.tooEarly, assessNote: w2 ? t.improvingNote : t.tooEarlyNote, week1: !w2,
+      review: () => app.why(w2 ? 'improve' : 'james'), advance: () => app.advanceWeek(),
+      adjust: () => app.confirm({ title: t.adjustT, body: t.adjustB, okLabel: t.adjustOk, onOk: () => app.toast(t.adjusted) })
+    };
+  }
+}
+</script>
+</body>
+</html>

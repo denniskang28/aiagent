@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/styles.css">
+<script src="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/_ds_bundle.js"></script>
+</helmet>
+<div style="max-width:1360px;display:flex;flex-direction:column;gap:28px">
+<sc-if value="{{ is.board }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.kicker }}</h6><h1 style="margin:0">{{ t.title }}</h1></div>
+      <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.scheme }}: <b>{{ schemeLabel }}</b></span>
+    </section>
+    <section style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid var(--color-text)">
+      <sc-for list="{{ cols }}" as="c" hint-placeholder-count="4">
+        <div style="border-right:1px solid var(--color-divider);padding:16px 16px 16px 0;margin-right:16px;display:flex;flex-direction:column;gap:12px;min-height:200px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:28px;font-weight:800">{{ c.label }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ c.count }}</span></div>
+          <sc-for list="{{ c.agents }}" as="a" hint-placeholder-count="1">
+            <button onClick="{{ a.open }}" style="border:0;border-top:4px solid {{ a.color }};background:var(--color-surface);padding:14px;text-align:left;cursor:pointer;color:inherit;display:flex;flex-direction:column;gap:8px" style-hover="background:var(--color-neutral-300)">
+              <span style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:15px">{{ a.name }}</b><span style="font-size:11px;font-weight:600;padding:2px 6px;background:{{ a.tagBg }};color:{{ a.tagFg }}">{{ a.status }}</span></span>
+              <span style="font-size:12px;color:var(--color-neutral-700)">{{ a.day }}</span>
+              <span style="height:6px;background:var(--color-neutral-300);display:block"><span style="display:block;height:100%;width:{{ a.pct }};background:{{ a.color }}"></span></span>
+              <span style="font-size:12px">{{ a.pct }} {{ t.goalsDone }}</span>
+            </button>
+          </sc-for>
+          <sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed var(--color-divider);padding:16px;font-size:13px;color:var(--color-neutral-700)">{{ t.emptyCol }}</div></sc-if>
+        </div>
+      </sc-for>
+    </section>
+    <section class="card" style="padding:28px;gap:20px;border-top:4px solid {{ em.color }}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+        <div><span class="card-kicker" style="color:{{ em.color }}">{{ t.focusAgent }}</span><h2 style="margin:4px 0 0">Emily Wong</h2></div>
+        <span style="font-size:12px;font-weight:600;padding:4px 10px;background:{{ em.tagBg }};color:{{ em.tagFg }}">{{ em.status }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)">
+        <sc-for list="{{ em.metrics }}" as="m" hint-placeholder-count="4">
+          <div style="padding:14px 14px 14px 0"><div style="font-size:12px;color:var(--color-neutral-700)">{{ m.label }}</div><b style="font-size:24px;color:{{ m.c }}">{{ m.v }}</b></div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px">
+        <div>
+          <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:8px"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.insight }}</span>
+          <p style="margin:0;font-size:18px;line-height:1.45;text-wrap:pretty">{{ em.insight }}</p>
+        </div>
+        <div>
+          <h6 style="margin:0 0 8px">{{ t.recommended }}</h6>
+          <sc-for list="{{ em.recs }}" as="r" hint-placeholder-count="3"><div style="padding:8px 0;border-top:1px solid var(--color-divider);font-size:14px;display:flex;gap:10px"><b style="color:var(--color-accent)">{{ r.n }}</b>{{ r.text }}</div></sc-for>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px"><button class="btn btn-primary" onClick="{{ openPlan }}">{{ t.viewPlan }}</button><button class="btn btn-ghost" onClick="{{ whyEmily }}">{{ t.why }}</button></div>
+    </section>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.plan }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <button class="btn btn-ghost" onClick="{{ backBoard }}" style="align-self:flex-start;padding-left:0">← {{ t.title }}</button>
+    <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--color-text);padding-bottom:20px">
+      <div><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.planKicker }}</h6><h1 style="margin:0">Emily Wong</h1><div style="font-size:14px;margin-top:6px">{{ dayLabel }}</div></div>
+      <span style="font-size:12px;font-weight:600;padding:4px 10px;background:{{ em.tagBg }};color:{{ em.tagFg }}">{{ em.status }}</span>
+    </section>
+    <section style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:32px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:28px">
+        <div>
+          <div style="display:flex;justify-content:space-between;border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h4 style="margin:0">{{ t.m1Goals }}</h4><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.bizGoal }}</span></div>
+          <sc-for list="{{ goals }}" as="g" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) 80px 90px;gap:16px;align-items:center;padding:12px 0;border-bottom:1px solid var(--color-divider)">
+              <span style="font-size:15px;font-weight:600">{{ g.label }}</span>
+              <div style="height:10px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ g.w }};background:{{ g.c }}"></div></div>
+              <b style="text-align:right;font-size:16px">{{ g.v }}</b>
+              <span style="font-size:12px;font-weight:600;color:{{ g.c }};text-align:right">{{ g.s }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:16px"><h4 style="margin:0">{{ t.weekly }}</h4><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.weeklySub }}</span></div>
+          <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:end;height:140px;position:relative">
+            <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="5">
+              <div style="display:flex;flex-direction:column;gap:4px;justify-content:flex-end;height:100%">
+                <b style="font-size:14px">{{ w.v }}</b>
+                <div style="height:{{ w.h }};background:{{ w.c }};border:{{ w.border }}"></div>
+                <span style="font-size:11px;color:var(--color-neutral-700)">{{ w.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div class="card" style="padding:24px;gap:14px;border-top:4px solid var(--color-text)">
+          <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.aiRec }}</span>
+          <p style="margin:0;font-size:20px;font-weight:600;line-height:1.35">{{ recText }}</p>
+          <sc-if value="{{ rec.idle }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:8px"><button class="btn btn-primary" onClick="{{ genRecovery }}">{{ t.createRecovery }}</button><button class="btn btn-ghost" onClick="{{ whyEmily }}">{{ t.why }}</button></div>
+          </sc-if>
+          <sc-if value="{{ rec.loading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600">{{ t.generating }}</span><div style="height:10px;width:70%;background:var(--color-neutral-300);animation:lwbPulse 1.2s infinite"></div><div style="height:10px;width:50%;background:var(--color-neutral-300);animation:lwbPulse 1.2s .3s infinite"></div></div>
+          </sc-if>
+          <sc-if value="{{ rec.draft }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--color-bg);padding:16px;display:flex;flex-direction:column;gap:4px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap"><b>{{ t.recoveryTitle }}</b><div style="display:flex;gap:6px"><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border:1px solid var(--color-text);padding:2px 6px">{{ t.aiPrepared }}</span><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border:1px solid var(--color-accent);color:var(--color-accent-700);padding:2px 6px">{{ t.approvalReq }}</span></div></div>
+              <sc-for list="{{ recItems }}" as="r" hint-placeholder-count="5">
+                <button onClick="{{ r.toggle }}" style="display:grid;grid-template-columns:24px minmax(0,1fr) 110px;gap:10px;align-items:center;border:0;border-top:1px solid var(--color-divider);background:transparent;padding:10px 0;text-align:left;cursor:pointer;font-size:14px;color:inherit">
+                  <span style="width:18px;height:18px;border:2px solid var(--color-text);display:grid;place-items:center;font-size:11px;font-weight:800;background:{{ r.bg }};color:var(--color-bg)">{{ r.mark }}</span>
+                  <span>{{ r.text }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ r.who }}</span>
+                </button>
+              </sc-for>
+              <div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-primary" onClick="{{ assign }}">{{ assignLabel }}</button><button class="btn btn-secondary" onClick="{{ genRecovery }}">{{ t.regenerate }}</button></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ rec.active }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span style="font-size:12px;font-weight:600;padding:4px 10px;background:oklch(0.94 0.05 155);color:oklch(0.38 0.09 155)">{{ t.recoveryActive }}</span><span style="font-size:13px">{{ activeNote }}</span>
+            <sc-if value="{{ week1 }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ advance }}">{{ t.advance }}</button></sc-if></div>
+          </sc-if>
+        </div>
+      </div>
+      <aside style="display:flex;flex-direction:column;gap:28px">
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.milestones }}</h5></div>
+          <sc-for list="{{ timeline }}" as="m" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px">
+              <span style="width:16px;height:16px;border:2px solid {{ m.bc }};background:{{ m.bg }}"></span><span style="font-weight:{{ m.fw }}">{{ m.label }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ m.d }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.learningRP }}</h5></div>
+          <sc-for list="{{ learning }}" as="x" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span>{{ x.label }}</span><b>{{ x.v }}</b></div></sc-for>
+        </div>
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.checkins }}</h5></div>
+          <sc-for list="{{ checkins }}" as="c" hint-placeholder-count="3"><div style="padding:8px 0;border-bottom:1px solid var(--color-divider)"><div style="font-size:12px;color:var(--color-neutral-700)">{{ c.d }}</div><div style="font-size:13px">{{ c.text }}</div></div></sc-for>
+        </div>
+      </aside>
+    </section>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const GREEN = 'oklch(0.45 0.1 155)', AMBER = 'oklch(0.5 0.12 65)', RED = 'var(--color-accent)', INK = 'var(--color-text)';
+const T = {
+  en: { kicker: 'New Agent Development', title: 'New Agent Ramp-up', scheme: 'BU milestone scheme', goalsDone: 'of milestone goals', emptyCol: 'No agents at this milestone.',
+    focusAgent: 'Needs your attention · M1', insight: 'AI Insight', recommended: 'Recommended', viewPlan: 'View Success Plan', why: 'Why?',
+    atRisk: 'At Risk', onTrack: 'On Track', backOnTrack: 'Back on track', graduating: 'Graduating',
+    metrics: ['Goal completion', 'Prospecting activity', 'Training', 'Days left in M1'], below: 'Below target', onT: 'On target',
+    insightTxt: '"Emily is completing training but customer activity is below the expected activation path."', insightOk: '"Since the recovery plan, Emily\'s customer contacts are up 40% and she is back on the activation path."',
+    recs: ['Review sourcing strategy', 'Assign prospecting practice', 'Leader check-in this week'],
+    planKicker: 'New Agent Success Plan', day: 'M1 · Day 21 of 30 · Joined 17 Sep 2026', day2: 'M1 · Day 28 of 30 · Joined 17 Sep 2026', m1Goals: 'M1 Goals', bizGoal: 'Business goal: HK$40K FYP',
+    gl: ['Appointments', 'Customer contacts', 'Role plays', 'Product Foundation', 'First-year premium'], done: 'Done', behind: 'Behind', onPace: 'On pace',
+    weekly: 'Prospecting contacts per week', weeklySub: 'Expected path: 12 / week',
+    aiRec: 'AI Recommendation', recA: 'Focus on prospecting activity rather than additional training.', recB: 'Prospecting has recovered. Keep the plan through M1 review.',
+    createRecovery: 'Create Recovery Plan', generating: 'AI is drafting a recovery plan…', recoveryTitle: 'Recovery plan — next 9 days', aiPrepared: 'AI prepared', approvalReq: 'Leader approval required',
+    ri: [['20 warm-market calls this week using the referral script', 'Emily'], ['Join Thursday referral workshop with Natalie Yip', 'Emily'], ['Prospecting role play: first-call opener', 'Emily · AI'], ['Leader check-in Thursday 17:30', 'You'], ['Pause optional advanced training until M1 review', 'Emily']],
+    assignSel: 'Assign selected actions', regenerate: 'Regenerate', recoveryActive: 'Recovery plan active', activeNote: 'AI is tracking daily activity and will notify you when progress changes.', activeOk: 'Contacts +40% in 7 days. M1 review on 16 Oct.', advance: 'Simulate 1 week ▸',
+    confirmT: 'Assign recovery actions to Emily?', confirmB: 'Emily will see these actions in her app. You can change them any time.', assign: 'Assign', assigned: 'Recovery plan assigned · tasks created',
+    milestones: 'Milestones', learningRP: 'Learning & Role Play', checkins: 'Leader Check-ins',
+    tl: [['Licensed & onboarded', '17 Sep'], ['Product Foundation completed', '2 Oct'], ['First case submitted', '5 Oct'], ['10 appointments', 'M1'], ['M1 review', '16 Oct'], ['M3: first HK$100K', 'Dec']],
+    lr: [['Product Foundation', 'Completed'], ['Training overall', '82%'], ['Role plays', '2 / 2'], ['Prospecting role play score', '61']],
+    ci: [['1 Oct', 'Weekly check-in — training on track, set contact target of 12/week.'], ['24 Sep', 'Onboarding review — confirmed warm-market list of 60 names.']] },
+  zh: { kicker: '新人发展', title: '新人成长管理', scheme: '业务单位里程碑方案', goalsDone: '里程碑目标完成', emptyCol: '该阶段暂无新人。',
+    focusAgent: '需要您关注 · M1', insight: 'AI 洞察', recommended: '建议', viewPlan: '查看成功计划', why: '为什么？',
+    atRisk: '存在风险', onTrack: '进度正常', backOnTrack: '已回到正轨', graduating: '即将结业',
+    metrics: ['目标完成度', '客户开拓活动', '培训', 'M1 剩余天数'], below: '低于目标', onT: '达到目标',
+    insightTxt: '"Emily 正常完成培训，但客户活动量低于预期激活路径。"', insightOk: '"恢复计划启动后，Emily 的客户接触增加 40%，已回到激活路径。"',
+    recs: ['检视客户来源策略', '指派客户开拓练习', '本周安排主管面谈'],
+    planKicker: '新人成功计划', day: 'M1 · 第 21 天 / 共 30 天 · 2026年9月17日入职', day2: 'M1 · 第 28 天 / 共 30 天 · 2026年9月17日入职', m1Goals: 'M1 目标', bizGoal: '业务目标：首年保费 4 万港元',
+    gl: ['约访', '客户接触', '角色演练', '产品基础课程', '首年保费'], done: '已完成', behind: '落后', onPace: '进度正常',
+    weekly: '每周客户开拓接触', weeklySub: '预期路径：每周 12 次',
+    aiRec: 'AI 建议', recA: '应聚焦客户开拓活动，而非增加培训。', recB: '客户开拓已恢复，保持当前计划直至 M1 评估。',
+    createRecovery: '生成恢复计划', generating: 'AI 正在起草恢复计划…', recoveryTitle: '恢复计划——未来 9 天', aiPrepared: 'AI 已准备', approvalReq: '需主管确认',
+    ri: [['本周使用转介绍话术拨打 20 通缘故客户电话', 'Emily'], ['参加周四由 Natalie Yip 主讲的转介绍工作坊', 'Emily'], ['客户开拓角色演练：首次通话开场', 'Emily · AI'], ['周四 17:30 主管面谈', '您'], ['M1 评估前暂停选修进阶课程', 'Emily']],
+    assignSel: '指派所选行动', regenerate: '重新生成', recoveryActive: '恢复计划执行中', activeNote: 'AI 正在跟踪每日活动，进展变化时会通知您。', activeOk: '7 天内客户接触 +40%。M1 评估定于 10月16日。', advance: '模拟 1 周 ▸',
+    confirmT: '向 Emily 指派恢复行动？', confirmB: 'Emily 将在 App 中看到这些行动，您可随时调整。', assign: '指派', assigned: '恢复计划已指派 · 任务已创建',
+    milestones: '里程碑', learningRP: '学习与角色演练', checkins: '主管面谈记录',
+    tl: [['取得执照并完成入职', '9月17日'], ['完成产品基础课程', '10月2日'], ['提交首单', '10月5日'], ['完成 10 次约访', 'M1'], ['M1 评估', '10月16日'], ['M3：首年保费达 10 万', '12月']],
+    lr: [['产品基础课程', '已完成'], ['整体培训', '82%'], ['角色演练', '2 / 2'], ['开拓角色演练得分', '61']],
+    ci: [['10月1日', '周度面谈——培训正常，设定每周接触 12 次目标。'], ['9月24日', '入职检视——确认 60 人缘故名单。']] }
+};
+class Component extends DCLogic {
+  state = { rec: 'idle', sel: [0, 1, 2, 3, 4] };
+  renderVals() {
+    const app = this.props.app || { lang: 'en', screen: 'newagents', s: {} };
+    const lang = app.lang || 'en', t = T[lang], s = app.s || {}, go = (x) => app.go && app.go(x);
+    const ok = s.week2 && s.recoveryPlan;
+    const ms = app.milestoneScheme === '30-60-90';
+    const colLabels = ms ? (lang === 'en' ? ['30-Day', '60-Day', '90-Day', '12-Month'] : ['30 天', '60 天', '90 天', '12 个月']) : ['M1', 'M3', 'M6', 'M12'];
+    const tag = (k) => k === 'risk' ? ['oklch(0.94 0.07 85)', 'oklch(0.42 0.1 70)'] : ['oklch(0.94 0.05 155)', 'oklch(0.38 0.09 155)'];
+    const card = (name, day, pct, st, label) => ({ name, day, pct, status: label, color: st === 'risk' ? AMBER : GREEN, tagBg: tag(st)[0], tagFg: tag(st)[1], open: () => go('successplan') });
+    const colAgents = [
+      [card('Emily Wong', lang === 'en' ? (ok ? 'Day 28' : 'Day 21') : (ok ? '第 28 天' : '第 21 天'), ok ? '84%' : '68%', ok ? 'ok' : 'risk', ok ? t.backOnTrack : t.atRisk)],
+      [card('Kevin Ho', lang === 'en' ? 'Day 74' : '第 74 天', '91%', 'ok', t.onTrack)], [],
+      [card('Ryan Chow', lang === 'en' ? 'Month 11' : '第 11 个月', '93%', 'ok', t.graduating)]
+    ];
+    const cols = colLabels.map((label, i) => ({ label, agents: colAgents[i], count: colAgents[i].length + (lang === 'en' ? ' agent' + (colAgents[i].length === 1 ? '' : 's') : ' 人'), empty: colAgents[i].length === 0 }));
+    const em = { color: ok ? GREEN : AMBER, tagBg: tag(ok ? 'ok' : 'risk')[0], tagFg: tag(ok ? 'ok' : 'risk')[1], status: ok ? t.backOnTrack : t.atRisk,
+      metrics: [[ok ? '84%' : '68%', INK], [ok ? t.onT : t.below, ok ? GREEN : RED], ['82%', INK], [ok ? '2' : '9', INK]].map((m, i) => ({ label: t.metrics[i], v: m[0], c: m[1] })),
+      insight: ok ? t.insightOk : t.insightTxt, recs: t.recs.map((text, i) => ({ n: '0' + (i + 1), text })) };
+    const gv = ok ? [[9, 10], [27, 30], [2, 2], [1, 1], [34, 40]] : [[6, 10], [18, 30], [2, 2], [1, 1], [26, 40]];
+    const goals = gv.map((g, i) => { const p = g[0] / g[1]; const full = p >= 1; const behind = !full && p < (ok ? 0.85 : 0.7);
+      return { label: t.gl[i], v: i === 3 ? (full ? '✓' : '—') : i === 4 ? g[0] + 'K / ' + g[1] + 'K' : g[0] + ' / ' + g[1], w: Math.round(p * 100) + '%', c: full ? GREEN : behind ? RED : INK, s: full ? t.done : behind ? t.behind : t.onPace }; });
+    const wv = ok ? [14, 9, 6, 13, 15] : [14, 9, 6, null, null];
+    const wl = lang === 'en' ? ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5'] : ['第1周', '第2周', '第3周', '第4周', '第5周'];
+    const weeks = wv.map((v, i) => ({ v: v == null ? '' : v, label: wl[i], h: v == null ? '80%' : Math.round(v / 16 * 100) + '%', c: v == null ? 'transparent' : v < 12 ? RED : INK, border: v == null ? '1px dashed var(--color-divider)' : '0' }));
+    const tlDone = ok ? 4 : 3;
+    const timeline = t.tl.map((m, i) => ({ label: m[0], d: m[1], bg: i < tlDone ? INK : 'transparent', bc: i === tlDone ? RED : INK, fw: i === tlDone ? 800 : 400 }));
+    const R = s.recoveryPlan ? 'active' : this.state.rec;
+    const sel = this.state.sel;
+    return {
+      t, is: { board: app.screen === 'newagents', plan: app.screen === 'successplan' }, schemeLabel: ms ? '30 / 60 / 90' : 'M1 / M3 / M6 / M12', cols, em,
+      openPlan: () => go('successplan'), backBoard: () => go('newagents'), whyEmily: () => app.why('emily'),
+      dayLabel: ok ? t.day2 : t.day, goals, weeks, timeline,
+      learning: t.lr.map(x => ({ label: x[0], v: x[1] })), checkins: t.ci.map(c => ({ d: c[0], text: c[1] })),
+      recText: ok ? t.recB : t.recA, rec: { idle: R === 'idle', loading: R === 'loading', draft: R === 'draft', active: R === 'active' },
+      genRecovery: () => { this.setState({ rec: 'loading' }); setTimeout(() => this.setState({ rec: 'draft' }), 1400); },
+      recItems: t.ri.map((r, i) => ({ text: r[0], who: r[1], mark: sel.includes(i) ? '✓' : '', bg: sel.includes(i) ? INK : 'transparent', toggle: () => this.setState(st => ({ sel: st.sel.includes(i) ? st.sel.filter(x => x !== i) : [...st.sel, i] })) })),
+      assignLabel: t.assignSel + ' (' + sel.length + ')',
+      assign: () => { if (!sel.length) return; app.confirm({ title: t.confirmT, body: t.confirmB, okLabel: t.assign, onOk: () => {
+        app.set({ recoveryPlan: true }); app.completeTask('t3');
+        app.addTask({ id: 'e_calls', type: 'newagent', pri: 'med', due: 'upcoming', title: { en: 'Emily: 20 warm-market calls this week', zh: 'Emily：本周拨打 20 通缘故电话' }, reason: { en: 'Recovery plan · tracked automatically', zh: '恢复计划 · 自动跟踪' }, act: null });
+        app.addTask({ id: 'e_check', type: 'newagent', pri: 'high', due: 'upcoming', title: { en: 'Check-in with Emily (Thu 17:30)', zh: '与 Emily 面谈（周四 17:30）' }, reason: { en: 'Your recovery-plan commitment', zh: '您在恢复计划中的承诺' }, act: { screen: 'successplan', label: { en: 'View Success Plan', zh: '查看成功计划' } } });
+        app.toast(t.assigned); } }); },
+      activeNote: ok ? t.activeOk : t.activeNote, week1: !s.week2, advance: () => app.advanceWeek()
+    };
+  }
+}
+</script>
+</body>
+</html>

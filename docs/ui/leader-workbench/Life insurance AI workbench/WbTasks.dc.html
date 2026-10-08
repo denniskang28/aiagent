@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/styles.css">
+<script src="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/_ds_bundle.js"></script>
+</helmet>
+<div style="max-width:1100px;display:flex;flex-direction:column;gap:24px">
+  <section><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ kicker }}</h6><h1 style="margin:0">{{ title }}</h1></section>
+  <sc-if value="{{ isTasks }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;border-bottom:2px solid var(--color-divider)">
+        <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><button onClick="{{ tb.onClick }}" style="border:0;background:transparent;padding:10px 16px;cursor:pointer;font-size:14px;color:var(--color-text);font-weight:{{ tb.fw }};border-bottom:4px solid {{ tb.bar }};margin-bottom:-2px;display:flex;gap:8px">{{ tb.label }}<span style="font-size:11px;color:var(--color-neutral-700)">{{ tb.count }}</span></button></sc-for>
+      </div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+        <div style="display:grid;grid-template-columns:24px 120px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--color-divider)">
+          <button onClick="{{ r.toggle }}" aria-label="Done" style="width:20px;height:20px;border:2px solid var(--color-text);background:{{ r.boxBg }};color:var(--color-bg);cursor:pointer;font-size:11px;font-weight:800;padding:0">{{ r.mark }}</button>
+          <div><div style="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:{{ r.priC }}">{{ r.pri }}</div><div style="font-size:12px;color:var(--color-neutral-700)">{{ r.type }}</div></div>
+          <div><b style="font-size:15px">{{ r.title }}</b><div style="font-size:13px;color:var(--color-neutral-800)">{{ r.reason }}</div></div>
+          <sc-if value="{{ r.hasAct }}" hint-placeholder-val="{{ true }}"><button class="btn btn-secondary" onClick="{{ r.open }}">{{ r.actLabel }}</button></sc-if>
+        </div>
+      </sc-for>
+      <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="padding:40px 0;color:var(--color-neutral-700)">{{ emptyText }}</div></sc-if>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;border-top:2px solid var(--color-text)">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-divider)"><div><b>{{ s.lang }}</b><div style="font-size:13px;color:var(--color-neutral-700)">{{ s.langSub }}</div></div>
+        <div style="display:flex;border:1px solid var(--color-divider)"><button onClick="{{ setEn }}" style="border:0;padding:8px 14px;cursor:pointer;background:{{ en.bg }};color:{{ en.fg }}">English</button><button onClick="{{ setZh }}" style="border:0;padding:8px 14px;cursor:pointer;background:{{ zh.bg }};color:{{ zh.fg }}">中文</button></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-divider)"><div><b>{{ s.nudge }}</b><div style="font-size:13px;color:var(--color-neutral-700)">{{ s.nudgeSub }}</div></div><span style="font-size:13px">{{ s.nudgeV }}</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-divider)"><div><b>{{ s.approval }}</b><div style="font-size:13px;color:var(--color-neutral-700)">{{ s.approvalSub }}</div></div><span style="font-size:13px;font-weight:600">{{ s.approvalV }}</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-divider)"><div><b>{{ s.reset }}</b><div style="font-size:13px;color:var(--color-neutral-700)">{{ s.resetSub }}</div></div><button class="btn btn-secondary" onClick="{{ reset }}">{{ s.resetBtn }}</button></div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isOther }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:48px 0;border-top:2px solid var(--color-text);display:flex;flex-direction:column;gap:8px;align-items:flex-start;max-width:520px"><h4 style="margin:0">{{ otherTitle }}</h4><p style="margin:0;color:var(--color-neutral-700)">{{ otherBody }}</p><button class="btn btn-secondary" onClick="{{ goHome }}">{{ backLabel }}</button></div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const L = (o, l) => (o && typeof o === 'object' && 'en' in o) ? o[l] : o;
+const T = { en: { kicker: 'Task & Action Center', title: 'Your work queue', tabs: ['Today', 'Upcoming', 'Overdue', 'Completed'], pri: { high: 'High priority', med: 'Medium' },
+  type: { coaching: 'Coaching', agent: 'Agent follow-up', recruit: 'Recruitment', newagent: 'New agent', approval: 'Approval', mgmt: 'Management review' }, empty: 'Nothing here. Well done.',
+  set: { lang: 'Language', langSub: 'All screens, AI content and alerts switch instantly.', nudge: 'Nudge limit', nudgeSub: 'Max nudges shown at once (adjust in Tweaks).', approval: 'Actions requiring approval', approvalSub: 'Messages to candidates, tasks for agents, stage changes.', approvalV: 'Always ask me', reset: 'Reset prototype', resetSub: 'Restart all three journeys from the beginning.', resetBtn: 'Reset' },
+  settings: 'Settings', reports: 'Reports', help: 'Help', otherBody: 'Not part of this prototype. Ask the AI Assistant for any report in plain language.', back: 'Back to Overview' },
+  zh: { kicker: '任务与行动中心', title: '我的待办', tabs: ['今天', '即将到期', '已逾期', '已完成'], pri: { high: '高优先级', med: '中' },
+  type: { coaching: '辅导', agent: '代理人跟进', recruit: '招募', newagent: '新人发展', approval: '审批', mgmt: '管理检视' }, empty: '暂无任务，做得好。',
+  set: { lang: '语言', langSub: '所有页面、AI 内容与提醒即时切换。', nudge: '提醒数量上限', nudgeSub: '同时显示的最多提醒数（可在 Tweaks 中调整）。', approval: '需确认的操作', approvalSub: '发送给候选人的消息、给代理人的任务、阶段变更。', approvalV: '始终征求我的确认', reset: '重置原型', resetSub: '从头重新体验三条旅程。', resetBtn: '重置' },
+  settings: '设置', reports: '报表', help: '帮助', otherBody: '本原型未包含此页面。您可以直接用自然语言向 AI 助手索取任何报表。', back: '返回总览' } };
+const KEYS = ['today', 'upcoming', 'overdue', 'done'];
+class Component extends DCLogic {
+  state = { tab: 'today' };
+  renderVals() {
+    const app = this.props.app || { lang: 'en', screen: 'tasks', tasks: [], s: {} };
+    const lang = app.lang || 'en', t = T[lang], l = (o) => L(o, lang), tasks = app.tasks || [], sc = app.screen;
+    const tabs = t.tabs.map((label, i) => ({ label, count: tasks.filter(x => x.due === KEYS[i]).length, onClick: () => this.setState({ tab: KEYS[i] }), fw: this.state.tab === KEYS[i] ? 800 : 400, bar: this.state.tab === KEYS[i] ? 'var(--color-accent)' : 'transparent' }));
+    const rows = tasks.filter(x => x.due === this.state.tab).map(x => ({ title: l(x.title), reason: l(x.reason), pri: t.pri[x.pri], priC: x.pri === 'high' ? 'var(--color-accent-700)' : 'var(--color-neutral-700)', type: t.type[x.type],
+      mark: x.due === 'done' ? '✓' : '', boxBg: x.due === 'done' ? 'var(--color-text)' : 'transparent', toggle: () => app.completeTask(x.id, x.due !== 'done'),
+      hasAct: !!x.act, actLabel: x.act ? l(x.act.label) : '', open: () => x.act && app.go(x.act.screen, x.act.screen === 'candidate' || x.act.screen === 'interview' ? 'david' : undefined) }));
+    const sel = (on) => ({ bg: on ? 'var(--color-text)' : 'transparent', fg: on ? 'var(--color-bg)' : 'var(--color-text)' });
+    return { isTasks: sc === 'tasks', isSettings: sc === 'settings', isOther: sc === 'reports' || sc === 'help',
+      kicker: sc === 'tasks' ? t.kicker : 'Leader AI Workbench', title: sc === 'tasks' ? t.title : t[sc], tabs, rows, empty: rows.length === 0 && sc === 'tasks', emptyText: t.empty,
+      s: { ...t.set, nudgeV: String(app.nudgeLimit) }, en: sel(lang === 'en'), zh: sel(lang === 'zh'), setEn: () => app.setLang('en'), setZh: () => app.setLang('zh'),
+      reset: () => app.reset(), otherTitle: t[sc] || '', otherBody: t.otherBody, backLabel: t.back, goHome: () => app.go('overview') };
+  }
+}
+</script>
+</body>
+</html>

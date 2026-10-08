@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/styles.css">
+<script src="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/_ds_bundle.js"></script>
+</helmet>
+<div style="max-width:1360px;display:flex;flex-direction:column;gap:28px">
+
+<sc-if value="{{ is.team }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.teamKicker }}</h6><h1 style="margin:0">{{ t.teamTitle }}</h1></div>
+      <button class="btn btn-secondary" onClick="{{ goAgents }}">{{ t.allAgents }} →</button>
+    </section>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px 0;border-top:2px solid var(--color-divider);border-bottom:1px solid var(--color-divider)">
+      <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700);margin-right:4px">{{ t.filters }}</span>
+      <sc-for list="{{ filterSelects }}" as="f" hint-placeholder-count="6">
+        <select class="input" style="width:auto;min-width:130px;font-size:13px">
+          <sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="2"><option>{{ o }}</option></sc-for>
+        </select>
+      </sc-for>
+      <select class="input" onChange="{{ onStatus }}" value="{{ statusVal }}" style="width:auto;min-width:150px;font-size:13px">
+        <sc-for list="{{ statusOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.label }}</option></sc-for>
+      </select>
+    </div>
+    <section style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:20px;border-bottom:2px solid var(--color-divider)">
+      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5">
+        <div style="padding:4px 12px 20px 0;display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--color-divider);min-width:0">
+          <h6 style="margin:0;color:var(--color-neutral-700)">{{ k.label }}</h6>
+          <span style="font-size:clamp(22px,2.2vw,36px);font-weight:800;line-height:1;letter-spacing:-.02em;white-space:nowrap;color:{{ k.color }}">{{ k.value }}</span>
+          <span style="font-size:12px;color:var(--color-neutral-700)">{{ k.note }}</span>
+        </div>
+      </sc-for>
+    </section>
+    <section class="card" style="padding:24px;gap:16px;border-top:4px solid var(--color-text)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.aiDiagnostics }} · {{ t.autoGen }}</span>
+        <button class="btn btn-ghost" onClick="{{ whyTeam }}">{{ t.why }}</button>
+      </div>
+      <p style="margin:0;font-size:22px;font-weight:600;line-height:1.35;max-width:900px;text-wrap:pretty">{{ t.teamInsight }}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-secondary" onClick="{{ seeAffected }}">{{ t.seeAffected }}</button>
+        <button class="btn btn-primary" onClick="{{ genPlan }}">{{ t.genActionPlan }}</button>
+      </div>
+      <sc-if value="{{ plan.loading }}" hint-placeholder-val="{{ false }}">
+        <div style="background:var(--color-bg);padding:16px;display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:13px;font-weight:600">{{ t.generating }}</span>
+          <div style="height:10px;width:70%;background:var(--color-neutral-300);animation:lwbPulse 1.2s infinite"></div>
+          <div style="height:10px;width:55%;background:var(--color-neutral-300);animation:lwbPulse 1.2s .2s infinite"></div>
+          <div style="height:10px;width:62%;background:var(--color-neutral-300);animation:lwbPulse 1.2s .4s infinite"></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ plan.done }}" hint-placeholder-val="{{ false }}">
+        <div style="background:var(--color-bg);padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+            <b style="font-size:15px">{{ t.planTitle }}</b>
+            <div style="display:flex;gap:6px"><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border:1px solid var(--color-text);padding:2px 6px">{{ t.aiPrepared }}</span><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border:1px solid var(--color-accent);color:var(--color-accent-700);padding:2px 6px">{{ t.approvalReq }}</span></div>
+          </div>
+          <sc-for list="{{ planItems }}" as="p" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:28px minmax(0,1fr) 140px;gap:8px;padding:8px 0;border-top:1px solid var(--color-divider);font-size:14px">
+              <b style="color:var(--color-accent)">{{ p.n }}</b><span>{{ p.text }}</span><span style="color:var(--color-neutral-700);font-size:12px">{{ p.owner }}</span>
+            </div>
+          </sc-for>
+          <div style="display:flex;gap:8px"><button class="btn btn-primary" onClick="{{ approvePlan }}">{{ planApproveLabel }}</button><button class="btn btn-secondary" onClick="{{ genPlan }}">{{ t.regenerate }}</button></div>
+        </div>
+      </sc-if>
+    </section>
+    <section style="display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:32px">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:16px"><h4 style="margin:0">{{ t.prodFunnel }}</h4><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.vsBench }}</span></div>
+        <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px">
+          <sc-for list="{{ funnel }}" as="f" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="height:120px;display:flex;align-items:flex-end;background:var(--color-surface)"><div style="width:100%;height:{{ f.h }};background:{{ f.color }}"></div></div>
+              <span style="font-size:12px;font-weight:600">{{ f.label }}</span>
+              <span style="font-size:22px;font-weight:800;line-height:1">{{ f.n }}</span>
+              <span style="font-size:12px;color:{{ f.rateColor }};font-weight:600">{{ f.rate }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:16px"><h4 style="margin:0">{{ t.distribution }}</h4><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.ofTarget }}</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end;height:160px">
+          <sc-for list="{{ dist }}" as="d" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;gap:6px;justify-content:flex-end;height:100%">
+              <span style="font-size:20px;font-weight:800">{{ d.n }}</span>
+              <div style="height:{{ d.h }};background:{{ d.color }}"></div>
+              <span style="font-size:12px">{{ d.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:8px">
+        <h4 style="margin:0">{{ t.agentPerf }}</h4>
+        <div style="display:flex;gap:12px;align-items:center"><span style="font-size:12px;color:var(--color-neutral-700)">{{ tableNote }}</span><sc-if value="{{ affected }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ clearAffected }}">{{ t.clear }}</button></sc-if></div>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(140px,1.4fr) repeat(5,minmax(0,.8fr)) minmax(0,.8fr) minmax(0,1.3fr) 32px;gap:12px;padding:10px 0;border-bottom:2px solid var(--color-divider);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">
+        <span>{{ t.cols.agent }}</span><span>{{ t.cols.target }}</span><span>{{ t.cols.actual }}</span><span>{{ t.cols.gap }}</span><span>{{ t.cols.activity }}</span><span>{{ t.cols.conv }}</span><span>{{ t.cols.risk }}</span><span>{{ t.cols.ai }}</span><span></span>
+      </div>
+      <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="8">
+        <button onClick="{{ r.open }}" style="display:grid;grid-template-columns:minmax(140px,1.4fr) repeat(5,minmax(0,.8fr)) minmax(0,.8fr) minmax(0,1.3fr) 32px;gap:12px;padding:12px 0;border:0;border-bottom:1px solid var(--color-divider);background:transparent;width:100%;text-align:left;cursor:pointer;color:inherit;font-size:14px;align-items:center" style-hover="background:var(--color-neutral-200)">
+          <span><b>{{ r.name }}</b><span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ r.stage }}</span></span>
+          <span>{{ r.target }}</span><span>{{ r.actual }}</span>
+          <span style="font-weight:600;color:{{ r.gapColor }}">{{ r.gap }}</span>
+          <span>{{ r.activity }}</span>
+          <span style="font-weight:600;color:{{ r.convColor }}">{{ r.conv }}</span>
+          <span><span style="font-size:11px;padding:3px 8px;font-weight:600;background:{{ r.riskBg }};color:{{ r.riskFg }}">{{ r.risk }}</span></span>
+          <span style="font-size:13px">{{ r.ai }}</span>
+          <span style="font-size:16px">→</span>
+        </button>
+      </sc-for>
+    </section>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.agents }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:24px">
+    <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.agentsKicker }}</h6><h1 style="margin:0">{{ t.agentsTitle }}</h1></div>
+      <input class="input" placeholder="{{ t.searchAgents }}" value="{{ query }}" onInput="{{ onQuery }}" style="width:320px">
+    </section>
+    <div style="display:flex;border-bottom:2px solid var(--color-divider);flex-wrap:wrap">
+      <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="6">
+        <button onClick="{{ tb.onClick }}" style="border:0;background:transparent;padding:10px 16px;cursor:pointer;font-size:14px;color:var(--color-text);font-weight:{{ tb.fw }};border-bottom:4px solid {{ tb.bar }};margin-bottom:-2px;display:flex;gap:8px;align-items:center">{{ tb.label }}<span style="font-size:11px;color:var(--color-neutral-700)">{{ tb.count }}</span></button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ agentCards }}" as="a" hint-placeholder-count="6">
+        <div style="display:grid;grid-template-columns:minmax(170px,1.2fr) repeat(4,minmax(0,.6fr)) minmax(0,2fr) auto;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:40px;height:40px;background:var(--color-neutral-300);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none">{{ a.ini }}</div>
+            <div><b style="font-size:15px">{{ a.name }}</b><div style="font-size:12px;color:var(--color-neutral-700)">{{ a.stage }}</div></div>
+          </div>
+          <div><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.goal }}</div><b style="font-size:18px;color:{{ a.goalColor }}">{{ a.goal }}</b></div>
+          <div><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.cols.activity }}</div><span style="font-size:13px;font-weight:600">{{ a.activity }}</span></div>
+          <div><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.pipeline }}</div><span style="font-size:13px;font-weight:600">{{ a.pipeline }}</span></div>
+          <div><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.cols.conv }}</div><span style="font-size:13px;font-weight:600;color:{{ a.convColor }}">{{ a.conv }}</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-size:11px;padding:3px 8px;font-weight:600;background:{{ a.stBg }};color:{{ a.stFg }}">{{ a.status }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ a.capability }}</span></div>
+            <div style="font-size:13px"><span style="font-weight:800;font-size:10px;background:var(--color-text);color:var(--color-bg);padding:1px 4px;margin-right:6px">AI</span>{{ a.rec }}</div>
+          </div>
+          <button class="btn btn-secondary" onClick="{{ a.open }}">{{ t.viewAgent }}</button>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noAgents }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:48px 0;display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+          <h4 style="margin:0">{{ t.emptyTitle }}</h4><p style="margin:0;color:var(--color-neutral-700)">{{ t.emptyBody }}</p>
+          <button class="btn btn-secondary" onClick="{{ clearQuery }}">{{ t.clear }}</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.agent }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <button class="btn btn-ghost" onClick="{{ goAgents }}" style="align-self:flex-start;padding-left:0">← {{ t.agentsTitle }}</button>
+    <section style="display:flex;justify-content:space-between;gap:24px;align-items:flex-end;flex-wrap:wrap;border-bottom:2px solid var(--color-text);padding-bottom:20px">
+      <div style="display:flex;gap:20px;align-items:center">
+        <div style="width:72px;height:72px;background:var(--color-text);color:var(--color-bg);display:grid;place-items:center;font-weight:800;font-size:24px">{{ ag.ini }}</div>
+        <div>
+          <h1 style="margin:0 0 6px">{{ ag.name }}</h1>
+          <div style="display:flex;gap:20px;font-size:13px;flex-wrap:wrap;align-items:center">
+            <span><span style="color:var(--color-neutral-700)">{{ t.careerStage }}</span> <b>{{ ag.stage }}</b></span>
+            <span><span style="color:var(--color-neutral-700)">{{ t.monthlyTarget }}</span> <b>{{ ag.target }}</b></span>
+            <span><span style="color:var(--color-neutral-700)">{{ t.cols.actual }}</span> <b>{{ ag.actual }}</b></span>
+            <span style="font-size:11px;padding:3px 8px;font-weight:600;background:{{ ag.stBg }};color:{{ ag.stFg }}">{{ ag.status }}</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onClick="{{ toCoaching }}">{{ t.createPlan }}</button>
+        <button class="btn btn-secondary" onClick="{{ toSession }}">{{ t.startSession }}</button>
+        <button class="btn btn-secondary" onClick="{{ assignRP }}">{{ t.assignRP }}</button>
+        <button class="btn btn-secondary" onClick="{{ recLearning }}">{{ t.recLearning }}</button>
+      </div>
+    </section>
+    <section style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:32px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:28px">
+        <div class="card" style="padding:24px;gap:16px;border-top:4px solid var(--color-text)">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.aiDiagnosis }}</span><button class="btn btn-ghost" onClick="{{ whyAgent }}">{{ t.why }}</button></div>
+          <p style="margin:0;font-size:18px;line-height:1.45;text-wrap:pretty">{{ ag.diag1 }}</p>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;border-top:1px solid var(--color-divider);padding-top:16px">
+            <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.gapAt }}</div><b style="font-size:20px">{{ ag.gapStage }}</b></div>
+            <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.cols.conv }}</div><b style="font-size:28px;color:var(--color-accent)">{{ ag.conv }}</b></div>
+            <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ t.benchmark }}</div><b style="font-size:28px">{{ ag.bench }}</b></div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--color-neutral-700);margin-bottom:6px">{{ t.likelyFocus }}</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ ag.focus }}" as="f" hint-placeholder-count="3"><span style="border:1px solid var(--color-text);padding:4px 10px;font-size:13px;font-weight:600">{{ f }}</span></sc-for></div>
+          </div>
+          <button class="btn btn-ghost" onClick="{{ toDiagnosis }}" style="align-self:flex-start">{{ t.openDiagnosis }} →</button>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:16px"><h4 style="margin:0">{{ t.performance }}</h4><span style="font-size:12px;color:var(--color-neutral-700)">{{ t.last6 }}</span></div>
+          <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;align-items:end;height:140px">
+            <sc-for list="{{ ag.months }}" as="m" hint-placeholder-count="6">
+              <div style="display:flex;flex-direction:column;gap:4px;justify-content:flex-end;height:100%">
+                <span style="font-size:12px;font-weight:600">{{ m.v }}</span>
+                <div style="height:{{ m.h }};background:{{ m.c }}"></div>
+                <span style="font-size:11px;color:var(--color-neutral-700)">{{ m.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px">
+          <div>
+            <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h4 style="margin:0">{{ t.activityPipeline }}</h4></div>
+            <sc-for list="{{ ag.activityRows }}" as="r" hint-placeholder-count="5">
+              <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span>{{ r.label }}</span><span style="display:flex;gap:10px"><b>{{ r.v }}</b><span style="font-size:12px;font-weight:600;color:{{ r.c }};width:64px;text-align:right">{{ r.s }}</span></span></div>
+            </sc-for>
+          </div>
+          <div>
+            <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h4 style="margin:0">{{ t.capability }}</h4></div>
+            <sc-for list="{{ ag.caps }}" as="c" hint-placeholder-count="5">
+              <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 28px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:14px">
+                <span>{{ c.label }}</span>
+                <div style="height:8px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ c.w }};background:{{ c.c }}"></div></div>
+                <b style="text-align:right">{{ c.v }}</b>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h4 style="margin:0">{{ t.customerActivity }}</h4></div>
+          <sc-for list="{{ ag.customers }}" as="c" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:90px minmax(0,1fr) 140px;gap:12px;padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span style="color:var(--color-neutral-700)">{{ c.d }}</span><span>{{ c.text }}</span><span style="font-weight:600;color:{{ c.c }}">{{ c.s }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+      <aside style="display:flex;flex-direction:column;gap:28px">
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.learning }}</h5></div>
+          <sc-for list="{{ ag.learning }}" as="x" hint-placeholder-count="3">
+            <div style="display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span>{{ x.label }}</span><b>{{ x.v }}</b></div>
+          </sc-for>
+        </div>
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.coachingHistory }}</h5></div>
+          <sc-for list="{{ ag.history }}" as="h" hint-placeholder-count="3">
+            <div style="display:grid;grid-template-columns:12px minmax(0,1fr);gap:10px;padding:8px 0">
+              <span style="width:10px;height:10px;background:{{ h.c }};margin-top:5px"></span>
+              <div><div style="font-size:12px;color:var(--color-neutral-700)">{{ h.d }}</div><div style="font-size:13px;font-weight:600">{{ h.title }}</div><div style="font-size:12px">{{ h.note }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.devMilestones }}</h5></div>
+          <sc-for list="{{ ag.milestones }}" as="m" hint-placeholder-count="3">
+            <div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span style="width:18px;height:18px;border:2px solid var(--color-text);display:grid;place-items:center;font-size:11px;font-weight:800;background:{{ m.bg }};color:{{ m.fg }}">{{ m.mark }}</span><span style="flex:1">{{ m.label }}</span><span style="color:var(--color-neutral-700);font-size:12px">{{ m.d }}</span></div>
+          </sc-for>
+        </div>
+      </aside>
+    </section>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.diagnosis }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <button class="btn btn-ghost" onClick="{{ backAgent }}" style="align-self:flex-start;padding-left:0">← {{ ag.name }}</button>
+    <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.diagKicker }}</h6><h1 style="margin:0">{{ ag.name }}</h1></div>
+      <div style="display:flex;gap:8px"><button class="btn btn-ghost" onClick="{{ whyAgent }}">{{ t.why }}</button><button class="btn btn-primary" onClick="{{ toCoaching }}">{{ t.genCoachingPlan }}</button></div>
+    </section>
+    <section>
+      <div style="display:flex;gap:12px;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:16px"><span style="font-size:13px;font-weight:800;color:var(--color-accent)">01</span><h4 style="margin:0">{{ t.what }}</h4></div>
+      <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0">
+        <sc-for list="{{ diagFunnel }}" as="f" hint-placeholder-count="5">
+          <div style="padding:16px;border:2px solid {{ f.border }};margin-right:-2px;background:{{ f.bg }};display:flex;flex-direction:column;gap:6px;position:relative">
+            <span style="font-size:12px;font-weight:600">{{ f.label }}</span>
+            <span style="font-size:32px;font-weight:800;line-height:1">{{ f.n }}</span>
+            <span style="font-size:12px;color:var(--color-neutral-700)">{{ f.rate }}</span>
+            <span style="font-size:11px;padding:3px 8px;font-weight:600;align-self:flex-start;background:{{ f.stBg }};color:{{ f.stFg }}">{{ f.status }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+    <section style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px">
+      <div>
+        <div style="display:flex;gap:12px;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:16px"><span style="font-size:13px;font-weight:800;color:var(--color-accent)">02</span><h4 style="margin:0">{{ t.whyQ }}</h4></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:8px"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.aiDiagnosis }}</div>
+        <p style="font-size:20px;font-weight:600;line-height:1.4;margin:0 0 20px;text-wrap:pretty">{{ t.diagQuote }}</p>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--color-divider)">
+          <sc-for list="{{ evidence }}" as="e" hint-placeholder-count="4">
+            <div style="padding:14px 14px 14px 0;border-bottom:1px solid var(--color-divider)"><div style="font-size:12px;color:var(--color-neutral-700)">{{ e.label }}</div><b style="font-size:22px;color:{{ e.c }}">{{ e.v }}</b></div>
+          </sc-for>
+        </div>
+        <div style="margin-top:20px">
+          <div style="font-size:12px;color:var(--color-neutral-700);margin-bottom:8px">{{ t.lostReasons }}</div>
+          <sc-for list="{{ lost }}" as="x" hint-placeholder-count="3">
+            <div style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) 20px;gap:10px;align-items:center;padding:6px 0;font-size:13px"><span>{{ x.label }}</span><div style="height:8px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ x.w }};background:{{ x.c }}"></div></div><b>{{ x.n }}</b></div>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;gap:12px;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:16px"><span style="font-size:13px;font-weight:800;color:var(--color-accent)">03</span><h4 style="margin:0">{{ t.next }}</h4></div>
+        <div style="font-size:12px;color:var(--color-neutral-700);margin-bottom:8px">{{ t.recFocus }}</div>
+        <sc-for list="{{ focusList }}" as="f" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--color-divider)">
+            <span style="font-size:28px;font-weight:800;line-height:1;color:var(--color-accent)">{{ f.n }}</span>
+            <div><b style="font-size:16px">{{ f.title }}</b><div style="font-size:13px;color:var(--color-neutral-800)">{{ f.note }}</div></div>
+          </div>
+        </sc-for>
+        <div style="background:var(--color-surface);padding:16px;margin-top:20px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.confidence }}</span><b>{{ t.highConf }}</b></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;gap:12px"><span style="color:var(--color-neutral-700)">{{ t.dataUsed }}</span><span style="text-align:right">{{ t.dataList }}</span></div>
+        </div>
+        <button class="btn btn-primary" onClick="{{ toCoaching }}" style="margin-top:20px">{{ t.genCoachingPlan }}</button>
+      </div>
+    </section>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const L = (o, l) => (o && typeof o === 'object' && 'en' in o) ? o[l] : o;
+const TONE = { risk: ['var(--color-accent-100)', 'var(--color-accent-800)'], attn: ['oklch(0.94 0.07 85)', 'oklch(0.42 0.1 70)'], good: ['oklch(0.94 0.05 155)', 'oklch(0.38 0.09 155)'], info: ['var(--color-neutral-200)', 'var(--color-neutral-800)'], hp: ['var(--color-text)', 'var(--color-bg)'] };
+const RED = 'var(--color-accent)', INK = 'var(--color-text)', GREEN = 'oklch(0.45 0.1 155)', AMBER = 'oklch(0.5 0.12 65)';
+const T = {
+  en: { teamKicker: 'Team Performance · Unit 7', teamTitle: 'October 2026', allAgents: 'All agents', filters: 'Filter',
+    fsel: [['All teams', 'Unit 7A', 'Unit 7B'], ['All segments', 'Core', 'Senior'], ['All career stages', 'New (<1 yr)', '1–3 yrs', '3+ yrs'], ['October 2026', 'September 2026', 'Q3 2026'], ['All products', 'Life', 'Health', 'Savings']],
+    status: ['All statuses', 'Needs attention / at risk', 'On track', 'Above target'],
+    kpi: ['Target (MTD)', 'Actual', 'Gap', 'Activity', 'Conversion'],
+    kpiNote: ['16 working days left', '+6% vs September', 'HK$100K to close', '104% of benchmark', 'Benchmark 22%'],
+    aiDiagnostics: 'AI diagnostics', autoGen: 'Auto-generated', why: 'Why?',
+    teamInsight: 'Team production is 8% below target mainly because 4 agents have sufficient lead volume but low conversion.',
+    seeAffected: 'See Affected Agents', genActionPlan: 'Generate Action Plan', generating: 'AI is preparing an action plan…', planTitle: 'Team action plan — rest of October',
+    aiPrepared: 'AI prepared', approvalReq: 'Leader approval required', regenerate: 'Regenerate', approveCreate: 'Approve & create tasks', approved: 'Approved ✓ tasks created',
+    plan: [['Objection-handling coaching for James Lee this week', 'You'], ['Group role play on premium objections (James, Grace, Peter, Michael)', 'You · Fri'], ['Daily activity check-in with David Chen for 2 weeks', 'You'], ['Share Natalie\'s closing talk track with the team', 'AI drafts · you send']],
+    prodFunnel: 'Production Funnel', vsBench: 'Stage conversion vs benchmark', distribution: 'Agent Performance Distribution', ofTarget: 'Agents by % of target',
+    fl: ['Prospects', 'Contacts', 'Appointments', 'Proposals', 'Closed'],
+    agentPerf: 'Agent Performance', clear: 'Clear filter', showing: 'agents', affectedNote: 'Showing 4 agents with low conversion',
+    cols: { agent: 'Agent', target: 'Target', actual: 'Actual', gap: 'Gap', activity: 'Activity', conv: 'Conversion', risk: 'Risk', ai: 'AI attention' },
+    act: { strong: 'Strong', healthy: 'Healthy', low: 'Low' }, risk: { high: 'High', med: 'Medium', low: 'Low' },
+    agentsKicker: 'Agents · 12 active', agentsTitle: 'Agents', searchAgents: 'Search by name…',
+    tabs: ['All', 'Needs Attention', 'At Risk', 'High Potential', 'New Agents', 'Top Performers'],
+    goal: 'Goal', pipeline: 'Pipeline', viewAgent: 'View Agent', emptyTitle: 'No agents match', emptyBody: 'Try a different name or segment.',
+    st: { attention: 'Needs Attention', risk: 'At Risk', hp: 'High Potential', top: 'Top Performer', ok: 'On Track', watch: 'Monitor', new: 'New Agent' },
+    careerStage: 'Career stage', monthlyTarget: 'Monthly target', createPlan: 'Create Coaching Plan', startSession: 'Start Coaching Session', assignRP: 'Assign Role Play', recLearning: 'Recommend Learning',
+    aiDiagnosis: 'AI Diagnosis', gapAt: 'Main gap occurs at', benchmark: 'Team benchmark', likelyFocus: 'Likely coaching focus', openDiagnosis: 'Open full performance diagnosis',
+    performance: 'Performance', last6: 'Production, last 6 months (HK$K)', activityPipeline: 'Activity & Pipeline', capability: 'Capability', customerActivity: 'Customer Activity',
+    learning: 'Learning', coachingHistory: 'Coaching History', devMilestones: 'Development Milestones',
+    diagKicker: 'Performance Diagnosis', genCoachingPlan: 'Generate Coaching Plan', what: 'What happened?', whyQ: 'Why?', next: 'What should be done next?',
+    diagQuote: '"James has sufficient opportunity volume but struggles to convert proposals into sales."',
+    lostReasons: 'Why the 7 lost cases were lost', recFocus: 'Recommended coaching focus', confidence: 'Confidence', highConf: 'High — 3 consistent weeks', dataUsed: 'Data used', dataList: 'Activity history · Sales pipeline · Performance metrics',
+    healthy: 'Healthy', lowS: 'Low', confirmRP: 'Assign role play?', confirmRPBody: 'James will receive "Premium objection — AI role play" (15 min) in his app, due Friday.', assign: 'Assign',
+    confirmL: 'Recommend learning?', confirmLBody: 'James will receive "Value-based selling: handling price objections" (2 modules, 40 min).', send: 'Send', rpDone: 'Role play assigned to James · task created', lDone: 'Learning sent to James' },
+  zh: { teamKicker: '团队业绩 · 第七营业组', teamTitle: '2026年10月', allAgents: '全部代理人', filters: '筛选',
+    fsel: [['全部团队', '7A 组', '7B 组'], ['全部分群', '核心', '资深'], ['全部职级阶段', '新人（<1年）', '1–3 年', '3 年以上'], ['2026年10月', '2026年9月', '2026年第三季度'], ['全部产品', '寿险', '健康险', '储蓄险']],
+    status: ['全部状态', '需要关注 / 存在风险', '进度正常', '超额达成'],
+    kpi: ['目标（月累计）', '实际', '差距', '活动量', '转化率'],
+    kpiNote: ['剩余 16 个工作日', '较 9 月 +6%', '尚差 10 万港元', '达基准 104%', '基准 22%'],
+    aiDiagnostics: 'AI 诊断', autoGen: '自动生成', why: '为什么？',
+    teamInsight: '团队业绩低于目标 8%，主要原因是 4 名代理人线索充足但转化率偏低。',
+    seeAffected: '查看相关代理人', genActionPlan: '生成行动计划', generating: 'AI 正在准备行动计划…', planTitle: '团队行动计划——10 月剩余时间',
+    aiPrepared: 'AI 已准备', approvalReq: '需主管确认', regenerate: '重新生成', approveCreate: '确认并创建任务', approved: '已确认 ✓ 任务已创建',
+    plan: [['本周为 James Lee 安排异议处理辅导', '您'], ['保费异议小组角色演练（James、Grace、Peter、Michael）', '您 · 周五'], ['与 David Chen 进行为期两周的每日活动检视', '您'], ['向团队分享 Natalie 的促成话术', 'AI 起草 · 您发送']],
+    prodFunnel: '业绩漏斗', vsBench: '各阶段转化率对比基准', distribution: '代理人业绩分布', ofTarget: '按目标达成率分组',
+    fl: ['潜在客户', '接触', '约访', '建议书', '成交'],
+    agentPerf: '代理人业绩', clear: '清除筛选', showing: '名代理人', affectedNote: '显示 4 名转化率偏低的代理人',
+    cols: { agent: '代理人', target: '目标', actual: '实际', gap: '差距', activity: '活动量', conv: '转化率', risk: '风险', ai: 'AI 关注点' },
+    act: { strong: '优秀', healthy: '正常', low: '偏低' }, risk: { high: '高', med: '中', low: '低' },
+    agentsKicker: '代理人 · 12 名活跃', agentsTitle: '代理人', searchAgents: '按姓名搜索…',
+    tabs: ['全部', '需要关注', '存在风险', '高潜力', '新人', '绩优'],
+    goal: '目标达成', pipeline: '管道', viewAgent: '查看代理人', emptyTitle: '没有符合条件的代理人', emptyBody: '请尝试其他姓名或分群。',
+    st: { attention: '需要关注', risk: '存在风险', hp: '高潜力', top: '绩优', ok: '进度正常', watch: '持续观察', new: '新人' },
+    careerStage: '从业年限', monthlyTarget: '月度目标', createPlan: '生成辅导计划', startSession: '开始辅导', assignRP: '指派角色演练', recLearning: '推荐学习',
+    aiDiagnosis: 'AI 诊断', gapAt: '主要差距环节', benchmark: '团队基准', likelyFocus: '建议辅导重点', openDiagnosis: '查看完整业绩诊断',
+    performance: '业绩', last6: '近 6 个月业绩（千港元）', activityPipeline: '活动与管道', capability: '能力', customerActivity: '客户活动',
+    learning: '学习', coachingHistory: '辅导记录', devMilestones: '发展里程碑',
+    diagKicker: '业绩诊断', genCoachingPlan: '生成辅导计划', what: '发生了什么？', whyQ: '为什么？', next: '下一步怎么做？',
+    diagQuote: '"James 的商机量充足，但难以将建议书转化为成交。"',
+    lostReasons: '7 个流失案例的原因', recFocus: '建议辅导重点', confidence: '可信度', highConf: '高——连续 3 周一致', dataUsed: '数据来源', dataList: '活动记录 · 销售管道 · 业绩指标',
+    healthy: '正常', lowS: '偏低', confirmRP: '指派角色演练？', confirmRPBody: 'James 将在 App 中收到"保费异议——AI 角色演练"（15 分钟），周五前完成。', assign: '指派',
+    confirmL: '推荐学习内容？', confirmLBody: 'James 将收到"价值销售：应对价格异议"（2 个单元，40 分钟）。', send: '发送', rpDone: '已向 James 指派角色演练 · 任务已创建', lDone: '已向 James 发送学习内容' }
+};
+const AG = [
+  { id: 'james', name: 'James Lee', yrs: 2, tg: 100, ac: 78, act: 'healthy', pipe: 9, conv: 11, risk: 'high', st: 'attention', seg: ['attention'], gap: { en: 'Closing capability', zh: '成交能力' }, rec: { en: 'Coaching on objection handling', zh: '异议处理辅导' }, cap: { en: 'Gap: proposal-to-close', zh: '短板：建议书成交' } },
+  { id: 'alice', name: 'Alice Wong', yrs: 5, tg: 100, ac: 112, act: 'strong', pipe: 12, conv: 28, risk: 'low', st: 'top', seg: ['top'], gap: null, rec: { en: 'Invite to mentor new agents', zh: '邀请担任新人导师' }, cap: { en: 'Strong across stages', zh: '各环节表现均衡' } },
+  { id: 'davidc', name: 'David Chen', yrs: 3, tg: 100, ac: 52, act: 'low', pipe: 4, conv: 16, risk: 'high', st: 'risk', seg: ['attention', 'risk'], gap: { en: 'Activity gap', zh: '活动量不足' }, rec: { en: 'Daily activity check-in for 2 weeks', zh: '两周每日活动检视' }, cap: { en: 'Gap: prospecting volume', zh: '短板：开拓量' } },
+  { id: 'emily', name: 'Emily Wong', yrs: 0, nm: 'M1', tg: 40, ac: 26, act: 'low', pipe: 3, conv: 12, risk: 'high', st: 'risk', seg: ['attention', 'risk', 'new'], gap: { en: 'Prospecting activity', zh: '客户开拓' }, rec: { en: 'Review sourcing plan', zh: '检视客户来源计划' }, cap: { en: 'Training on track', zh: '培训进度正常' } },
+  { id: 'kevin', name: 'Kevin Ho', yrs: 0, nm: 'M3', tg: 60, ac: 56, act: 'healthy', pipe: 5, conv: 19, risk: 'low', st: 'new', seg: ['new'], gap: null, rec: { en: 'Approve M3 milestone review', zh: '审批 M3 里程碑评估' }, cap: { en: 'On activation path', zh: '符合激活路径' } },
+  { id: 'grace', name: 'Grace Lam', yrs: 4, tg: 100, ac: 84, act: 'healthy', pipe: 8, conv: 13, risk: 'med', st: 'watch', seg: [], gap: { en: 'Product confidence', zh: '产品信心' }, rec: { en: 'Join group objection role play', zh: '参加异议处理小组演练' }, cap: { en: 'Gap: product knowledge', zh: '短板：产品知识' } },
+  { id: 'michael', name: 'Michael Tan', yrs: 6, tg: 120, ac: 108, act: 'healthy', pipe: 10, conv: 14, risk: 'med', st: 'watch', seg: [], gap: { en: 'Conversion', zh: '转化率' }, rec: { en: 'Pipeline review (overdue)', zh: '管道检视（已逾期）' }, cap: { en: 'Gap: follow-up speed', zh: '短板：跟进速度' } },
+  { id: 'sophia', name: 'Sophia Lin', yrs: 3, tg: 100, ac: 118, act: 'strong', pipe: 11, conv: 26, risk: 'low', st: 'hp', seg: ['hp'], gap: null, rec: { en: 'Discuss leadership track', zh: '探讨主管发展路径' }, cap: { en: 'Leadership potential', zh: '具备管理潜力' } },
+  { id: 'ryan', name: 'Ryan Chow', yrs: 1, tg: 80, ac: 74, act: 'strong', pipe: 9, conv: 18, risk: 'low', st: 'hp', seg: ['hp'], gap: null, rec: { en: 'Stretch target for Q4', zh: '设定第四季度挑战目标' }, cap: { en: 'Fast learner', zh: '学习速度快' } },
+  { id: 'natalie', name: 'Natalie Yip', yrs: 7, tg: 200, ac: 210, act: 'strong', pipe: 15, conv: 31, risk: 'low', st: 'top', seg: ['top'], gap: null, rec: { en: 'Share closing talk track', zh: '分享促成话术' }, cap: { en: 'Best closer in unit', zh: '组内成交能力最强' } },
+  { id: 'peter', name: 'Peter Ng', yrs: 2, tg: 100, ac: 81, act: 'healthy', pipe: 9, conv: 12, risk: 'med', st: 'watch', seg: [], gap: { en: 'Conversion', zh: '转化率' }, rec: { en: 'Join group objection role play', zh: '参加异议处理小组演练' }, cap: { en: 'Gap: closing', zh: '短板：促成' } },
+  { id: 'olivia', name: 'Olivia Cheung', yrs: 4, tg: 100, ac: 101, act: 'healthy', pipe: 8, conv: 22, risk: 'low', st: 'ok', seg: [], gap: null, rec: null, cap: { en: 'Steady', zh: '表现稳定' } }
+];
+const LOWCONV = ['james', 'grace', 'michael', 'peter'];
+const TABKEYS = ['all', 'attention', 'risk', 'hp', 'new', 'top'];
+const STTONE = { attention: 'risk', risk: 'risk', hp: 'hp', top: 'good', ok: 'info', watch: 'attn', new: 'info' };
+
+class Component extends DCLogic {
+  state = { tab: null, query: '', status: 'all', affected: false, plan: 'idle', planApproved: false };
+  componentDidMount() {
+    const app = this.props.app || {};
+    if (app.s && app.s.agentFilter) { this.setState({ tab: app.s.agentFilter }); app.set({ agentFilter: null }); }
+  }
+  renderVals() {
+    const app = this.props.app || { lang: 'en', screen: 'team', s: {} };
+    const lang = app.lang || 'en', t = T[lang], l = (o) => L(o, lang), sc = app.screen;
+    const go = (x, p) => app.go && app.go(x, p);
+    const stageOf = (a) => a.nm ? (lang === 'en' ? 'New · ' + a.nm : '新人 · ' + a.nm) : (lang === 'en' ? a.yrs + (a.yrs === 1 ? ' year' : ' years') : a.yrs + ' 年');
+    const pct = (a) => Math.round(a.ac / a.tg * 100);
+    const convC = (c) => c < 15 ? RED : c >= 24 ? GREEN : INK;
+
+    const rowsSrc = AG.filter(a => {
+      if (this.state.affected) return LOWCONV.includes(a.id);
+      const p = pct(a), f = this.state.status;
+      return f === 'all' || (f === 'attn' && (a.st === 'attention' || a.st === 'risk')) || (f === 'ok' && p >= 90 && p <= 100) || (f === 'above' && p > 100);
+    });
+    const tableRows = rowsSrc.map(a => { const g = Math.round((a.ac / a.tg - 1) * 100); const rk = { high: 'risk', med: 'attn', low: 'good' }[a.risk];
+      return { name: a.name, stage: stageOf(a), target: a.tg + 'K', actual: a.ac + 'K', gap: (g > 0 ? '+' : g < 0 ? '−' : '') + Math.abs(g) + '%', gapColor: g < -15 ? RED : g >= 0 ? GREEN : INK,
+        activity: t.act[a.act], conv: a.conv + '%', convColor: convC(a.conv), risk: t.risk[a.risk], riskBg: TONE[rk][0], riskFg: TONE[rk][1], ai: a.gap ? l(a.gap) : '—', open: () => go('agent', a.id) }; });
+
+    const tab = this.state.tab || 'all', q = this.state.query.toLowerCase();
+    const inTab = (a, k) => k === 'all' || a.seg.includes(k);
+    const tabs = t.tabs.map((label, i) => ({ label, count: AG.filter(a => inTab(a, TABKEYS[i])).length, onClick: () => this.setState({ tab: TABKEYS[i] }),
+      fw: TABKEYS[i] === tab ? 800 : 400, bar: TABKEYS[i] === tab ? 'var(--color-accent)' : 'transparent' }));
+    const agentCards = AG.filter(a => inTab(a, tab) && a.name.toLowerCase().includes(q)).map(a => { const tn = TONE[STTONE[a.st]]; const p = pct(a);
+      return { ini: a.name.split(' ').map(x => x[0]).join(''), name: a.name, stage: stageOf(a), goal: p + '%', goalColor: p < 80 ? RED : p >= 100 ? GREEN : INK,
+        activity: t.act[a.act], pipeline: a.pipe + (lang === 'en' ? ' proposals' : ' 份建议书'), conv: a.conv + '%', convColor: convC(a.conv),
+        status: t.st[a.st], stBg: tn[0], stFg: tn[1], capability: l(a.cap), rec: a.rec ? l(a.rec) : (lang === 'en' ? 'No action needed' : '暂无需行动'), open: () => go('agent', a.id) }; });
+
+    const a = AG.find(x => x.id === app.param) || AG[0];
+    const isJ = a.id === 'james';
+    const tn = TONE[STTONE[a.st]];
+    const mv = isJ ? [96, 102, 94, 88, 82, 78] : [0.9, 0.95, 1.02, 0.97, 1, 1].map(k => Math.round(a.ac * k));
+    const mlab = lang === 'en' ? ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'] : ['5月', '6月', '7月', '8月', '9月', '10月'];
+    const mx = Math.max(...mv, a.tg);
+    const ok = (s) => ({ s: s ? t.healthy : t.lowS, c: s ? GREEN : RED });
+    const ag = {
+      ini: a.name.split(' ').map(x => x[0]).join(''), name: a.name, stage: stageOf(a), target: 'HK$' + a.tg + 'K', actual: 'HK$' + a.ac + 'K', status: t.st[a.st], stBg: tn[0], stFg: tn[1],
+      diag1: isJ ? (lang === 'en' ? 'James has sufficient prospecting activity and appointment volume. The main performance gap is occurring at Proposal → Close.' : 'James 的客户开拓与约访量充足，主要业绩差距出现在"建议书 → 成交"环节。')
+        : a.gap ? (lang === 'en' ? a.name.split(' ')[0] + '\'s main gap is ' + l(a.gap).toLowerCase() + '. Other stages are within benchmark.' : a.name.split(' ')[0] + ' 的主要差距在于' + l(a.gap) + '，其余环节均在基准范围内。')
+        : (lang === 'en' ? a.name.split(' ')[0] + ' is performing at or above benchmark across all funnel stages.' : a.name.split(' ')[0] + ' 在各漏斗环节均达到或超过基准。'),
+      gapStage: isJ ? (lang === 'en' ? 'Proposal → Close' : '建议书 → 成交') : a.gap ? l(a.gap) : '—', conv: a.conv + '%', bench: '24%',
+      focus: isJ ? (lang === 'en' ? ['Objection handling', 'Product confidence', 'Closing techniques'] : ['异议处理', '产品信心', '促成技巧']) : [a.rec ? l(a.rec) : '—'],
+      months: mv.map((v, i) => ({ v, label: mlab[i], h: Math.round(v / mx * 100) + '%', c: i === 5 ? (pct(a) < 80 ? RED : INK) : 'var(--color-neutral-500)' })),
+      activityRows: [[lang === 'en' ? 'Customer contacts' : '客户接触', isJ ? 64 : a.pipe * 7, a.act !== 'low'], [lang === 'en' ? 'Appointments' : '约访', isJ ? 26 : a.pipe * 3, a.act !== 'low'], [lang === 'en' ? 'Proposals' : '建议书', a.pipe, true], [lang === 'en' ? 'Proposal → close' : '建议书 → 成交', a.conv + '%', a.conv >= 15], [lang === 'en' ? 'Open pipeline value' : '在途管道金额', 'HK$' + (a.pipe * 14) + 'K', true]].map(r => ({ label: r[0], v: r[1], ...ok(r[2]) })),
+      caps: (isJ ? [82, 74, 61, 48, 52] : [80, 76, 72, 70, 74]).map((v, i) => ({ label: (lang === 'en' ? ['Prospecting', 'Needs analysis', 'Product knowledge', 'Objection handling', 'Closing'] : ['客户开拓', '需求分析', '产品知识', '异议处理', '促成'])[i], v, w: v + '%', c: v < 60 ? RED : INK })),
+      customers: (lang === 'en' ? [['6 Oct', 'Mr. Lau — proposal declined', 'Premium too high', RED], ['3 Oct', 'Ms. Ho — proposal declined', 'Premium too high', RED], ['1 Oct', 'Chan family — policy issued', 'HK$18K', GREEN], ['28 Sep', 'Mr. Yu — proposal pending', 'Follow-up due', AMBER]]
+        : [['10月6日', '刘先生——建议书被拒', '保费太高', RED], ['10月3日', '何女士——建议书被拒', '保费太高', RED], ['10月1日', '陈氏家庭——保单已签发', '1.8 万港元', GREEN], ['9月28日', '余先生——建议书待定', '需跟进', AMBER]]).map(c => ({ d: c[0], text: c[1], s: c[2], c: c[3] })),
+      learning: (lang === 'en' ? [['Product Foundation', '100%'], ['Needs-based selling', '100%'], ['Handling objections', '35%'], ['AI role plays (90 days)', '1']] : [['产品基础', '100%'], ['需求导向销售', '100%'], ['异议处理', '35%'], ['AI 角色演练（90 天）', '1']]).map(x => ({ label: x[0], v: x[1] })),
+      history: (lang === 'en' ? [['Aug 2026', 'Pipeline planning', 'Agreed weekly proposal target — achieved'], ['May 2026', 'Product confidence', 'Critical illness refresher completed'], ['Feb 2026', 'Annual development review', 'Set 2026 goals']] : [['2026年8月', '管道规划', '约定每周建议书目标——已达成'], ['2026年5月', '产品信心', '已完成重疾险复训'], ['2026年2月', '年度发展评估', '制定 2026 年目标']]).map((h, i) => ({ d: h[0], title: h[1], note: h[2], c: i === 0 ? INK : 'var(--color-neutral-400)' })),
+      milestones: (lang === 'en' ? [['Year 1 qualification', 'Done', true], ['MDRT pathway — 50%', 'Jun 2026', true], ['Senior Agent promotion', 'Target Mar 2027', false]] : [['首年资格达成', '已完成', true], ['MDRT 进阶——50%', '2026年6月', true], ['晋升资深代理人', '目标 2027年3月', false]]).map(m => ({ label: m[0], d: m[1], mark: m[2] ? '✓' : '', bg: m[2] ? INK : 'transparent', fg: 'var(--color-bg)' }))
+    };
+
+    const fn = [[640, null, true], [412, 64, true], [236, 57, true], [118, 50, true], [21, 18, false]];
+    const funnel = fn.map((f, i) => ({ label: t.fl[i], n: f[0], h: Math.round(f[0] / 640 * 100) + '%', color: f[2] ? INK : RED,
+      rate: f[1] == null ? '—' : f[1] + '%' + (i === 4 ? (lang === 'en' ? ' · bench 24%' : ' · 基准 24%') : ''), rateColor: f[2] ? 'var(--color-neutral-700)' : RED }));
+    const dist = [['<60%', 1, RED], ['60–80%', 2, AMBER], ['80–100%', 5, INK], ['>100%', 4, GREEN]].map(d => ({ label: d[0], n: d[1], h: d[1] * 20 + '%', color: d[2] }));
+    const kv = ['1.20M', '1.10M', '−8%', '104%', '17%'];
+    const kpis = kv.map((v, i) => ({ label: t.kpi[i] + (i < 2 ? ' · HK$' : ''), value: v, note: t.kpiNote[i], color: i === 2 || i === 4 ? RED : INK }));
+
+    const df = [[lang === 'en' ? 'Prospects' : '潜在客户', 92, '—', true], [lang === 'en' ? 'Contacts' : '接触', 64, '70%', true], [lang === 'en' ? 'Appointments' : '约访', 26, '41% · ' + (lang === 'en' ? 'bench 38%' : '基准 38%'), true], [lang === 'en' ? 'Proposals' : '建议书', 18, '69% · ' + (lang === 'en' ? 'bench 55%' : '基准 55%'), true], [lang === 'en' ? 'Closed cases' : '成交', 2, '11% · ' + (lang === 'en' ? 'bench 24%' : '基准 24%'), false]];
+    const diagFunnel = df.map(f => ({ label: f[0], n: f[1], rate: f[2], status: f[3] ? t.healthy : t.lowS, stBg: f[3] ? TONE.good[0] : TONE.risk[0], stFg: f[3] ? TONE.good[1] : TONE.risk[1],
+      border: f[3] ? 'var(--color-divider)' : RED, bg: f[3] ? 'transparent' : 'var(--color-accent-100)' }));
+    const evidence = (lang === 'en' ? [['Proposal-to-close', '11%', RED], ['Team benchmark', '24%', INK], ['Lost cases (30 days)', '7', RED], ['Common objection', 'Premium too high', INK]] : [['建议书成交率', '11%', RED], ['团队基准', '24%', INK], ['流失案例（30 天）', '7', RED], ['常见异议', '保费太高', INK]]).map(e => ({ label: e[0], v: e[1], c: e[2] }));
+    const lost = (lang === 'en' ? [['Premium too high', 4], ['Needs more time to decide', 2], ['Chose competitor', 1]] : [['保费太高', 4], ['需要更多时间考虑', 2], ['选择了竞争对手', 1]]).map((x, i) => ({ label: x[0], n: x[1], w: x[1] / 4 * 100 + '%', c: i === 0 ? RED : INK }));
+    const focusList = (lang === 'en' ? [['Objection handling', 'Premium objection appeared in 4 of 7 lost cases.'], ['Needs-based value communication', 'Reframe premium against the protection gap identified in fact-find.'], ['Closing practice', 'Role play scores for closing are 52 vs team 70.']] : [['异议处理', '7 个流失案例中有 4 个出现保费异议。'], ['需求导向的价值沟通', '结合需求分析中的保障缺口，重新阐释保费价值。'], ['促成练习', '促成环节角色演练得分 52，团队平均 70。']]).map((f, i) => ({ n: i + 1, title: f[0], note: f[1] }));
+
+    const planItems = t.plan.map((p, i) => ({ n: String(i + 1).padStart(2, '0'), text: p[0], owner: p[1] }));
+    const P = this.state.plan;
+    return {
+      t, is: { team: sc === 'team', agents: sc === 'agents', agent: sc === 'agent', diagnosis: sc === 'diagnosis' },
+      filterSelects: t.fsel.map(o => ({ opts: o })), statusOpts: t.status.map((label, i) => ({ label, v: ['all', 'attn', 'ok', 'above'][i] })), statusVal: this.state.status,
+      onStatus: (e) => this.setState({ status: e.target.value, affected: false }),
+      kpis, funnel, dist, tableRows, affected: this.state.affected,
+      tableNote: this.state.affected ? t.affectedNote : rowsSrc.length + ' ' + t.showing,
+      seeAffected: () => this.setState({ affected: true }), clearAffected: () => this.setState({ affected: false }),
+      plan: { loading: P === 'loading', done: P === 'done' }, planItems, planApproveLabel: this.state.planApproved ? t.approved : t.approveCreate,
+      genPlan: () => { this.setState({ plan: 'loading', planApproved: false }); setTimeout(() => this.setState({ plan: 'done' }), 1400); },
+      approvePlan: () => { if (this.state.planApproved) return; app.confirm({ title: t.approveCreate + '?', body: t.planTitle + ' — 4', okLabel: t.approveCreate.split(' ')[0], onOk: () => {
+        this.setState({ planApproved: true });
+        app.addTask({ id: 'p_grp', type: 'coaching', pri: 'med', due: 'upcoming', title: { en: 'Group role play: premium objections', zh: '小组角色演练：保费异议' }, reason: { en: 'From team action plan', zh: '来自团队行动计划' }, act: { screen: 'coaching', label: { en: 'Open Coaching', zh: '打开辅导' } } });
+        app.addTask({ id: 'p_dc', type: 'agent', pri: 'high', due: 'today', title: { en: 'Daily activity check-in: David Chen', zh: '每日活动检视：David Chen' }, reason: { en: 'From team action plan', zh: '来自团队行动计划' }, act: { screen: 'agents', label: { en: 'View Agent', zh: '查看代理人' } } });
+        app.toast(t.approved); } }); },
+      whyTeam: () => app.why('team'), goAgents: () => go('agents'),
+      tabs, agentCards, noAgents: agentCards.length === 0, query: this.state.query, onQuery: (e) => this.setState({ query: e.target.value }), clearQuery: () => this.setState({ query: '', tab: 'all' }),
+      ag, whyAgent: () => app.why(isJ ? 'james' : (a.id === 'emily' ? 'emily' : 'team')),
+      toCoaching: () => go('coaching'), toSession: () => go('session'), toDiagnosis: () => go('diagnosis'), backAgent: () => go('agent'),
+      assignRP: () => app.confirm({ title: t.confirmRP, body: t.confirmRPBody, okLabel: t.assign, onOk: () => { app.addTask({ id: 'k_rp', type: 'agent', pri: 'med', due: 'upcoming', title: { en: 'James: complete premium-objection role play', zh: 'James：完成保费异议角色演练' }, reason: { en: 'Assigned by you · tracked automatically', zh: '由您指派 · 自动跟踪' }, act: null }); app.toast(t.rpDone); } }),
+      recLearning: () => app.confirm({ title: t.confirmL, body: t.confirmLBody, okLabel: t.send, onOk: () => app.toast(t.lDone) }),
+      diagFunnel, evidence, lost, focusList
+    };
+  }
+}
+</script>
+</body>
+</html>

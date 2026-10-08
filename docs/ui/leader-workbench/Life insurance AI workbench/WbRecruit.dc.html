@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/styles.css">
+<script src="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/_ds_bundle.js"></script>
+</helmet>
+<div style="max-width:1360px;display:flex;flex-direction:column;gap:28px">
+
+<sc-if value="{{ is.pipeline }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.kicker }}</h6><h1 style="margin:0">{{ t.pipeTitle }}</h1></div>
+      <button class="btn btn-secondary" onClick="{{ goList }}">{{ t.allCandidates }} →</button>
+    </section>
+    <section style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:2px solid var(--color-text);border-bottom:2px solid var(--color-divider)">
+      <sc-for list="{{ stages }}" as="s" hint-placeholder-count="7">
+        <div style="padding:16px 12px 16px 0;border-right:1px solid var(--color-divider);padding-left:12px;background:{{ s.bg }};display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:12px;font-weight:600">{{ s.label }}</span>
+          <span style="font-size:40px;font-weight:800;line-height:1;color:{{ s.color }}">{{ s.n }}</span>
+          <span style="font-size:11px;color:{{ s.rateColor }};font-weight:600">{{ s.rate }}</span>
+        </div>
+      </sc-for>
+    </section>
+    <section class="card" style="padding:20px 24px;gap:12px;border-top:4px solid var(--color-text);flex-direction:row;align-items:center;flex-wrap:wrap">
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.insight }}</span>
+      <p style="margin:0;font-size:18px;font-weight:600;flex:1;min-width:300px">{{ t.pipeInsight }}</p>
+      <button class="btn btn-secondary" onClick="{{ whyRecruit }}">{{ t.seeWhy }}</button>
+    </section>
+    <section style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px">
+      <div>
+        <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:4px;display:flex;justify-content:space-between"><h5 style="margin:0">{{ t.highPot }}</h5><span style="font-size:12px">3</span></div>
+        <sc-for list="{{ hpList }}" as="c" hint-placeholder-count="3">
+          <button onClick="{{ c.open }}" style="display:flex;justify-content:space-between;gap:8px;width:100%;border:0;border-bottom:1px solid var(--color-divider);background:transparent;padding:12px 0;text-align:left;cursor:pointer;color:inherit" style-hover="background:var(--color-neutral-200)">
+            <span><b style="font-size:14px">{{ c.name }}</b><span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ c.bg }} · {{ c.stage }}</span></span>
+            <span style="font-size:22px;font-weight:800">{{ c.fit }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div>
+        <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:4px;display:flex;justify-content:space-between"><h5 style="margin:0">{{ t.needFollow }}</h5><span style="font-size:12px">{{ followCount }}</span></div>
+        <sc-for list="{{ followList }}" as="c" hint-placeholder-count="3">
+          <button onClick="{{ c.open }}" style="display:flex;justify-content:space-between;gap:8px;width:100%;border:0;border-bottom:1px solid var(--color-divider);background:transparent;padding:12px 0;text-align:left;cursor:pointer;color:inherit" style-hover="background:var(--color-neutral-200)">
+            <span><b style="font-size:14px">{{ c.name }}</b><span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ c.stage }}</span></span>
+            <span style="font-size:12px;font-weight:600;color:var(--color-accent-700)">{{ c.last }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div>
+        <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:4px;display:flex;justify-content:space-between"><h5 style="margin:0">{{ t.overdue }}</h5><span style="font-size:12px">2</span></div>
+        <sc-for list="{{ overdueList }}" as="o" hint-placeholder-count="2">
+          <div style="padding:12px 0;border-bottom:1px solid var(--color-divider);display:flex;justify-content:space-between;gap:8px">
+            <span><b style="font-size:14px">{{ o.title }}</b><span style="display:block;font-size:12px;color:var(--color-accent-700)">{{ o.late }}</span></span>
+            <button class="btn btn-secondary" onClick="{{ o.open }}" style="font-size:13px;padding:6px 10px">{{ t.open }}</button>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.list }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:24px">
+    <section><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.kicker }}</h6><h1 style="margin:0">{{ t.listTitle }}</h1></section>
+    <div style="display:flex;border-bottom:2px solid var(--color-divider);flex-wrap:wrap">
+      <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="6">
+        <button onClick="{{ tb.onClick }}" style="border:0;background:transparent;padding:10px 16px;cursor:pointer;font-size:14px;color:var(--color-text);font-weight:{{ tb.fw }};border-bottom:4px solid {{ tb.bar }};margin-bottom:-2px;display:flex;gap:8px">{{ tb.label }}<span style="font-size:11px;color:var(--color-neutral-700)">{{ tb.count }}</span></button>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+      <sc-for list="{{ cands }}" as="c" hint-placeholder-count="4">
+        <article class="card" style="padding:20px;gap:12px;border-top:4px solid {{ c.top }}">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+            <div><b style="font-size:20px">{{ c.name }}</b><div style="font-size:13px;color:var(--color-neutral-700)">{{ c.bg }} · {{ c.source }}</div></div>
+            <div style="text-align:right"><div style="font-size:28px;font-weight:800;line-height:1">{{ c.fit }}</div><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.fitScore }}</div></div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;padding:3px 8px;font-weight:600;background:{{ c.potBg }};color:{{ c.potFg }}">{{ c.pot }}</span>
+            <span class="tag tag-neutral" style="border:1px solid var(--color-divider)">{{ c.stage }}</span>
+            <span class="tag tag-neutral" style="border:1px solid var(--color-divider)">{{ t.engagement }}: {{ c.eng }}</span>
+          </div>
+          <div style="border-top:1px solid var(--color-divider);padding-top:10px">
+            <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:4px;display:flex;gap:6px;align-items:center"><span style="background:var(--color-text);color:var(--color-bg);padding:1px 4px;font-weight:800">AI</span>{{ t.whyRec }}</div>
+            <sc-for list="{{ c.reasons }}" as="r" hint-placeholder-count="3"><div style="font-size:13px;padding:2px 0">• {{ r }}</div></sc-for>
+          </div>
+          <div style="background:var(--color-bg);padding:10px 12px;font-size:13px"><span style="color:var(--color-neutral-700)">{{ t.recAction }}:</span> <b>{{ c.next }}</b></div>
+          <button class="btn btn-secondary" onClick="{{ c.open }}" style="align-self:flex-start">{{ t.viewCandidate }}</button>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.c360 }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <button class="btn btn-ghost" onClick="{{ goList }}" style="align-self:flex-start;padding-left:0">← {{ t.listTitle }}</button>
+    <section style="display:flex;justify-content:space-between;gap:24px;align-items:flex-end;flex-wrap:wrap;border-bottom:2px solid var(--color-text);padding-bottom:20px">
+      <div style="display:flex;gap:20px;align-items:center">
+        <div style="width:72px;height:72px;background:var(--color-neutral-300);display:grid;place-items:center;font-weight:800;font-size:24px">{{ cd.ini }}</div>
+        <div><h1 style="margin:0 0 6px">{{ cd.name }}</h1>
+          <div style="display:flex;gap:16px;font-size:13px;flex-wrap:wrap;align-items:center"><span>{{ cd.bg }}</span><span style="color:var(--color-neutral-700)">{{ cd.source }}</span><span style="font-size:11px;padding:3px 8px;font-weight:600;background:{{ cd.potBg }};color:{{ cd.potFg }}">{{ cd.pot }}</span><span><span style="color:var(--color-neutral-700)">{{ t.stage }}</span> <b>{{ cd.stage }}</b></span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onClick="{{ goPitch }}">{{ t.genPitch }}</button>
+        <button class="btn btn-secondary" onClick="{{ goInterview }}">{{ t.prepInterview }}</button>
+        <button class="btn btn-secondary" onClick="{{ createFollow }}">{{ t.createFollow }}</button>
+      </div>
+    </section>
+    <section style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:32px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:28px">
+        <div class="card" style="padding:24px;gap:16px;border-top:4px solid var(--color-text)">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.aiAssess }}</span><button class="btn btn-ghost" onClick="{{ whyDavid }}">{{ t.why }}</button></div>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px">
+            <div><h6 style="margin:0 0 8px">{{ t.strengths }}</h6><sc-for list="{{ cd.strengths }}" as="s" hint-placeholder-count="3"><div style="padding:8px 0;border-top:1px solid var(--color-divider);font-size:14px;display:flex;gap:8px"><b style="color:oklch(0.45 0.1 155)">+</b>{{ s }}</div></sc-for></div>
+            <div><h6 style="margin:0 0 8px">{{ t.risks }}</h6><sc-for list="{{ cd.risks }}" as="s" hint-placeholder-count="1"><div style="padding:8px 0;border-top:1px solid var(--color-divider);font-size:14px;display:flex;gap:8px"><b style="color:var(--color-accent)">−</b>{{ s }}</div></sc-for></div>
+          </div>
+          <div style="background:var(--color-text);color:var(--color-bg);padding:14px 16px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.75">{{ t.nextStep }}</div><div style="font-size:18px;font-weight:800">{{ cd.next }}</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px">
+          <div><div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.career }}</h5></div>
+            <sc-for list="{{ cd.career }}" as="c" hint-placeholder-count="3"><div style="padding:8px 0;border-bottom:1px solid var(--color-divider)"><div style="font-size:12px;color:var(--color-neutral-700)">{{ c.d }}</div><div style="font-size:14px;font-weight:600">{{ c.text }}</div></div></sc-for></div>
+          <div><div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.network }}</h5></div>
+            <sc-for list="{{ cd.network }}" as="n" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span>{{ n.label }}</span><b>{{ n.v }}</b></div></sc-for></div>
+        </div>
+        <div><div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.assessment }}</h5></div>
+          <sc-if value="{{ assessed }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ scores }}" as="s" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) 32px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span>{{ s.label }}</span><div style="height:8px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ s.w }};background:{{ s.c }}"></div></div><b>{{ s.v }}</b></div></sc-for></sc-if>
+          <sc-if value="{{ notAssessed }}" hint-placeholder-val="{{ true }}"><div style="padding:16px;border:1px dashed var(--color-divider);font-size:14px;color:var(--color-neutral-700)">{{ t.noAssess }}</div></sc-if>
+        </div>
+      </div>
+      <aside style="display:flex;flex-direction:column;gap:28px">
+        <div><div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.engagementH }}</h5></div>
+          <sc-for list="{{ cd.engagement }}" as="e" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:12px minmax(0,1fr);gap:10px;padding:8px 0"><span style="width:10px;height:10px;margin-top:5px;background:{{ e.c }}"></span><div><div style="font-size:12px;color:var(--color-neutral-700)">{{ e.d }}</div><div style="font-size:13px">{{ e.text }}</div></div></div></sc-for></div>
+        <div><div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.history }}</h5></div>
+          <sc-for list="{{ cd.history }}" as="h" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><span>{{ h.text }}</span><span style="color:var(--color-neutral-700)">{{ h.d }}</span></div></sc-for></div>
+        <div><div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.interviewNotes }}</h5></div>
+          <div style="font-size:13px;color:var(--color-neutral-800)">{{ notesText }}</div></div>
+      </aside>
+    </section>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.pitch }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <button class="btn btn-ghost" onClick="{{ back360 }}" style="align-self:flex-start;padding-left:0">← David Chan</button>
+    <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap"><div><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.kicker }}</h6><h1 style="margin:0">{{ t.pitchTitle }}</h1></div></section>
+    <section style="display:grid;grid-template-columns:320px minmax(0,1fr);gap:32px;align-items:start">
+      <aside style="display:flex;flex-direction:column;gap:16px;border-top:2px solid var(--color-text);padding-top:16px">
+        <div class="field"><label>{{ t.inProfile }}</label><div style="background:var(--color-surface);padding:12px;font-size:13px">{{ t.profileSum }}</div></div>
+        <div class="field"><label>{{ t.inStage }}</label><select class="input"><sc-for list="{{ stageOpts }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for></select></div>
+        <div class="field"><label>{{ t.inChannel }}</label>
+          <div style="display:flex;border:1px solid var(--color-divider)"><sc-for list="{{ channels }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="flex:1;border:0;border-right:1px solid var(--color-divider);padding:8px 4px;font-size:12px;cursor:pointer;font-weight:600;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button></sc-for></div></div>
+        <div class="field"><label>{{ t.inGoal }}</label><select class="input"><sc-for list="{{ goalOpts }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for></select></div>
+        <button class="btn btn-primary" onClick="{{ generate }}" style="align-self:flex-start">{{ genLabel }}</button>
+      </aside>
+      <div>
+        <sc-if value="{{ pitch.idle }}" hint-placeholder-val="{{ true }}">
+          <div style="border:1px dashed var(--color-divider);padding:48px;display:flex;flex-direction:column;gap:8px;align-items:flex-start"><h4 style="margin:0">{{ t.emptyPitch }}</h4><p style="margin:0;color:var(--color-neutral-700)">{{ t.emptyPitchBody }}</p></div>
+        </sc-if>
+        <sc-if value="{{ pitch.loading }}" hint-placeholder-val="{{ false }}">
+          <div class="card" style="padding:28px;gap:12px"><span style="font-size:13px;font-weight:600">{{ t.generating }}</span><div style="height:12px;width:90%;background:var(--color-neutral-300);animation:lwbPulse 1.2s infinite"></div><div style="height:12px;width:75%;background:var(--color-neutral-300);animation:lwbPulse 1.2s .2s infinite"></div><div style="height:12px;width:82%;background:var(--color-neutral-300);animation:lwbPulse 1.2s .4s infinite"></div></div>
+        </sc-if>
+        <sc-if value="{{ pitch.ready }}" hint-placeholder-val="{{ false }}">
+          <div class="card" style="padding:0;gap:0;border-top:4px solid var(--color-text)">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 20px;flex-wrap:wrap;border-bottom:1px solid var(--color-divider)">
+              <div style="display:flex;gap:6px"><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;background:var(--color-text);color:var(--color-bg);padding:3px 6px">{{ t.aiGenerated }}</span><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border:1px solid var(--color-accent);color:var(--color-accent-700);padding:2px 6px">{{ reviewTag }}</span></div>
+              <span style="font-size:12px;color:var(--color-neutral-700)">{{ variantLabel }}</span>
+            </div>
+            <div style="display:flex;border-bottom:2px solid var(--color-divider);padding:0 20px">
+              <sc-for list="{{ outTabs }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.onClick }}" style="border:0;background:transparent;padding:12px 14px 10px 0;margin-right:14px;cursor:pointer;font-size:14px;color:var(--color-text);font-weight:{{ o.fw }};border-bottom:4px solid {{ o.bar }};margin-bottom:-2px">{{ o.label }}</button></sc-for>
+            </div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+              <textarea class="input" value="{{ draftText }}" onInput="{{ onDraftEdit }}" style="min-height:220px;font-size:15px;line-height:1.55;background:var(--color-bg)"></textarea>
+              <div style="font-size:12px;color:var(--color-neutral-700)">{{ t.compliance }}</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn btn-primary" onClick="{{ send }}">{{ sendLabel }}</button>
+                <button class="btn btn-secondary" onClick="{{ regenerate }}">{{ t.regenerate }}</button>
+                <button class="btn btn-secondary" onClick="{{ copy }}">{{ t.copy }}</button>
+                <button class="btn btn-ghost" onClick="{{ focusEdit }}">{{ t.edit }}</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </section>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.interview }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <button class="btn btn-ghost" onClick="{{ back360 }}" style="align-self:flex-start;padding-left:0">← David Chan</button>
+    <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--color-text);padding-bottom:16px">
+      <div><h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.interviewKicker }}</h6><h1 style="margin:0">David Chan</h1></div>
+      <div style="display:flex;border:2px solid var(--color-text)"><sc-for list="{{ ivSteps }}" as="s" hint-placeholder-count="2"><button onClick="{{ s.onClick }}" style="border:0;padding:10px 18px;cursor:pointer;font-size:14px;font-weight:600;background:{{ s.bg }};color:{{ s.fg }}">{{ s.label }}</button></sc-for></div>
+    </section>
+    <sc-if value="{{ iv.prep }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:32px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div class="card" style="padding:20px;gap:8px"><span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.candSummary }}</span><p style="margin:0;font-size:15px">{{ t.summaryTxt }}</p></div>
+          <div><h6 style="margin:0 0 8px">{{ t.potStrengths }}</h6><sc-for list="{{ ivStrengths }}" as="s" hint-placeholder-count="3"><div style="padding:8px 0;border-top:1px solid var(--color-divider);font-size:14px">+ {{ s }}</div></sc-for></div>
+          <div><h6 style="margin:0 0 8px">{{ t.potConcerns }}</h6><sc-for list="{{ ivConcerns }}" as="s" hint-placeholder-count="2"><div style="padding:8px 0;border-top:1px solid var(--color-divider);font-size:14px">− {{ s }}</div></sc-for></div>
+          <div><h6 style="margin:0 0 8px">{{ t.validate }}</h6><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ ivValidate }}" as="v" hint-placeholder-count="3"><span style="border:1px solid var(--color-text);padding:4px 10px;font-size:13px;font-weight:600">{{ v }}</span></sc-for></div></div>
+        </div>
+        <div>
+          <div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px;display:flex;justify-content:space-between"><h5 style="margin:0">{{ t.sugQuestions }}</h5><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border:1px solid var(--color-text);padding:2px 6px">{{ t.aiPrepared }}</span></div>
+          <sc-for list="{{ ivQs }}" as="q" hint-placeholder-count="4">
+            <div style="padding:14px 0;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:12px"><b style="color:var(--color-accent)">{{ q.n }}</b><div><div style="font-size:15px;font-weight:600">{{ q.q }}</div><div style="font-size:12px;color:var(--color-neutral-700)">{{ q.why }}</div></div></div>
+              <input class="input" placeholder="{{ t.notePh }}" value="{{ q.note }}" onInput="{{ q.onNote }}">
+            </div>
+          </sc-for>
+          <button class="btn btn-primary" onClick="{{ finishIv }}" style="margin-top:20px">{{ t.finishIv }}</button>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ iv.after }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div class="card" style="padding:24px;gap:12px;border-top:4px solid var(--color-text)"><span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.aiSummary }}</span><p style="margin:0;font-size:16px;line-height:1.5">{{ t.afterSummary }}</p></div>
+          <div><div style="border-bottom:2px solid var(--color-text);padding-bottom:8px;margin-bottom:8px"><h5 style="margin:0">{{ t.candAssessment }}</h5></div>
+            <sc-for list="{{ scores }}" as="s" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) 32px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><span>{{ s.label }}</span><div style="height:8px;background:var(--color-neutral-300)"><div style="height:100%;width:{{ s.w }};background:{{ s.c }}"></div></div><b>{{ s.v }}</b></div></sc-for></div>
+        </div>
+        <div class="card" style="padding:24px;gap:16px">
+          <h6 style="margin:0">{{ t.recNext }}</h6>
+          <div style="font-size:22px;font-weight:800">{{ t.recNextV }}</div>
+          <p style="margin:0;font-size:14px">{{ t.recNextWhy }}</p>
+          <span style="align-self:flex-start;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border:1px solid var(--color-accent);color:var(--color-accent-700);padding:2px 6px">{{ t.leaderDecides }}</span>
+          <sc-if value="{{ undecided }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-primary btn-block" onClick="{{ advanceStage }}">{{ t.dAdvance }}</button>
+              <button class="btn btn-secondary btn-block" onClick="{{ holdStage }}">{{ t.dHold }}</button>
+              <button class="btn btn-secondary btn-block" onClick="{{ declineStage }}">{{ t.dDecline }}</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ decided }}" hint-placeholder-val="{{ false }}"><div style="background:var(--color-text);color:var(--color-bg);padding:14px;font-weight:600">{{ decisionText }}</div></sc-if>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const L = (o, l) => (o && typeof o === 'object' && 'en' in o) ? o[l] : o;
+const GREEN = 'oklch(0.45 0.1 155)', RED = 'var(--color-accent)', INK = 'var(--color-text)';
+const T = {
+  en: { kicker: 'Recruitment', pipeTitle: 'Recruitment Pipeline', allCandidates: 'All candidates', insight: 'Insight',
+    stages: ['Talent Pool', 'Contacted', 'Engaged', 'Interview', 'Assessment', 'Contract', 'Joined'],
+    pipeInsight: 'Candidate engagement is healthy, but interview conversion is below benchmark.', seeWhy: 'See Why', why: 'Why?',
+    highPot: 'High-potential candidates', needFollow: 'Candidates requiring follow-up', overdue: 'Overdue recruitment tasks', open: 'Open',
+    listTitle: 'Candidates', tabs: ['All', 'High Potential', 'Needs Follow-up', 'Interview', 'Assessment', 'Contracting'],
+    fitScore: 'fit score', engagement: 'Engagement', whyRec: 'Why recommended', recAction: 'Recommended action', viewCandidate: 'View Candidate',
+    pot: { high: 'High Potential', med: 'Medium Potential', low: 'Developing' }, eng: { high: 'High', med: 'Medium', low: 'Low' },
+    stage: 'Stage', genPitch: 'Generate Recruiting Pitch', prepInterview: 'Prepare Interview', createFollow: 'Create Follow-up',
+    aiAssess: 'AI Assessment · Candidate fit', strengths: 'Strengths', risks: 'Potential risks', nextStep: 'Recommended next step',
+    career: 'Career Background', network: 'Network', assessment: 'Assessment', noAssess: 'Assessment not started. It becomes available after the interview.',
+    engagementH: 'Engagement', history: 'Recruitment History', interviewNotes: 'Interview Notes', noNotes: 'No interview yet. Use Prepare Interview to get AI-suggested questions.',
+    followT: 'Create follow-up task?', followB: 'Adds "Call David Chan" to your Task Center for tomorrow 10:00.', followOk: 'Create task', followDone: 'Follow-up task created',
+    pitchTitle: 'AI Recruiting Pitch', inProfile: 'Candidate profile', profileSum: 'David Chan · Relationship Manager, 6 yrs · 400+ network, many SME owners · replied twice this week',
+    inStage: 'Recruitment stage', stageOpts: ['Engaged', 'Contacted', 'Interview'], inChannel: 'Communication channel', inGoal: 'Leader goal', goalOpts: ['Book a career conversation', 'Re-engage after silence', 'Invite to opportunity seminar'],
+    generate: 'Generate content', regenLabel: 'Generate again', emptyPitch: 'Nothing generated yet', emptyPitchBody: 'Choose the inputs and generate. You review everything before it is sent.', generating: 'AI is writing personalised content for David…',
+    aiGenerated: 'AI Generated', reviewReq: 'Leader review required', approvedTag: 'Approved by you', outTabs: ['Recruiting Pitch', 'Message', 'Social Content', 'Conversation Starter'],
+    compliance: 'Checked against recruitment communication guidelines: no income guarantees, no comparison with current employer.',
+    send: 'Approve & Send', sent: 'Sent ✓', regenerate: 'Regenerate', copy: 'Copy', edit: 'Edit', copied: 'Copied to clipboard',
+    sendT: 'Send this message to David Chan?', sendB: 'via {ch}. A follow-up task will be created for 3 days from now.', sendOk: 'Approve & send', sentToast: 'Message sent · follow-up task created',
+    interviewKicker: 'Interview Preparation', ivSteps: ['Prepare', 'After interview'], candSummary: 'Candidate summary',
+    summaryTxt: 'Bank RM for 6 years with a strong SME-owner network. Re-engaged after our seminar; motivated by flexibility and ownership. No insurance sales experience.',
+    potStrengths: 'Potential strengths', potConcerns: 'Potential concerns', validate: 'Areas to validate', sugQuestions: 'Suggested questions', aiPrepared: 'AI prepared', notePh: 'Your notes…',
+    finishIv: 'Complete interview & generate assessment', aiSummary: 'AI Summary',
+    afterSummary: 'David is motivated by ownership and long-term income. He has a concrete plan for his first 50 clients through his SME network, and is realistic about 6 months of income ramp-up. Main open point: spouse support for the career change.',
+    candAssessment: 'Candidate Assessment', recNext: 'Recommended next step', recNextV: 'Advance to Assessment', recNextWhy: 'Strong motivation and network. Validate resilience in the assessment and include his spouse in the career briefing.',
+    leaderDecides: 'Leader decides', dAdvance: 'Advance to Assessment', dHold: 'Hold — schedule second conversation', dDecline: 'Decline with feedback',
+    decT: 'Confirm stage change?', decB: 'David Chan will move to: ', decOk: 'Confirm', decDone: 'Decision recorded: ' },
+  zh: { kicker: '招募管理', pipeTitle: '招募管道', allCandidates: '全部候选人', insight: '洞察',
+    stages: ['人才库', '已联系', '有互动', '面谈', '测评', '签约', '已入职'],
+    pipeInsight: '候选人互动情况良好，但面谈转化率低于基准。', seeWhy: '查看原因', why: '为什么？',
+    highPot: '高潜力候选人', needFollow: '待跟进候选人', overdue: '逾期招募任务', open: '打开',
+    listTitle: '候选人', tabs: ['全部', '高潜力', '待跟进', '面谈', '测评', '签约中'],
+    fitScore: '匹配度', engagement: '互动度', whyRec: '推荐理由', recAction: '建议行动', viewCandidate: '查看候选人',
+    pot: { high: '高潜力', med: '中等潜力', low: '待培养' }, eng: { high: '高', med: '中', low: '低' },
+    stage: '阶段', genPitch: '生成招募话术', prepInterview: '准备面谈', createFollow: '创建跟进',
+    aiAssess: 'AI 评估 · 候选人匹配度', strengths: '优势', risks: '潜在风险', nextStep: '建议下一步',
+    career: '职业背景', network: '人脉', assessment: '测评', noAssess: '尚未开始测评，面谈后即可进行。',
+    engagementH: '互动记录', history: '招募历程', interviewNotes: '面谈记录', noNotes: '尚未面谈。可通过"准备面谈"获取 AI 建议问题。',
+    followT: '创建跟进任务？', followB: '将在任务中心添加"致电 David Chan"，时间为明天 10:00。', followOk: '创建任务', followDone: '已创建跟进任务',
+    pitchTitle: 'AI 招募话术', inProfile: '候选人档案', profileSum: 'David Chan · 银行客户经理 6 年 · 400+ 人脉，多为中小企业主 · 本周两次回复',
+    inStage: '招募阶段', stageOpts: ['有互动', '已联系', '面谈'], inChannel: '沟通渠道', inGoal: '主管目标', goalOpts: ['预约职业发展面谈', '沉默后重新联系', '邀请参加创业说明会'],
+    generate: '生成内容', regenLabel: '再次生成', emptyPitch: '尚未生成内容', emptyPitchBody: '选择输入条件后生成。所有内容发送前都需您审阅。', generating: 'AI 正在为 David 撰写个性化内容…',
+    aiGenerated: 'AI 生成', reviewReq: '需主管审阅', approvedTag: '已由您批准', outTabs: ['招募话术', '即时消息', '社交内容', '开场话题'],
+    compliance: '已按招募沟通规范检查：不承诺收入，不与现雇主作比较。',
+    send: '批准并发送', sent: '已发送 ✓', regenerate: '重新生成', copy: '复制', edit: '编辑', copied: '已复制',
+    sendT: '向 David Chan 发送此消息？', sendB: '通过 {ch} 发送，并将在 3 天后创建跟进任务。', sendOk: '批准并发送', sentToast: '消息已发送 · 已创建跟进任务',
+    interviewKicker: '面谈准备', ivSteps: ['面谈前', '面谈后'], candSummary: '候选人概要',
+    summaryTxt: '银行客户经理 6 年，拥有扎实的中小企业主人脉。参加说明会后再次互动；看重时间自主与事业经营权。无保险销售经验。',
+    potStrengths: '潜在优势', potConcerns: '潜在顾虑', validate: '需验证事项', sugQuestions: '建议问题', aiPrepared: 'AI 已准备', notePh: '您的记录…',
+    finishIv: '完成面谈并生成评估', aiSummary: 'AI 摘要',
+    afterSummary: 'David 的动机在于事业经营权与长期收入。他对通过中小企业人脉建立首批 50 位客户有具体计划，并能理性看待前 6 个月的收入爬坡期。主要待确认事项：配偶对转行的支持。',
+    candAssessment: '候选人评估', recNext: '建议下一步', recNextV: '进入测评阶段', recNextWhy: '动机强、人脉好。建议在测评中验证抗压能力，并邀请其配偶参加职业说明。',
+    leaderDecides: '由主管决定', dAdvance: '进入测评阶段', dHold: '暂缓——安排第二次面谈', dDecline: '婉拒并反馈',
+    decT: '确认变更阶段？', decB: 'David Chan 将变更为：', decOk: '确认', decDone: '已记录决定：' }
+};
+const C = [
+  { id: 'david', name: 'David Chan', bg: { en: 'Relationship Manager', zh: '银行客户经理' }, src: { en: 'Referral · Alice Wong', zh: '转介绍 · Alice Wong' }, fit: 86, pot: 'high', eng: 'high', st: 2, seg: ['hp', 'follow'], last: { en: '5 days', zh: '5 天' },
+    rs: [{ en: 'Strong customer network', zh: '客户人脉扎实' }, { en: 'Financial services experience', zh: '具备金融服务经验' }, { en: 'Responded twice this week', zh: '本周两次回复' }], next: { en: 'Invite to career conversation', zh: '邀约职业发展面谈' } },
+  { id: 'joyce', name: 'Joyce Tam', bg: { en: 'Insurance operations', zh: '保险运营' }, src: { en: 'LinkedIn', zh: 'LinkedIn' }, fit: 81, pot: 'high', eng: 'high', st: 5, seg: ['hp', 'contract'], last: null,
+    rs: [{ en: 'Knows products and underwriting', zh: '熟悉产品与核保' }, { en: 'Completed assessment — top quartile', zh: '测评成绩位列前 25%' }], next: { en: 'Finalise contract this week', zh: '本周完成签约' } },
+  { id: 'marcus', name: 'Marcus Lee', bg: { en: 'Real estate agent', zh: '地产经纪' }, src: { en: 'Seminar', zh: '创业说明会' }, fit: 78, pot: 'high', eng: 'med', st: 4, seg: ['hp', 'assess'], last: null,
+    rs: [{ en: 'Commission-based sales track record', zh: '有佣金制销售业绩' }, { en: 'Large property-owner network', zh: '业主人脉广' }], next: { en: 'Review assessment results', zh: '查看测评结果' } },
+  { id: 'cindy', name: 'Cindy Ma', bg: { en: 'HR executive', zh: '人力资源主管' }, src: { en: 'Referral · Sophia Lin', zh: '转介绍 · Sophia Lin' }, fit: 74, pot: 'med', eng: 'med', st: 2, seg: ['follow'], last: { en: '6 days', zh: '6 天' },
+    rs: [{ en: 'Strong communication', zh: '沟通能力强' }, { en: 'Interested in flexible career', zh: '希望职业更灵活' }], next: { en: 'Send opportunity seminar invite', zh: '发送说明会邀请' } },
+  { id: 'ivy', name: 'Ivy Leung', bg: { en: 'Secondary teacher', zh: '中学教师' }, src: { en: 'Social media', zh: '社交媒体' }, fit: 69, pot: 'med', eng: 'high', st: 3, seg: ['interview', 'follow'], last: { en: '4 days', zh: '4 天' },
+    rs: [{ en: 'Parent community network', zh: '家长社群人脉' }, { en: 'Interview held — feedback pending', zh: '已面谈——待反馈' }], next: { en: 'Send interview feedback (overdue)', zh: '发送面谈反馈（已逾期）' } },
+  { id: 'leo', name: 'Leo Kwok', bg: { en: 'Car sales', zh: '汽车销售' }, src: { en: 'Walk-in', zh: '自荐' }, fit: 70, pot: 'med', eng: 'med', st: 3, seg: ['interview'], last: null,
+    rs: [{ en: 'Closing experience', zh: '有促成经验' }, { en: 'Interview booked Mon', zh: '已约周一面谈' }], next: { en: 'Prepare interview', zh: '准备面谈' } },
+  { id: 'hannah', name: 'Hannah Cheng', bg: { en: 'Retail banking', zh: '零售银行' }, src: { en: 'Talent pool', zh: '人才库' }, fit: 72, pot: 'med', eng: 'low', st: 1, seg: [], last: null,
+    rs: [{ en: 'Financial planning certificate', zh: '持有理财规划证书' }], next: { en: 'Share career story video', zh: '分享职业故事视频' } },
+  { id: 'tony', name: 'Tony Wu', bg: { en: 'Fresh graduate', zh: '应届毕业生' }, src: { en: 'Campus', zh: '校园招聘' }, fit: 58, pot: 'low', eng: 'low', st: 0, seg: [], last: null,
+    rs: [{ en: 'High energy, limited network', zh: '积极但人脉有限' }], next: { en: 'Add to graduate programme pool', zh: '纳入毕业生计划人才库' } }
+];
+const TABK = ['all', 'hp', 'follow', 'interview', 'assess', 'contract'];
+const POT = { high: ['oklch(0.94 0.05 155)', 'oklch(0.38 0.09 155)'], med: ['var(--color-neutral-200)', 'var(--color-neutral-800)'], low: ['var(--color-neutral-100)', 'var(--color-neutral-700)'] };
+const PITCH = {
+  en: [
+    ['Hi David — I\'m Sarah, Unit Manager at Pacific Life. Alice mentioned how much your SME clients trust you. Over six years as a relationship manager you\'ve already built what most new advisers spend years on: a network that asks for your advice.\n\nOur agency careers are built for people like you — you own your client book, choose your hours, and get structured coaching in your first year. Would you be open to a 30-minute career conversation next week?',
+     'Hi David, thanks for your replies this week 🙂 Based on your experience in relationship management, I think you\'d find our advisor career path interesting. Could we grab a coffee next Tue or Wed for 30 min? No pressure — just a conversation. — Sarah',
+     'Six years ago, one of our top advisers was a bank RM. Today she runs her own client practice with 300 families. If you\'re great with people and want to build something that\'s yours, let\'s talk. #CareerChange #FinancialAdvisor',
+     '"You mentioned your SME clients often ask you about protecting their business — how do you usually handle those conversations today?"'],
+    ['Dear David, thank you for staying in touch. Your experience serving business owners is exactly the foundation our most successful advisers start with. I\'d value 30 minutes to share how our first-year programme works and hear what you\'re looking for in your next step.',
+     'Hi David — Sarah here. Loved our chat at the seminar. Would a quick 30-min coffee next week work to talk about the advisor path? Happy to work around your schedule.',
+     'What would your career look like if your client relationships were your own business? We\'re meeting professionals from banking this month. DM me.',
+     '"What part of your RM role do you enjoy most — and what would you change if you could?"']
+  ],
+  zh: [
+    ['David 您好，我是太平人寿营业组经理 Sarah。Alice 提到您的中小企业客户都非常信任您。六年的客户经理经历，让您已经拥有许多新人需要多年才能建立的资源——一群愿意听取您建议的客户。\n\n我们的代理人事业正适合像您这样的人：客户由您经营，时间由您安排，首年还有系统化的辅导支持。下周是否方便进行 30 分钟的职业发展交流？',
+     'David 您好，感谢您本周的回复 🙂 结合您的客户经理经验，我觉得您会对我们的顾问发展路径感兴趣。下周二或周三方便喝杯咖啡聊 30 分钟吗？没有压力，只是交流一下。——Sarah',
+     '六年前，我们的一位顶尖顾问还是银行客户经理。如今她经营着服务 300 个家庭的个人事业。如果您擅长与人打交道，想建立属于自己的事业，欢迎聊聊。#职业转型 #理财顾问',
+     '"您提到中小企业客户常向您咨询如何保障企业经营——您现在一般怎样处理这类话题？"'],
+    ['David 您好，感谢您一直保持联系。您服务企业主的经验，正是我们优秀顾问起步的基础。希望能占用您 30 分钟，介绍我们的首年培养计划，也听听您对下一步发展的想法。',
+     'David 您好，我是 Sarah。说明会上聊得很愉快。下周能否抽 30 分钟喝杯咖啡，聊聊顾问发展路径？时间以您方便为准。',
+     '如果客户关系就是您自己的事业，您的职业会是什么样子？本月我们正与多位银行业专业人士交流，欢迎私信。',
+     '"客户经理工作中您最享受哪一部分？如果可以，您最想改变什么？"']
+  ]
+};
+class Component extends DCLogic {
+  state = { tab: 'all', ch: 0, pitch: 'idle', variant: 0, out: 0, edits: {}, iv: 'prep', notes: {} };
+  renderVals() {
+    const app = this.props.app || { lang: 'en', screen: 'recruitment', s: {} };
+    const lang = app.lang || 'en', t = T[lang], l = (o) => L(o, lang), s = app.s || {}, sc = app.screen;
+    const go = (x, p) => app.go && app.go(x, p);
+    const stageName = (c) => c.id === 'david' && s.davidStage ? l(s.davidStage) : t.stages[c.st];
+    const counts = [42, 24, 15, 8, 5, 3, 2];
+    const rates = [null, 57, 63, 53, 63, 60, 67];
+    const stages = t.stages.map((label, i) => ({ label, n: counts[i], rate: rates[i] == null ? '—' : rates[i] + '%' + (i === 3 ? (lang === 'en' ? ' · bench 70%' : ' · 基准 70%') : ''),
+      color: i === 3 ? RED : INK, rateColor: i === 3 ? RED : 'var(--color-neutral-700)', bg: i === 3 ? 'var(--color-accent-100)' : 'transparent' }));
+    const mk = (c) => ({ name: c.name, bg: l(c.bg), source: l(c.src), fit: c.fit, stage: stageName(c), pot: t.pot[c.pot], potBg: POT[c.pot][0], potFg: POT[c.pot][1], eng: t.eng[c.eng],
+      reasons: c.rs.map(l), next: l(c.next), last: c.last ? l(c.last) : '', top: c.pot === 'high' ? INK : 'var(--color-neutral-400)', open: () => go('candidate', c.id) });
+    const follow = C.filter(c => c.seg.includes('follow') && !(c.id === 'david' && s.pitchApproved));
+    const tabs = t.tabs.map((label, i) => ({ label, count: C.filter(c => TABK[i] === 'all' || c.seg.includes(TABK[i])).length, onClick: () => this.setState({ tab: TABK[i] }),
+      fw: this.state.tab === TABK[i] ? 800 : 400, bar: this.state.tab === TABK[i] ? 'var(--color-accent)' : 'transparent' }));
+    const cur = C.find(c => c.id === app.param) || C[0];
+    const isD = cur.id === 'david';
+    const cd = { ...mk(cur), ini: cur.name.split(' ').map(x => x[0]).join(''),
+      strengths: isD ? (lang === 'en' ? ['Strong relationship network', 'Financial services experience', 'Communication strength'] : ['人脉资源扎实', '具备金融服务经验', '沟通能力强']) : cur.rs.map(l),
+      risks: isD ? (lang === 'en' ? ['Limited insurance experience'] : ['保险从业经验有限']) : (lang === 'en' ? ['Not yet assessed'] : ['尚未测评']),
+      next: isD ? (s.interviewDecision ? l(s.davidStage) : (lang === 'en' ? 'Invite for leadership career conversation' : '邀约进行主管职业发展面谈')) : l(cur.next),
+      career: (isD ? (lang === 'en' ? [['2020 – now', 'Relationship Manager, SME Banking — HSBC'], ['2017 – 2020', 'Personal Banking Officer'], ['2017', 'BBA Finance, CUHK']] : [['2020 至今', '中小企业银行客户经理——汇丰'], ['2017 – 2020', '个人银行专员'], ['2017', '香港中文大学 金融学士']]) : [[lang === 'en' ? 'Current' : '现职', l(cur.bg)]]).map(c => ({ d: c[0], text: c[1] })),
+      network: (isD ? (lang === 'en' ? [['Professional connections', '400+'], ['SME owners', '~120'], ['Mutual connections in team', '3']] : [['职业人脉', '400+'], ['中小企业主', '约 120'], ['与团队共同联系人', '3']]) : [[lang === 'en' ? 'Professional connections' : '职业人脉', '150+']]).map(n => ({ label: n[0], v: n[1] })),
+      engagement: (lang === 'en' ? [['7 Oct', 'Replied to WhatsApp — asked about training', INK], ['5 Oct', 'Opened career brochure (2 min)', INK], ['2 Oct', 'Replied: "Interested, busy this week"', INK], ['26 Sep', 'Attended opportunity seminar', 'var(--color-neutral-400)']] : [['10月7日', '回复 WhatsApp——询问培训安排', INK], ['10月5日', '查看职业手册（2 分钟）', INK], ['10月2日', '回复："有兴趣，本周较忙"', INK], ['9月26日', '参加创业说明会', 'var(--color-neutral-400)']]).map(e => ({ d: e[0], text: e[1], c: e[2] })),
+      history: (lang === 'en' ? [['Added to talent pool', '12 Sep'], ['First contact', '18 Sep'], ['Engaged', '26 Sep']] : [['加入人才库', '9月12日'], ['首次联系', '9月18日'], ['进入互动阶段', '9月26日']]).map(h => ({ text: h[0], d: h[1] })) };
+    const scV = [82, 88, 70, 80, 76];
+    const scores = (lang === 'en' ? ['Motivation', 'Network quality', 'Resilience', 'Coachability', 'Entrepreneurial drive'] : ['动机', '人脉质量', '抗压能力', '可塑性', '创业意愿']).map((label, i) => ({ label, v: scV[i], w: scV[i] + '%', c: scV[i] < 72 ? 'oklch(0.5 0.12 65)' : INK }));
+    const ivDone = !!s.interviewDone;
+    const chs = ['WhatsApp', 'LINE', lang === 'en' ? 'Email' : '邮件', 'LinkedIn'];
+    const P = this.state.pitch;
+    const key = this.state.variant + '-' + this.state.out;
+    const text = this.state.edits[lang + key] ?? PITCH[lang][this.state.variant][this.state.out];
+    const decide = (label) => app.confirm({ title: t.decT, body: t.decB + label, okLabel: t.decOk, onOk: () => { app.set({ interviewDecision: true, davidStage: { en: label, zh: label } }); app.toast(t.decDone + label); } });
+    const qs = lang === 'en' ? [['What motivates you to consider an agency career?', 'Validates motivation beyond income'], ['How would you build your first 50-client network?', 'Tests network realism'], ['What is your approach to entrepreneurial risk?', 'Probes comfort with variable income'], ['How does your family feel about a career change?', 'Common reason RMs withdraw at contract stage']]
+      : [['是什么促使您考虑代理人事业？', '验证收入以外的动机'], ['您会如何建立首批 50 位客户？', '检验人脉计划是否可行'], ['您如何看待创业风险？', '了解对浮动收入的接受度'], ['家人如何看待您转换职业？', '客户经理在签约阶段退出的常见原因']];
+    return {
+      t, is: { pipeline: sc === 'recruitment', list: sc === 'candidates', c360: sc === 'candidate', pitch: sc === 'pitch', interview: sc === 'interview' },
+      stages, whyRecruit: () => app.why('recruit'), goList: () => go('candidates'), whyDavid: () => app.why('david'),
+      hpList: C.filter(c => c.pot === 'high').map(mk), followList: follow.map(mk), followCount: follow.length,
+      overdueList: [[lang === 'en' ? 'Send interview feedback — Ivy Leung' : '发送面谈反馈——Ivy Leung', lang === 'en' ? '4 days overdue' : '逾期 4 天', 'ivy'], [lang === 'en' ? 'Follow up — Cindy Ma' : '跟进——Cindy Ma', lang === 'en' ? '1 day overdue' : '逾期 1 天', 'cindy']].map(o => ({ title: o[0], late: o[1], open: () => go('candidate', o[2]) })),
+      tabs, cands: C.filter(c => this.state.tab === 'all' || c.seg.includes(this.state.tab)).map(mk),
+      cd, assessed: isD && ivDone, notAssessed: !(isD && ivDone), scores, notesText: isD && ivDone ? t.afterSummary : t.noNotes,
+      goPitch: () => go('pitch', 'david'), goInterview: () => go('interview', 'david'), back360: () => go('candidate', 'david'),
+      createFollow: () => app.confirm({ title: t.followT, body: t.followB, okLabel: t.followOk, onOk: () => { app.addTask({ id: 'r_call', type: 'recruit', pri: 'med', due: 'upcoming', title: { en: 'Call David Chan (tomorrow 10:00)', zh: '致电 David Chan（明天 10:00）' }, reason: { en: 'Follow-up created from Candidate 360', zh: '来自候选人 360 的跟进' }, act: { screen: 'candidate', label: { en: 'Contact Candidate', zh: '联系候选人' } } }); app.toast(t.followDone); } }),
+      stageOpts: t.stageOpts, goalOpts: t.goalOpts,
+      channels: chs.map((label, i) => ({ label, onClick: () => this.setState({ ch: i }), bg: this.state.ch === i ? INK : 'transparent', fg: this.state.ch === i ? 'var(--color-bg)' : INK })),
+      pitch: { idle: P === 'idle', loading: P === 'loading', ready: P === 'ready' }, genLabel: P === 'ready' ? t.regenLabel : t.generate,
+      generate: () => { this.setState({ pitch: 'loading' }); setTimeout(() => this.setState({ pitch: 'ready', out: this.state.ch === 3 ? 0 : 1 }), 1400); },
+      regenerate: () => { this.setState({ pitch: 'loading' }); setTimeout(() => this.setState(st => ({ pitch: 'ready', variant: 1 - st.variant })), 1200); },
+      variantLabel: (lang === 'en' ? 'Version ' : '版本 ') + (this.state.variant + 1) + ' · ' + chs[this.state.ch],
+      reviewTag: s.pitchApproved ? t.approvedTag : t.reviewReq,
+      outTabs: t.outTabs.map((label, i) => ({ label, onClick: () => this.setState({ out: i }), fw: this.state.out === i ? 800 : 400, bar: this.state.out === i ? 'var(--color-accent)' : 'transparent' })),
+      draftText: text, onDraftEdit: (e) => { const v = e.target.value; this.setState(st => ({ edits: { ...st.edits, [lang + key]: v } })); },
+      focusEdit: () => { const el = document.querySelector('textarea'); el && el.focus(); },
+      copy: () => { try { navigator.clipboard.writeText(text); } catch (e) {} app.toast(t.copied); },
+      sendLabel: s.pitchApproved ? t.sent : t.send,
+      send: () => { if (s.pitchApproved) return; app.confirm({ title: t.sendT, body: t.sendB.replace('{ch}', chs[this.state.ch]), okLabel: t.sendOk, onOk: () => {
+        app.set({ pitchApproved: true }); app.completeTask('t2');
+        app.addTask({ id: 'r_fu', type: 'recruit', pri: 'med', due: 'upcoming', title: { en: 'Follow up David Chan if no reply (Sun)', zh: '若无回复，周日跟进 David Chan' }, reason: { en: 'Created after approved outreach', zh: '批准邀约后自动创建' }, act: { screen: 'candidate', label: { en: 'Contact Candidate', zh: '联系候选人' } } });
+        app.addTask({ id: 'r_iv', type: 'recruit', pri: 'high', due: 'upcoming', title: { en: 'Interview David Chan (Tue 14:00)', zh: '面谈 David Chan（周二 14:00）' }, reason: { en: 'AI interview guide ready', zh: 'AI 面谈指引已就绪' }, act: { screen: 'interview', label: { en: 'Prepare Interview', zh: '准备面谈' } } });
+        app.toast(t.sentToast); } }); },
+      ivSteps: t.ivSteps.map((label, i) => { const a = (i === 1) === ivDone; return { label, onClick: () => { if (i === 0 || ivDone) this.setState({}); }, bg: a ? INK : 'transparent', fg: a ? 'var(--color-bg)' : INK }; }),
+      iv: { prep: !ivDone, after: ivDone },
+      ivStrengths: lang === 'en' ? ['SME-owner network matches our protection products', 'Trusted-advisor habits from banking', 'Proactively re-engaged'] : ['中小企业主人脉与保障产品契合', '具备银行业顾问式服务习惯', '主动再次互动'],
+      ivConcerns: lang === 'en' ? ['No commission-only income experience', 'May underestimate prospecting effort'] : ['没有纯佣金收入经验', '可能低估客户开拓的工作量'],
+      ivValidate: lang === 'en' ? ['Income expectations', 'Family support', 'Time commitment'] : ['收入预期', '家庭支持', '时间投入'],
+      ivQs: qs.map((q, i) => ({ n: '0' + (i + 1), q: q[0], why: q[1], note: this.state.notes[i] || '', onNote: (e) => { const v = e.target.value; this.setState(st => ({ notes: { ...st.notes, [i]: v } })); } })),
+      finishIv: () => { app.set({ interviewDone: true }); app.toast(lang === 'en' ? 'Interview notes saved · AI assessment ready' : '面谈记录已保存 · AI 评估已生成'); },
+      undecided: !s.interviewDecision, decided: !!s.interviewDecision, decisionText: s.davidStage ? (t.decDone + l(s.davidStage)) : '',
+      advanceStage: () => decide(t.dAdvance), holdStage: () => decide(t.dHold), declineStage: () => decide(t.dDecline)
+    };
+  }
+}
+</script>
+</body>
+</html>

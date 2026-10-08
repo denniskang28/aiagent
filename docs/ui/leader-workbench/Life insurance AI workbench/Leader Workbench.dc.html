@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/styles.css">
+<script src="_ds/modernist-cb710465-178f-48eb-a563-3421b8f155b3/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;800&display=swap">
+<style>
+body{margin:0;background:var(--color-bg);font-family:"Archivo","Noto Sans SC",system-ui,sans-serif}
+a{color:var(--color-accent-700)}a:hover{color:var(--color-accent-600)}
+button{font-family:inherit}
+@keyframes lwbPulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes lwbIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;color:var(--color-text);font-family:'Archivo','Noto Sans SC',system-ui,sans-serif">
+  <aside style="width:240px;flex:none;border-right:2px solid var(--color-divider);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;background:var(--color-bg);z-index:5">
+    <div style="display:flex;gap:12px;align-items:center;padding:0 20px;height:64px;border-bottom:2px solid var(--color-divider)">
+      <div style="width:28px;height:28px;background:var(--color-accent);flex:none;display:grid;place-items:center;color:var(--color-bg);font-weight:800;font-size:13px">L</div>
+      <div style="min-width:0">
+        <div style="font-weight:800;font-size:15px;line-height:1.1">{{ t.brand }}</div>
+        <div style="font-size:11px;color:var(--color-neutral-700)">{{ t.brandSub }}</div>
+      </div>
+    </div>
+    <nav style="display:flex;flex-direction:column;padding:12px 0;flex:1;overflow:auto">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="8">
+        <button onClick="{{ n.onClick }}" style="display:flex;align-items:center;gap:12px;width:100%;border:0;text-align:left;padding:10px 20px;cursor:pointer;font-size:14px;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.fw }}" style-hover="background:var(--color-neutral-200)">
+          <span style="font-size:11px;width:18px;color:{{ n.numFg }};font-weight:600">{{ n.num }}</span>
+          <span style="flex:1">{{ n.label }}</span>
+          <sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:800;background:var(--color-accent);color:var(--color-bg);padding:1px 6px">{{ n.badge }}</span></sc-if>
+        </button>
+      </sc-for>
+    </nav>
+    <div style="border-top:2px solid var(--color-divider);padding:8px 0">
+      <sc-for list="{{ secItems }}" as="n" hint-placeholder-count="3">
+        <button onClick="{{ n.onClick }}" style="display:flex;align-items:center;gap:12px;width:100%;border:0;text-align:left;padding:8px 20px;cursor:pointer;font-size:13px;background:{{ n.bg }};color:{{ n.fg }}" style-hover="background:var(--color-neutral-200)">
+          <span style="width:18px"></span><span>{{ n.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </aside>
+
+  <main style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <header style="height:64px;flex:none;display:flex;align-items:center;gap:16px;padding:0 32px;border-bottom:2px solid var(--color-divider);position:sticky;top:0;background:var(--color-bg);z-index:4">
+      <div style="flex:1;max-width:460px;position:relative">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:10px;top:10px;opacity:.55"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <input class="input" placeholder="{{ t.search }}" onKeyDown="{{ onSearch }}" style="padding-left:34px">
+      </div>
+      <div style="flex:1"></div>
+      <div style="position:relative">
+        <button class="btn btn-secondary btn-icon" onClick="{{ toggleBell }}" aria-label="Notifications" style="position:relative">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+          <sc-if value="{{ nudgeCount }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 4px;background:var(--color-accent);color:var(--color-bg);font-size:11px;font-weight:800;display:grid;place-items:center">{{ nudgeCount }}</span></sc-if>
+        </button>
+      </div>
+      <div style="display:flex;border:1px solid var(--color-divider)">
+        <button onClick="{{ setEn }}" style="border:0;padding:7px 12px;font-size:13px;cursor:pointer;font-weight:600;background:{{ langEn.bg }};color:{{ langEn.fg }}">EN</button>
+        <button onClick="{{ setZh }}" style="border:0;border-left:1px solid var(--color-divider);padding:7px 12px;font-size:13px;cursor:pointer;font-weight:600;background:{{ langZh.bg }};color:{{ langZh.fg }}">中文</button>
+      </div>
+      <button onClick="{{ goSettings }}" style="display:flex;align-items:center;gap:10px;border:0;background:transparent;cursor:pointer;padding:4px;text-align:left;color:inherit">
+        <div style="width:36px;height:36px;background:var(--color-text);color:var(--color-bg);display:grid;place-items:center;font-weight:800;font-size:13px">SL</div>
+        <div style="line-height:1.2"><div style="font-size:13px;font-weight:600">Sarah Lin</div><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.role }}</div></div>
+      </button>
+    </header>
+
+    <div style="flex:1;padding:32px;min-width:0">
+      <sc-if value="{{ is.overview }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:32px;max-width:1360px">
+          <section style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+            <div>
+              <h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.date }}</h6>
+              <h1 style="margin:0">{{ t.greeting }}</h1>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary" onClick="{{ goTasks }}">{{ t.openTasks }}</button>
+              <button class="btn btn-primary" onClick="{{ goAssistant }}">{{ t.askAI }}</button>
+            </div>
+          </section>
+
+          <section>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:8px">
+              <h4 style="margin:0">{{ t.teamToday }}</h4>
+              <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.asOf }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-bottom:2px solid var(--color-divider)">
+              <sc-for list="{{ stats }}" as="s" hint-placeholder-count="5">
+                <button onClick="{{ s.onClick }}" style="border:0;border-right:1px solid var(--color-divider);background:transparent;text-align:left;padding:20px 20px 18px;cursor:pointer;color:inherit;display:flex;flex-direction:column;gap:6px" style-hover="background:var(--color-neutral-200)">
+                  <span style="font-size:44px;font-weight:800;line-height:1;letter-spacing:-.02em;color:{{ s.color }}">{{ s.value }}</span>
+                  <span style="font-size:13px;font-weight:600">{{ s.label }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;flex:none;padding-top:3px"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.brief }}</span>
+              <p style="margin:0;font-size:15px;flex:1;text-wrap:pretty">{{ t.briefText }}</p>
+              <button class="btn btn-ghost" onClick="{{ whyTeam }}" style="flex:none">{{ t.why }}</button>
+            </div>
+          </section>
+
+          <section>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
+              <h3 style="margin:0">{{ t.aiAttention }}</h3>
+              <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.attnSub }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+              <article class="card" style="padding:20px;gap:14px;border-top:4px solid var(--color-accent)">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                  <span class="card-kicker">{{ t.c1kicker }}</span>
+                  <span style="font-size:11px;padding:3px 8px;font-weight:600;background:{{ jamesTag.bg }};color:{{ jamesTag.fg }}">{{ jamesTag.label }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+                  <div class="card-title" style="font-size:24px">James Lee</div>
+                  <div style="text-align:right"><div style="font-size:28px;font-weight:800;line-height:1">78%</div><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.monthlyTarget }}</div></div>
+                </div>
+                <div style="border-top:1px solid var(--color-divider);padding-top:12px">
+                  <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:4px;display:flex;gap:6px;align-items:center"><span style="background:var(--color-text);color:var(--color-bg);padding:1px 4px;font-weight:800">AI</span>{{ t.diagnosis }}</div>
+                  <p style="margin:0;font-size:14px;text-wrap:pretty">{{ t.c1diag }}</p>
+                </div>
+                <div style="background:var(--color-bg);padding:10px 12px">
+                  <div style="font-size:11px;font-weight:600;color:var(--color-neutral-700)">{{ t.recAction }}</div>
+                  <div style="font-size:14px;font-weight:600">{{ t.c1rec }}</div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+                  <button class="btn btn-primary" onClick="{{ reviewJames }}">{{ t.reviewAgent }}</button>
+                  <button class="btn btn-secondary" onClick="{{ planJames }}">{{ t.createPlan }}</button>
+                  <button class="btn btn-ghost" onClick="{{ whyJames }}">{{ t.why }}</button>
+                </div>
+              </article>
+              <article class="card" style="padding:20px;gap:14px;border-top:4px solid oklch(0.72 0.14 75)">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                  <span class="card-kicker" style="color:oklch(0.45 0.1 70)">{{ t.c2kicker }}</span>
+                  <span style="font-size:11px;padding:3px 8px;font-weight:600;background:{{ emilyTag.bg }};color:{{ emilyTag.fg }}">{{ emilyTag.label }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+                  <div class="card-title" style="font-size:24px">Emily Wong</div>
+                  <div style="text-align:right"><div style="font-size:28px;font-weight:800;line-height:1">{{ emilyMetric }}</div><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.m1Activity }}</div></div>
+                </div>
+                <div style="border-top:1px solid var(--color-divider);padding-top:12px">
+                  <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:4px;display:flex;gap:6px;align-items:center"><span style="background:var(--color-text);color:var(--color-bg);padding:1px 4px;font-weight:800">AI</span>{{ t.insight }}</div>
+                  <p style="margin:0;font-size:14px;text-wrap:pretty">{{ t.c2diag }}</p>
+                </div>
+                <div style="background:var(--color-bg);padding:10px 12px">
+                  <div style="font-size:11px;font-weight:600;color:var(--color-neutral-700)">{{ t.recommended }}</div>
+                  <div style="font-size:14px;font-weight:600">{{ t.c2rec }}</div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+                  <button class="btn btn-primary" onClick="{{ planEmily }}">{{ t.viewDevPlan }}</button>
+                  <button class="btn btn-ghost" onClick="{{ whyEmily }}">{{ t.why }}</button>
+                </div>
+              </article>
+              <article class="card" style="padding:20px;gap:14px;border-top:4px solid var(--color-text)">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                  <span class="card-kicker" style="color:var(--color-text)">{{ t.c3kicker }}</span>
+                  <span style="font-size:11px;padding:3px 8px;font-weight:600;background:oklch(0.94 0.05 155);color:oklch(0.38 0.09 155)">{{ t.highPotential }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+                  <div class="card-title" style="font-size:24px">David Chan</div>
+                  <div style="text-align:right"><div style="font-size:28px;font-weight:800;line-height:1">86</div><div style="font-size:11px;color:var(--color-neutral-700)">{{ t.fitScore }}</div></div>
+                </div>
+                <div style="border-top:1px solid var(--color-divider);padding-top:12px">
+                  <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:4px;display:flex;gap:6px;align-items:center"><span style="background:var(--color-text);color:var(--color-bg);padding:1px 4px;font-weight:800">AI</span>{{ t.reason }}</div>
+                  <p style="margin:0;font-size:14px;text-wrap:pretty">{{ t.c3diag }}</p>
+                </div>
+                <div style="background:var(--color-bg);padding:10px 12px">
+                  <div style="font-size:11px;font-weight:600;color:var(--color-neutral-700)">{{ t.recommended }}</div>
+                  <div style="font-size:14px;font-weight:600">{{ t.c3rec }}</div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+                  <button class="btn btn-primary" onClick="{{ reviewDavid }}">{{ t.reviewCandidate }}</button>
+                  <button class="btn btn-secondary" onClick="{{ pitchDavid }}">{{ t.prepOutreach }}</button>
+                  <button class="btn btn-ghost" onClick="{{ whyDavid }}">{{ t.why }}</button>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--color-text);padding-bottom:8px">
+              <h4 style="margin:0">{{ t.nudges }}</h4>
+              <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.nudgeSub }}</span>
+            </div>
+            <sc-if value="{{ hasNudges }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ nudges }}" as="n" hint-placeholder-count="3">
+                <div style="display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--color-divider)">
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <span style="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:{{ n.priFg }}">{{ n.priLabel }}</span>
+                    <span style="font-size:12px;color:var(--color-neutral-700)">{{ n.kind }}</span>
+                  </div>
+                  <div style="font-size:15px;text-wrap:pretty">{{ n.text }}</div>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <sc-for list="{{ n.actions }}" as="a" hint-placeholder-count="1">
+                      <button class="btn btn-secondary" onClick="{{ a.onClick }}">{{ a.label }}</button>
+                    </sc-for>
+                    <button class="btn btn-ghost" onClick="{{ n.onWhy }}">{{ t.why }}</button>
+                    <button class="btn btn-icon" onClick="{{ n.onDismiss }}" aria-label="Dismiss" title="{{ t.dismiss }}" style="width:32px;height:32px" style-hover="background:var(--color-neutral-200)">✕</button>
+                  </div>
+                </div>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ noNudges }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:24px 0;color:var(--color-neutral-700);font-size:14px">{{ t.noNudges }}</div>
+            </sc-if>
+          </section>
+
+          <section style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid var(--color-text)">
+            <div style="padding:20px 20px 20px 0;border-right:1px solid var(--color-divider);display:flex;flex-direction:column;gap:12px">
+              <h6 style="margin:0">{{ t.goalProgress }}</h6>
+              <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:36px;font-weight:800;line-height:1">92%</span><span style="font-size:13px;color:var(--color-neutral-700)">HK$1.10M / 1.20M</span></div>
+              <div style="height:10px;background:var(--color-neutral-300);position:relative"><div style="position:absolute;inset:0 8% 0 0;background:var(--color-text)"></div><div style="position:absolute;top:-4px;bottom:-4px;left:calc(97% - 1px);width:2px;background:var(--color-accent)"></div></div>
+              <p style="margin:0;font-size:13px;text-wrap:pretty">{{ t.goalNote }}</p>
+              <button class="btn btn-ghost" onClick="{{ goTeam }}" style="align-self:flex-start;margin-top:auto">{{ t.viewTeam }} →</button>
+            </div>
+            <div style="padding:20px;border-right:1px solid var(--color-divider);display:flex;flex-direction:column;gap:10px">
+              <h6 style="margin:0">{{ t.recruitFunnel }}</h6>
+              <sc-for list="{{ funnel }}" as="f" hint-placeholder-count="6">
+                <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 26px;gap:8px;align-items:center;font-size:12px">
+                  <span>{{ f.label }}</span>
+                  <div style="height:8px;background:var(--color-neutral-200)"><div style="height:100%;width:{{ f.w }};background:{{ f.color }}"></div></div>
+                  <span style="text-align:right;font-weight:600">{{ f.n }}</span>
+                </div>
+              </sc-for>
+              <button class="btn btn-ghost" onClick="{{ goRecruit }}" style="align-self:flex-start;margin-top:auto">{{ t.openPipeline }} →</button>
+            </div>
+            <div style="padding:20px;border-right:1px solid var(--color-divider);display:flex;flex-direction:column;gap:0">
+              <h6 style="margin:0 0 8px">{{ t.coachingDue }}</h6>
+              <sc-for list="{{ coachDue }}" as="c" hint-placeholder-count="4">
+                <button onClick="{{ c.onClick }}" style="display:flex;justify-content:space-between;gap:8px;border:0;border-bottom:1px solid var(--color-divider);background:transparent;padding:8px 0;text-align:left;cursor:pointer;color:inherit" style-hover="color:var(--color-accent-700)">
+                  <span><span style="display:block;font-size:13px;font-weight:600">{{ c.name }}</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ c.focus }}</span></span>
+                  <span style="font-size:12px;font-weight:600;color:{{ c.dueColor }}">{{ c.due }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="padding:20px 0 20px 20px;display:flex;flex-direction:column;gap:12px">
+              <h6 style="margin:0">{{ t.milestones }}</h6>
+              <sc-for list="{{ milestones }}" as="m" hint-placeholder-count="2">
+                <button onClick="{{ m.onClick }}" style="border:0;background:var(--color-surface);padding:12px;text-align:left;cursor:pointer;color:inherit;display:flex;flex-direction:column;gap:6px" style-hover="background:var(--color-neutral-300)">
+                  <span style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><b>{{ m.name }}</b><span style="font-weight:600">{{ m.stage }}</span></span>
+                  <span style="height:6px;background:var(--color-neutral-300);display:block"><span style="display:block;height:100%;width:{{ m.w }};background:{{ m.color }}"></span></span>
+                  <span style="display:flex;justify-content:space-between;font-size:12px"><span>{{ m.pct }}</span><span style="color:{{ m.color }};font-weight:600">{{ m.status }}</span></span>
+                </button>
+              </sc-for>
+              <button class="btn btn-ghost" onClick="{{ goNew }}" style="align-self:flex-start;margin-top:auto">{{ t.viewNew }} →</button>
+            </div>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ is.team }}" hint-placeholder-val="{{ false }}"><dc-import name="WbTeam" app="{{ app }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ is.coaching }}" hint-placeholder-val="{{ false }}"><dc-import name="WbCoaching" app="{{ app }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ is.newagents }}" hint-placeholder-val="{{ false }}"><dc-import name="WbNewAgents" app="{{ app }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ is.recruit }}" hint-placeholder-val="{{ false }}"><dc-import name="WbRecruit" app="{{ app }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ is.tasks }}" hint-placeholder-val="{{ false }}"><dc-import name="WbTasks" app="{{ app }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ is.assistant }}" hint-placeholder-val="{{ false }}"><dc-import name="WbAssistant" app="{{ app }}" hint-size="100%,900px"></dc-import></sc-if>
+    </div>
+  </main>
+
+  <sc-if value="{{ bellOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ toggleBell }}" style="position:fixed;inset:0;z-index:20"></div>
+    <div style="position:fixed;top:64px;right:32px;width:420px;max-height:calc(100vh - 88px);overflow:auto;background:var(--color-bg);border:2px solid var(--color-text);box-shadow:var(--shadow-lg);z-index:21">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;padding:16px;border-bottom:2px solid var(--color-divider)">
+        <h5 style="margin:0">{{ t.nudges }}</h5>
+        <span style="font-size:12px;color:var(--color-neutral-700)">{{ t.prioritized }}</span>
+      </div>
+      <sc-for list="{{ nudges }}" as="n" hint-placeholder-count="3">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--color-divider);display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:{{ n.priFg }}">{{ n.priLabel }} · {{ n.kind }}</span>
+            <button onClick="{{ n.onDismiss }}" style="border:0;background:transparent;cursor:pointer;font-size:12px;color:var(--color-neutral-700)" title="{{ t.dismiss }}">✕</button>
+          </div>
+          <div style="font-size:14px">{{ n.text }}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ n.actions }}" as="a" hint-placeholder-count="1"><button class="btn btn-secondary" onClick="{{ a.onClick }}" style="font-size:13px;padding:6px 10px">{{ a.label }}</button></sc-for>
+            <button class="btn btn-ghost" onClick="{{ n.onWhy }}" style="font-size:13px">{{ t.why }}</button>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noNudges }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 16px;font-size:14px;color:var(--color-neutral-700)">{{ t.noNudges }}</div></sc-if>
+      <div style="padding:12px 16px;font-size:12px;color:var(--color-neutral-700);border-bottom:1px solid var(--color-divider)">{{ t.bundled }}</div>
+      <div style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--color-surface)">
+        <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">{{ t.demo }}</span>
+        <button class="btn btn-secondary" onClick="{{ advanceWeek }}" style="font-size:13px">{{ advanceLabel }}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ why.open }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeWhy }}" style="position:fixed;inset:0;background:color-mix(in srgb,var(--color-neutral-900) 35%,transparent);z-index:30"></div>
+    <aside style="position:fixed;top:0;right:0;bottom:0;width:460px;max-width:100%;background:var(--color-bg);border-left:2px solid var(--color-text);box-shadow:var(--shadow-lg);z-index:31;display:flex;flex-direction:column;animation:lwbIn .22s ease-out">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0 24px;height:64px;border-bottom:2px solid var(--color-divider);flex:none">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600"><span style="background:var(--color-text);color:var(--color-bg);padding:2px 5px;font-weight:800">AI</span>{{ t.explain }}</span>
+        <button class="btn btn-secondary btn-icon" onClick="{{ closeWhy }}" aria-label="Close">✕</button>
+      </div>
+      <div style="padding:24px;overflow:auto;display:flex;flex-direction:column;gap:24px">
+        <h3 style="margin:0;text-wrap:pretty">{{ why.title }}</h3>
+        <div>
+          <h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.evidence }}</h6>
+          <sc-for list="{{ why.reasons }}" as="r" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:32px minmax(0,1fr);gap:8px;padding:10px 0;border-top:1px solid var(--color-divider);font-size:14px">
+              <span style="font-weight:800;color:var(--color-accent)">{{ r.n }}</span><span>{{ r.text }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:var(--color-text);color:var(--color-bg);padding:16px">
+          <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.75">{{ t.primaryIssue }}</div>
+          <div style="font-size:20px;font-weight:800">{{ why.primary }}</div>
+        </div>
+        <div>
+          <h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.confidence }}</h6>
+          <div style="display:flex;gap:4px;margin-bottom:6px">
+            <sc-for list="{{ why.bars }}" as="b" hint-placeholder-count="3"><span style="flex:1;height:8px;background:{{ b.c }}"></span></sc-for>
+          </div>
+          <div style="font-size:14px"><b>{{ why.conf }}</b> · {{ why.confNote }}</div>
+        </div>
+        <div>
+          <h6 style="margin:0 0 8px;color:var(--color-neutral-700)">{{ t.dataSource }}</h6>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{ why.sources }}" as="s" hint-placeholder-count="3"><span class="tag tag-neutral" style="border:1px solid var(--color-divider)">{{ s }}</span></sc-for>
+          </div>
+        </div>
+        <p style="margin:0;font-size:12px;color:var(--color-neutral-700);border-top:1px solid var(--color-divider);padding-top:12px">{{ t.whyFoot }}</p>
+      </div>
+    </aside>
+  </sc-if>
+
+  <sc-if value="{{ modal.open }}" hint-placeholder-val="{{ false }}">
+    <div class="dialog-backdrop" style="z-index:40">
+      <div class="dialog" style="width:min(480px,100%);border-top:4px solid var(--color-accent)">
+        <span style="align-self:flex-start;border:1px solid var(--color-accent);color:var(--color-accent-700);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;font-weight:600">{{ t.approvalReq }}</span>
+        <div class="dialog-title">{{ modal.title }}</div>
+        <div class="dialog-body">{{ modal.body }}</div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onClick="{{ modal.cancel }}">{{ t.cancel }}</button>
+          <button class="btn btn-primary" onClick="{{ modal.ok }}">{{ modal.okLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:272px;bottom:24px;background:var(--color-text);color:var(--color-bg);padding:12px 16px;font-size:14px;z-index:50;box-shadow:var(--shadow-lg);display:flex;gap:10px;align-items:center;max-width:520px">
+      <span style="width:8px;height:8px;background:var(--color-accent);flex:none"></span>{{ toast }}
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;zh&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'zh'&quot;},&quot;milestoneScheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;M1-M12&quot;,&quot;30-60-90&quot;],&quot;default&quot;:&quot;M1-M12&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;BU configuration&quot;},&quot;nudgeLimit&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:1,&quot;max&quot;:5,&quot;step&quot;:1,&quot;default&quot;:3,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Nudges&quot;}}">
+const L = (o, l) => (o && typeof o === 'object' && 'en' in o) ? o[l] : o;
+const T = {
+  en: {
+    brand: 'Leader AI Workbench', brandSub: 'Pacific Life · Unit 7', role: 'Unit Manager',
+    nav: ['Overview', 'Team', 'Agents', 'Coaching', 'Recruitment', 'New Agent Development', 'Tasks', 'AI Assistant'],
+    sec: ['Reports', 'Settings', 'Help'],
+    search: 'Search agents, candidates — or ask AI and press Enter',
+    date: 'Thursday, 8 October 2026', greeting: 'Good morning, Sarah', openTasks: 'Open Task Center', askAI: 'Ask AI',
+    teamToday: 'Your Team Today', asOf: 'Updated 07:30',
+    stats: ['Active Agents', 'Need Attention', 'New Agents', 'Recruitment Candidates', 'Coaching Actions Due'],
+    brief: 'Daily brief', why: 'Why?',
+    briefText: 'Team production is 8% behind the October target. Most of the gap comes from 4 agents with enough leads but low conversion — James Lee is the largest. Emily Wong is falling behind her M1 activation path, and high-fit candidate David Chan re-engaged overnight.',
+    aiAttention: 'AI Attention', attnSub: '3 of 14 signals surfaced · ranked by impact and urgency',
+    c1kicker: 'Performance Risk', needsAttention: 'Needs Attention', coachingActive: 'Coaching in progress', improving: 'Improving',
+    monthlyTarget: 'of monthly target', diagnosis: 'Diagnosis',
+    c1diag: 'Appointment activity is healthy, but proposal-to-close conversion has dropped from 22% to 11%.',
+    recAction: 'Recommended action', c1rec: 'Schedule a coaching session focused on objection handling.',
+    reviewAgent: 'Review Agent', createPlan: 'Create Coaching Plan',
+    c2kicker: 'New Agent · Activation Risk', atRisk: 'At Risk', onTrack: 'Back on track', m1Activity: 'M1 activity vs target',
+    insight: 'Insight', c2diag: 'Prospecting activity has declined for two consecutive weeks while training is on schedule.',
+    recommended: 'Recommended', c2rec: 'Review her customer sourcing plan.', viewDevPlan: 'View Development Plan',
+    c3kicker: 'Recruitment Opportunity', highPotential: 'High Potential', fitScore: 'fit score', reason: 'Reason',
+    c3diag: 'Strong professional network, relevant sales background and high engagement — replied twice this week.',
+    c3rec: 'Invite to a career conversation within 48 hours.', reviewCandidate: 'Review Candidate', prepOutreach: 'Prepare Outreach',
+    nudges: 'Nudges', nudgeSub: 'Only what needs a decision. Dismiss anything not useful.', prioritized: 'Prioritized for today',
+    dismiss: 'Dismiss', noNudges: 'You are all caught up. New nudges will appear here when something needs you.',
+    bundled: 'Low-priority updates are bundled into tomorrow\'s brief to avoid alert overload.',
+    demo: 'Prototype control', advance: 'Advance 1 week ▸', advanced: 'Week advanced ✓',
+    goalProgress: 'Team Goal Progress', goalNote: '8% below target, 16 working days left. On current pace the team reaches 97% (red mark).', viewTeam: 'Team performance',
+    recruitFunnel: 'Recruitment Funnel', openPipeline: 'Open pipeline', coachingDue: 'Coaching Due', milestones: 'New Agent Milestones', viewNew: 'All new agents',
+    explain: 'Why this recommendation', evidence: 'Evidence', primaryIssue: 'Primary issue', confidence: 'Confidence', dataSource: 'Data used',
+    whyFoot: 'AI recommendations support your judgment — you decide what happens next. Nothing affecting an agent or candidate is sent without your approval.',
+    approvalReq: 'Leader approval required', cancel: 'Cancel', high: 'High', medium: 'Medium',
+    kinds: { perf: 'Performance', newagent: 'New agent', recruit: 'Recruitment', coaching: 'Coaching follow-up' },
+    pri: { high: 'High priority', med: 'Medium' },
+    today: 'Today', fri: 'Fri', mon: 'Mon', thisWeek: 'This week'
+  },
+  zh: {
+    brand: '主管 AI 工作台', brandSub: '太平人寿 · 第七营业组', role: '营业组经理',
+    nav: ['总览', '团队业绩', '代理人', '辅导管理', '招募管理', '新人发展', '任务中心', 'AI 助手'],
+    sec: ['报表', '设置', '帮助'],
+    search: '搜索代理人、候选人，或输入问题后按回车问 AI',
+    date: '2026年10月8日 星期四', greeting: '早上好，Sarah', openTasks: '打开任务中心', askAI: '问 AI',
+    teamToday: '今日团队概况', asOf: '07:30 更新',
+    stats: ['名活跃代理人', '名需要关注', '名新人', '位招募候选人', '项辅导待办'],
+    brief: '每日简报', why: '为什么？',
+    briefText: '团队本月业绩落后 10 月目标 8%。差距主要来自 4 名线索充足但转化偏低的代理人，其中 James Lee 影响最大。新人 Emily Wong 的 M1 激活进度落后，高匹配候选人 David Chan 昨晚再次互动。',
+    aiAttention: 'AI 重点提醒', attnSub: '从 14 条信号中筛出 3 条 · 按影响与紧急程度排序',
+    c1kicker: '业绩风险', needsAttention: '需要关注', coachingActive: '辅导进行中', improving: '正在改善',
+    monthlyTarget: '月度目标达成', diagnosis: '诊断',
+    c1diag: '约访活动量正常，但建议书到成交的转化率从 22% 下降至 11%。',
+    recAction: '建议行动', c1rec: '安排一次针对异议处理能力的辅导。',
+    reviewAgent: '查看代理人', createPlan: '生成辅导计划',
+    c2kicker: '新人 · 激活风险', atRisk: '存在风险', onTrack: '已回到正轨', m1Activity: 'M1 活动量对比目标',
+    insight: '洞察', c2diag: '培训进度正常，但客户开拓活动已连续两周下降。',
+    recommended: '建议', c2rec: '检视她的客户来源计划。', viewDevPlan: '查看发展计划',
+    c3kicker: '招募机会', highPotential: '高潜力', fitScore: '匹配度', reason: '推荐理由',
+    c3diag: '人脉资源扎实、具备相关销售背景且互动积极——本周已两次回复。',
+    c3rec: '48 小时内邀约进行职业发展面谈。', reviewCandidate: '查看候选人', prepOutreach: '准备邀约',
+    nudges: '主动提醒', nudgeSub: '只推送需要您决策的事项，不需要的可直接忽略。', prioritized: '今日优先事项',
+    dismiss: '忽略', noNudges: '暂无待处理提醒。有需要您关注的事项时会在这里出现。',
+    bundled: '低优先级更新将汇总至明日简报，避免信息过载。',
+    demo: '原型演示', advance: '快进 1 周 ▸', advanced: '已快进 ✓',
+    goalProgress: '团队目标进度', goalNote: '落后目标 8%，剩余 16 个工作日。按当前进度预计月底达成 97%（红线）。', viewTeam: '团队业绩',
+    recruitFunnel: '招募漏斗', openPipeline: '打开招募管道', coachingDue: '待辅导', milestones: '新人里程碑', viewNew: '全部新人',
+    explain: '推荐依据', evidence: '依据', primaryIssue: '核心问题', confidence: '可信度', dataSource: '数据来源',
+    whyFoot: 'AI 建议仅辅助您的判断，下一步由您决定。凡涉及代理人或候选人的操作，未经您确认不会执行。',
+    approvalReq: '需主管确认', cancel: '取消', high: '高', medium: '中',
+    kinds: { perf: '业绩', newagent: '新人', recruit: '招募', coaching: '辅导跟进' },
+    pri: { high: '高优先级', med: '中' },
+    today: '今天', fri: '周五', mon: '周一', thisWeek: '本周'
+  }
+};
+const WHY = {
+  james: { title: { en: 'Why is James marked "Needs Attention"?', zh: '为什么 James 被标记为"需要关注"？' },
+    reasons: [{ en: 'Monthly production is 22% below target (HK$78K of 100K).', zh: '月度业绩低于目标 22%（10 万中完成 7.8 万）。' },
+      { en: 'Appointment activity is normal — 26 appointments, in line with his 3-month average.', zh: '约访活动正常——共 26 次，与近 3 个月平均持平。' },
+      { en: 'Proposal-to-close conversion is 11%, down from 22% last quarter.', zh: '建议书成交转化率为 11%，上季度为 22%。' },
+      { en: 'Team benchmark for the same stage is 24%.', zh: '团队同阶段基准为 24%。' }],
+    primary: { en: 'Closing effectiveness', zh: '成交能力' }, conf: 'high', confNote: { en: 'consistent across 3 weeks of data', zh: '连续 3 周数据一致' },
+    sources: [{ en: 'Activity history', zh: '活动记录' }, { en: 'Sales pipeline', zh: '销售管道' }, { en: 'Performance metrics', zh: '业绩指标' }] },
+  emily: { title: { en: 'Why is Emily at activation risk?', zh: '为什么 Emily 存在激活风险？' },
+    reasons: [{ en: 'M1 customer activity is 25% below the expected activation path.', zh: 'M1 客户活动量低于预期激活路径 25%。' },
+      { en: 'Prospecting contacts declined two weeks in a row (14 → 9 → 6).', zh: '客户开拓接触连续两周下降（14 → 9 → 6）。' },
+      { en: 'Training is 82% complete — on schedule.', zh: '培训完成 82%——进度正常。' },
+      { en: 'Only 18 of 30 target contacts made with 9 days left in M1.', zh: 'M1 剩余 9 天，目标 30 次接触仅完成 18 次。' }],
+    primary: { en: 'Customer sourcing', zh: '客户来源' }, conf: 'high', confNote: { en: 'matches early patterns of agents who later disengaged', zh: '与过往流失新人的早期特征相符' },
+    sources: [{ en: 'Activity history', zh: '活动记录' }, { en: 'Training records', zh: '培训记录' }, { en: 'Milestone plan', zh: '里程碑计划' }] },
+  david: { title: { en: 'Why is David Chan recommended?', zh: '为什么推荐 David Chan？' },
+    reasons: [{ en: '6 years as a bank Relationship Manager — financial services experience.', zh: '6 年银行客户经理经验——具备金融服务背景。' },
+      { en: 'Strong professional network: 400+ connections, many SME owners.', zh: '人脉资源扎实：400+ 联系人，其中不少为中小企业主。' },
+      { en: 'Replied twice this week and opened the career brochure.', zh: '本周两次回复，并查看了职业发展手册。' },
+      { en: 'Profile is similar to your top 3 recruits of the last two years.', zh: '画像与您近两年招募的前 3 名优秀人员相似。' }],
+    primary: { en: 'Strong fit — act while engagement is high', zh: '匹配度高——趁互动积极时跟进' }, conf: 'medium', confNote: { en: 'no assessment completed yet', zh: '尚未完成测评' },
+    sources: [{ en: 'Candidate profile', zh: '候选人档案' }, { en: 'Engagement history', zh: '互动记录' }, { en: 'Recruitment outcomes', zh: '历史招募结果' }] },
+  team: { title: { en: 'Why is the team below target?', zh: '为什么团队未达目标？' },
+    reasons: [{ en: 'Team production is HK$1.10M against a HK$1.20M month-to-date target (−8%).', zh: '团队本月累计业绩 110 万，目标 120 万（−8%）。' },
+      { en: 'Lead volume and appointments are at or above benchmark for 10 of 12 agents.', zh: '12 名代理人中有 10 名线索与约访量达到或超过基准。' },
+      { en: '4 agents convert proposals below 15% — together they explain ~70% of the gap.', zh: '4 名代理人建议书转化率低于 15%，合计约占差距的 70%。' },
+      { en: '1 agent (David Chen) has a separate activity gap.', zh: '另有 1 名代理人（David Chen）存在活动量不足。' }],
+    primary: { en: 'Conversion, not lead volume', zh: '问题在转化，而非线索量' }, conf: 'high', confNote: { en: 'based on 12 agents, 8 weeks', zh: '基于 12 名代理人、8 周数据' },
+    sources: [{ en: 'Sales pipeline', zh: '销售管道' }, { en: 'Performance metrics', zh: '业绩指标' }, { en: 'Activity history', zh: '活动记录' }] },
+  recruit: { title: { en: 'Why is interview conversion low?', zh: '为什么面谈转化率偏低？' },
+    reasons: [{ en: 'Engaged → Interview conversion is 53%, benchmark 70%.', zh: '互动→面谈转化率 53%，基准为 70%。' },
+      { en: 'Average gap between engagement and interview invite is 6 days (benchmark 2).', zh: '从互动到邀约面谈平均间隔 6 天（基准 2 天）。' },
+      { en: '4 engaged candidates have had no contact for 5+ days.', zh: '4 名已互动候选人超过 5 天未联系。' }],
+    primary: { en: 'Slow follow-up after engagement', zh: '互动后跟进不及时' }, conf: 'medium', confNote: { en: 'small sample this quarter', zh: '本季度样本量较小' },
+    sources: [{ en: 'Recruitment pipeline', zh: '招募管道' }, { en: 'Engagement history', zh: '互动记录' }] },
+  improve: { title: { en: 'Is James\'s coaching working?', zh: 'James 的辅导是否有效？' },
+    reasons: [{ en: 'Close rate rose from 11% to 16% since the coaching session.', zh: '辅导后成交率从 11% 提升至 16%。' },
+      { en: 'Both assigned role plays completed; premium-objection score up from 58 to 74.', zh: '已完成两次指定角色演练，保费异议得分从 58 提升至 74。' },
+      { en: '3 lost cases reviewed; 1 has been re-opened.', zh: '已复盘 3 个流失案例，其中 1 个已重新跟进。' }],
+    primary: { en: 'Improving — continue current plan', zh: '正在改善——继续当前计划' }, conf: 'medium', confNote: { en: 'one week of post-coaching data', zh: '仅 1 周辅导后数据' },
+    sources: [{ en: 'Sales pipeline', zh: '销售管道' }, { en: 'Role play results', zh: '角色演练结果' }, { en: 'Coaching records', zh: '辅导记录' }] }
+};
+const INIT_TASKS = [
+  { id: 't1', type: 'coaching', pri: 'high', due: 'today', title: { en: 'Coach James Lee', zh: '辅导 James Lee' }, reason: { en: 'Closing conversion below threshold (11% vs 24%)', zh: '成交转化率低于阈值（11% 对比 24%）' }, act: { screen: 'coaching', label: { en: 'Open Coaching', zh: '打开辅导' } } },
+  { id: 't2', type: 'recruit', pri: 'high', due: 'today', title: { en: 'Follow up candidate David Chan', zh: '跟进候选人 David Chan' }, reason: { en: 'High-potential candidate, no contact in 5 days', zh: '高潜力候选人，已 5 天未联系' }, act: { screen: 'candidate', label: { en: 'Contact Candidate', zh: '联系候选人' } } },
+  { id: 't3', type: 'newagent', pri: 'high', due: 'today', title: { en: 'Check in with Emily Wong', zh: '与 Emily Wong 沟通' }, reason: { en: 'M1 activity 25% below activation path', zh: 'M1 活动量低于激活路径 25%' }, act: { screen: 'successplan', label: { en: 'View Success Plan', zh: '查看成功计划' } } },
+  { id: 't4', type: 'approval', pri: 'med', due: 'upcoming', title: { en: 'Approve Kevin Ho\'s M3 milestone review', zh: '审批 Kevin Ho 的 M3 里程碑评估' }, reason: { en: 'AI prepared the review; your sign-off is required', zh: 'AI 已准备评估，需您签核' }, act: { screen: 'newagents', label: { en: 'Review', zh: '查看' } } },
+  { id: 't5', type: 'mgmt', pri: 'med', due: 'upcoming', title: { en: 'Review Q4 team production plan', zh: '审阅第四季度团队业绩计划' }, reason: { en: 'Due before Monday\'s agency meeting', zh: '需在周一营业部会议前完成' }, act: { screen: 'team', label: { en: 'Open Team', zh: '打开团队业绩' } } },
+  { id: 't6', type: 'recruit', pri: 'high', due: 'overdue', title: { en: 'Send interview feedback to Ivy Leung', zh: '向 Ivy Leung 反馈面谈结果' }, reason: { en: 'Interview held 4 days ago; candidate waiting', zh: '面谈已过 4 天，候选人在等待' }, act: { screen: 'candidates', label: { en: 'Open Candidates', zh: '打开候选人' } } },
+  { id: 't7', type: 'agent', pri: 'med', due: 'overdue', title: { en: 'Pipeline review with Michael Tan', zh: '与 Michael Tan 进行管道检视' }, reason: { en: 'Agreed in last coaching; 2 days overdue', zh: '上次辅导约定事项，已逾期 2 天' }, act: { screen: 'agents', label: { en: 'View Agent', zh: '查看代理人' } } },
+  { id: 't8', type: 'mgmt', pri: 'med', due: 'done', title: { en: 'Weekly team huddle notes', zh: '每周团队早会纪要' }, reason: { en: 'AI summary shared with team', zh: 'AI 摘要已分享给团队' }, act: null }
+];
+const GROUP = { overview: 'overview', team: 'team', agents: 'team', agent: 'team', diagnosis: 'team', coaching: 'coaching', session: 'coaching', followup: 'coaching', newagents: 'newagents', successplan: 'newagents', recruitment: 'recruit', candidates: 'recruit', candidate: 'recruit', pitch: 'recruit', interview: 'recruit', tasks: 'tasks', settings: 'tasks', reports: 'tasks', help: 'tasks', assistant: 'assistant' };
+const NAVKEY = { overview: 0, team: 1, agents: 2, agent: 2, diagnosis: 2, coaching: 3, session: 3, followup: 3, recruitment: 4, candidates: 4, candidate: 4, pitch: 4, interview: 4, newagents: 5, successplan: 5, tasks: 6, assistant: 7 };
+const NAVSCR = ['overview', 'team', 'agents', 'coaching', 'recruitment', 'newagents', 'tasks', 'assistant'];
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('lwb_v1') || '{}'); } catch (e) {}
+    this.state = { lang: saved.lang || this.props.startLang || 'en', screen: saved.screen || 'overview', param: saved.param || null,
+      s: saved.s || {}, tasks: saved.tasks || INIT_TASKS, dismissed: saved.dismissed || [], bell: false, whyKey: null, modal: null, toast: null };
+  }
+  componentDidUpdate() {
+    const { lang, screen, param, s, tasks, dismissed } = this.state;
+    try { localStorage.setItem('lwb_v1', JSON.stringify({ lang, screen, param, s, tasks, dismissed })); } catch (e) {}
+  }
+  go = (screen, param) => { this.setState({ screen, param: param === undefined ? this.state.param : param, bell: false, whyKey: null }); window.scrollTo(0, 0); };
+  set = (patch) => this.setState(st => ({ s: { ...st.s, ...patch } }));
+  toastMsg = (m) => { this.setState({ toast: m }); clearTimeout(this._tt); this._tt = setTimeout(() => this.setState({ toast: null }), 3200); };
+  addTask = (task) => this.setState(st => st.tasks.some(x => x.id === task.id) ? null : { tasks: [task, ...st.tasks] });
+  completeTask = (id, done = true) => this.setState(st => ({ tasks: st.tasks.map(x => x.id === id ? { ...x, due: done ? 'done' : (x.prevDue || 'today'), prevDue: x.due } : x) }));
+  confirm = (cfg) => this.setState({ modal: cfg });
+  reset = () => { try { localStorage.removeItem('lwb_v1'); } catch (e) {} this.setState({ screen: 'overview', param: null, s: {}, tasks: INIT_TASKS, dismissed: [] }); };
+  advanceWeek = () => {
+    const s = this.state.s;
+    if (s.week2) return;
+    this.set({ week2: true });
+    this.setState(st => ({ tasks: st.tasks.map(x => ['k_rp', 'k_lost', 'e_calls'].includes(x.id) ? { ...x, due: 'done' } : x), bell: true }));
+    this.toastMsg(this.state.lang === 'en' ? 'One week later — new follow-up nudges have arrived.' : '一周后——收到新的跟进提醒。');
+  };
+
+  renderVals() {
+    const { lang, screen, s, tasks, dismissed, whyKey, modal } = this.state;
+    const t = T[lang];
+    const l = (o) => L(o, lang);
+    const app = { lang, screen, param: this.state.param, s, tasks, go: this.go, set: this.set, why: (k) => this.setState({ whyKey: k }),
+      toast: this.toastMsg, addTask: this.addTask, completeTask: this.completeTask, confirm: this.confirm, reset: this.reset,
+      advanceWeek: this.advanceWeek, setLang: (x) => this.setState({ lang: x }),
+      milestoneScheme: this.props.milestoneScheme || 'M1-M12', nudgeLimit: this.props.nudgeLimit ?? 3 };
+    const navIdx = NAVKEY[screen];
+    const overdue = tasks.filter(x => x.due === 'overdue' || x.due === 'today').length;
+    const navItems = t.nav.map((label, i) => ({ label, num: String(i + 1).padStart(2, '0'), onClick: () => this.go(NAVSCR[i]),
+      bg: i === navIdx ? 'var(--color-text)' : 'transparent', fg: i === navIdx ? 'var(--color-bg)' : 'var(--color-text)',
+      numFg: i === navIdx ? 'var(--color-accent-400)' : 'var(--color-neutral-600)', fw: i === navIdx ? 600 : 400,
+      badge: i === 6 ? overdue : (i === 2 ? 3 : 0) }));
+    const secKeys = ['reports', 'settings', 'help'];
+    const secItems = t.sec.map((label, i) => ({ label, onClick: () => this.go(secKeys[i]),
+      bg: screen === secKeys[i] ? 'var(--color-neutral-300)' : 'transparent', fg: 'var(--color-text)' }));
+    const g = GROUP[screen] || 'overview';
+    const is = { overview: g === 'overview', team: g === 'team', coaching: g === 'coaching', newagents: g === 'newagents', recruit: g === 'recruit', tasks: g === 'tasks', assistant: g === 'assistant' };
+
+    const ink = 'var(--color-text)', red = 'var(--color-accent)';
+    const stats = [[12, ink, 'agents'], [3, red, 'agents', 'attention'], [2, ink, 'newagents'], [5, ink, 'candidates'], [4, ink, 'coaching']].map((x, i) => ({
+      value: x[0], color: x[1], label: t.stats[i], onClick: () => { if (x[3]) this.set({ agentFilter: x[3] }); this.go(x[2]); } }));
+
+    const jamesTag = s.week2 && s.sessionSaved ? { label: t.improving, bg: 'oklch(0.94 0.05 155)', fg: 'oklch(0.38 0.09 155)' }
+      : s.sessionSaved ? { label: t.coachingActive, bg: 'var(--color-neutral-200)', fg: 'var(--color-neutral-800)' }
+      : { label: t.needsAttention, bg: 'var(--color-accent-100)', fg: 'var(--color-accent-800)' };
+    const emilyOk = s.week2 && s.recoveryPlan;
+    const emilyTag = emilyOk ? { label: t.onTrack, bg: 'oklch(0.94 0.05 155)', fg: 'oklch(0.38 0.09 155)' } : { label: t.atRisk, bg: 'oklch(0.94 0.07 85)', fg: 'oklch(0.42 0.1 70)' };
+
+    const N = [
+      { id: 'n4', pri: 'high', kind: 'coaching', show: s.week2 && s.sessionSaved, text: { en: 'James has completed his assigned role plays. Close rate is up from 11% to 16%.', zh: 'James 已完成指定的角色演练，成交率从 11% 提升至 16%。' }, why: 'improve', actions: [{ label: { en: 'Review Improvement', zh: '查看改善情况' }, go: ['followup'] }] },
+      { id: 'n5', pri: 'high', kind: 'newagent', show: s.week2 && s.recoveryPlan, text: { en: 'Emily\'s customer contacts are up 40% since her recovery plan — M1 activation is back on track.', zh: '自恢复计划启动以来，Emily 的客户接触增加 40%，M1 激活已回到正轨。' }, why: 'emily', actions: [{ label: { en: 'View Success Plan', zh: '查看成功计划' }, go: ['successplan'] }] },
+      { id: 'n1', pri: 'high', kind: 'perf', show: !s.sessionSaved, text: { en: 'James\' close rate has declined for 3 consecutive weeks.', zh: 'James 的成交率已连续 3 周下降。' }, why: 'james', actions: [{ label: { en: 'Review Agent', zh: '查看代理人' }, go: ['agent', 'james'] }, { label: { en: 'Create Coaching Plan', zh: '生成辅导计划' }, go: ['coaching'] }] },
+      { id: 'n2', pri: 'high', kind: 'newagent', show: !s.recoveryPlan, text: { en: 'Emily is falling behind her M1 activation target.', zh: 'Emily 的 M1 激活目标进度落后。' }, why: 'emily', actions: [{ label: { en: 'View Success Plan', zh: '查看成功计划' }, go: ['successplan'] }] },
+      { id: 'n3', pri: 'med', kind: 'recruit', show: !s.pitchApproved, text: { en: 'David Chan has high fit and recently re-engaged.', zh: 'David Chan 匹配度高，且近期再次互动。' }, why: 'david', actions: [{ label: { en: 'Contact Candidate', zh: '联系候选人' }, go: ['candidate', 'david'] }] }
+    ];
+    const nudges = N.filter(n => n.show && !dismissed.includes(n.id)).slice(0, app.nudgeLimit).map(n => ({
+      priLabel: t.pri[n.pri], priFg: n.pri === 'high' ? 'var(--color-accent-700)' : 'var(--color-neutral-700)', kind: t.kinds[n.kind], text: l(n.text),
+      onWhy: () => this.setState({ whyKey: n.why, bell: false }), onDismiss: () => { this.setState(st => ({ dismissed: [...st.dismissed, n.id] })); this.toastMsg(lang === 'en' ? 'Nudge dismissed. AI will learn from this.' : '已忽略该提醒，AI 会据此优化推送。'); },
+      actions: n.actions.map(a => ({ label: l(a.label), onClick: () => this.go(a.go[0], a.go[1]) }))
+    }));
+
+    const F = [[{ en: 'Talent pool', zh: '人才库' }, 42], [{ en: 'Contacted', zh: '已联系' }, 24], [{ en: 'Engaged', zh: '有互动' }, 15], [{ en: 'Interview', zh: '面谈' }, 8], [{ en: 'Contract', zh: '签约' }, 3], [{ en: 'Joined', zh: '已入职' }, 2]];
+    const funnel = F.map((f, i) => ({ label: l(f[0]), n: f[1], w: Math.round(f[1] / 42 * 100) + '%', color: i === 3 ? red : ink }));
+    const coachDue = [
+      ['James Lee', { en: 'Objection handling', zh: '异议处理' }, t.today, red, () => this.go('coaching')],
+      ['Michael Tan', { en: 'Pipeline review', zh: '管道检视' }, t.fri, ink, () => this.go('agents')],
+      ['Grace Lam', { en: 'Product confidence', zh: '产品信心' }, t.mon, ink, () => this.go('agents')],
+      ['Emily Wong', { en: 'M1 check-in', zh: 'M1 沟通' }, t.thisWeek, ink, () => this.go('successplan')]
+    ].map(c => ({ name: c[0], focus: l(c[1]), due: c[2], dueColor: c[3], onClick: c[4] }));
+    const ms = app.milestoneScheme === '30-60-90';
+    const milestones = [
+      { name: 'Emily Wong', stage: ms ? (lang === 'en' ? '30-Day' : '30 天') : 'M1', w: emilyOk ? '84%' : '68%', pct: (emilyOk ? '84%' : '68%') + (lang === 'en' ? ' of goals' : ' 目标完成'), status: emilyOk ? t.onTrack : t.atRisk, color: emilyOk ? 'oklch(0.45 0.1 155)' : 'oklch(0.5 0.12 65)', onClick: () => this.go('newagents') },
+      { name: 'Kevin Ho', stage: ms ? (lang === 'en' ? '90-Day' : '90 天') : 'M3', w: '91%', pct: '91%' + (lang === 'en' ? ' of goals' : ' 目标完成'), status: lang === 'en' ? 'On track' : '进度正常', color: 'oklch(0.45 0.1 155)', onClick: () => this.go('newagents') }
+    ];
+
+    let why = { open: false };
+    if (whyKey && WHY[whyKey]) {
+      const w = WHY[whyKey];
+      const lvl = w.conf === 'high' ? 3 : 2;
+      why = { open: true, title: l(w.title), reasons: w.reasons.map((r, i) => ({ n: String(i + 1).padStart(2, '0'), text: l(r) })), primary: l(w.primary),
+        conf: w.conf === 'high' ? t.high : t.medium, confNote: l(w.confNote), sources: w.sources.map(l), bars: [0, 1, 2].map(i => ({ c: i < lvl ? 'var(--color-text)' : 'var(--color-neutral-300)' })) };
+    }
+    const m = modal ? { open: true, title: modal.title, body: modal.body, okLabel: modal.okLabel,
+      ok: () => { this.setState({ modal: null }); modal.onOk && modal.onOk(); }, cancel: () => this.setState({ modal: null }) } : { open: false };
+
+    return {
+      t, app, navItems, secItems, is, stats, jamesTag, emilyTag, emilyMetric: emilyOk ? '+8%' : '−25%',
+      nudges, hasNudges: nudges.length > 0, noNudges: nudges.length === 0, nudgeCount: nudges.length,
+      funnel, coachDue, milestones, why, modal: m, toast: this.state.toast, bellOpen: this.state.bell,
+      advanceLabel: s.week2 ? t.advanced : t.advance, advanceWeek: this.advanceWeek,
+      langEn: { bg: lang === 'en' ? 'var(--color-text)' : 'transparent', fg: lang === 'en' ? 'var(--color-bg)' : 'var(--color-text)' },
+      langZh: { bg: lang === 'zh' ? 'var(--color-text)' : 'transparent', fg: lang === 'zh' ? 'var(--color-bg)' : 'var(--color-text)' },
+      setEn: () => this.setState({ lang: 'en' }), setZh: () => this.setState({ lang: 'zh' }),
+      toggleBell: () => this.setState(st => ({ bell: !st.bell })), closeWhy: () => this.setState({ whyKey: null }),
+      onSearch: (e) => { if (e.key === 'Enter' && e.target.value.trim()) { this.set({ askQ: e.target.value.trim() }); e.target.value = ''; this.go('assistant'); } },
+      goSettings: () => this.go('settings'), goTasks: () => this.go('tasks'), goAssistant: () => this.go('assistant'), goTeam: () => this.go('team'),
+      goRecruit: () => this.go('recruitment'), goNew: () => this.go('newagents'),
+      reviewJames: () => this.go('agent', 'james'), planJames: () => this.go('coaching'), whyJames: () => this.setState({ whyKey: 'james' }),
+      planEmily: () => this.go('successplan'), whyEmily: () => this.setState({ whyKey: 'emily' }),
+      reviewDavid: () => this.go('candidate', 'david'), pitchDavid: () => this.go('pitch', 'david'), whyDavid: () => this.setState({ whyKey: 'david' }),
+      whyTeam: () => this.setState({ whyKey: 'team' })
+    };
+  }
+}
+</script>
+</body>
+</html>
